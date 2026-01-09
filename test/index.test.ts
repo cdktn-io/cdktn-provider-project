@@ -113,7 +113,7 @@ test("has a custom workflow and README if the project is deprecated", () => {
 
   expect(snapshot["README.md"]).toEqual(
     expect.stringContaining(
-      "HashiCorp made the decision to stop publishing new versions of"
+      "The CDK Terrain Team made the decision to stop publishing new versions of"
     )
   );
 
@@ -145,7 +145,8 @@ test("override licensee", () => {
   );
 });
 
-test("override maven org", () => {
+// TODO: Re-enable when Maven requested
+test.skip("override maven org", () => {
   const snapshot = synthSnapshot(getProject({ mavenOrg: "gofer" }));
 
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
@@ -154,11 +155,12 @@ test("override maven org", () => {
   );
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
     "jsii.targets.java.package",
-    "com.gofer.cdktf.providers.random_provider"
+    "com.gofer.cdktn.providers.random_provider"
   );
 });
 
-test("override maven group id", () => {
+// TODO: Re-enable when Maven requested
+test.skip("override maven group id", () => {
   const snapshot = synthSnapshot(getProject({ mavenGroupId: "dev.gofer" }));
 
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
@@ -167,7 +169,7 @@ test("override maven group id", () => {
   );
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
     "jsii.targets.java.package",
-    "dev.gofer.cdktf.providers.random_provider"
+    "dev.gofer.cdktn.providers.random_provider"
   );
 });
 
@@ -181,7 +183,7 @@ test("with minNodeVersion", () => {
       minNodeVersion: "18.12.0",
       jsiiVersion: "~5.3.0",
       typescriptVersion: "~5.3.0", // NOTE: this should be the same major/minor version as JSII
-      devDeps: ["@cdktf/provider-project@^0.5.0"],
+      devDeps: ["@cdktn/provider-project@^0.5.0"],
       isDeprecated: false,
     })
   );

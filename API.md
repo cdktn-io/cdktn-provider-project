@@ -2,25 +2,25 @@
 
 ## Constructs <a name="Constructs" id="Constructs"></a>
 
-### CdktfProviderProject <a name="CdktfProviderProject" id="@cdktf/provider-project.CdktfProviderProject"></a>
+### CdktnProviderProject <a name="CdktnProviderProject" id="@cdktn/provider-project.CdktnProviderProject"></a>
 
-#### Initializers <a name="Initializers" id="@cdktf/provider-project.CdktfProviderProject.Initializer"></a>
+#### Initializers <a name="Initializers" id="@cdktn/provider-project.CdktnProviderProject.Initializer"></a>
 
 ```typescript
-import { CdktfProviderProject } from '@cdktf/provider-project'
+import { CdktnProviderProject } from '@cdktn/provider-project'
 
-new CdktfProviderProject(options: CdktfProviderProjectOptions)
+new CdktnProviderProject(options: CdktnProviderProjectOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.Initializer.parameter.options">options</a></code> | <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions">CdktfProviderProjectOptions</a></code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.Initializer.parameter.options">options</a></code> | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions">CdktnProviderProjectOptions</a></code> | *No description.* |
 
 ---
 
-##### `options`<sup>Required</sup> <a name="options" id="@cdktf/provider-project.CdktfProviderProject.Initializer.parameter.options"></a>
+##### `options`<sup>Required</sup> <a name="options" id="@cdktn/provider-project.CdktnProviderProject.Initializer.parameter.options"></a>
 
-- *Type:* <a href="#@cdktf/provider-project.CdktfProviderProjectOptions">CdktfProviderProjectOptions</a>
+- *Type:* <a href="#@cdktn/provider-project.CdktnProviderProjectOptions">CdktnProviderProjectOptions</a>
 
 ---
 
@@ -28,40 +28,40 @@ new CdktfProviderProject(options: CdktfProviderProjectOptions)
 
 | **Name** | **Description** |
 | --- | --- |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.toString">toString</a></code> | Returns a string representation of this construct. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addExcludeFromCleanup">addExcludeFromCleanup</a></code> | Exclude the matching files from pre-synth cleanup. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addGitIgnore">addGitIgnore</a></code> | Adds a .gitignore pattern. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addPackageIgnore">addPackageIgnore</a></code> | Adds patterns to be ignored by npm. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addTask">addTask</a></code> | Adds a new task to this project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addTip">addTip</a></code> | Prints a "tip" message during synthesis. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.annotateGenerated">annotateGenerated</a></code> | Marks the provided file(s) as being generated. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.postSynthesize">postSynthesize</a></code> | Called after all components are synthesized. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.preSynthesize">preSynthesize</a></code> | Called before all components are synthesized. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.removeTask">removeTask</a></code> | Removes a task from a project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.runTaskCommand">runTaskCommand</a></code> | Returns the shell command to execute in order to run a task. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.synth">synth</a></code> | Synthesize all project files into `outdir`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.tryFindJsonFile">tryFindJsonFile</a></code> | Finds a json file by name. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addBins">addBins</a></code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addBundledDeps">addBundledDeps</a></code> | Defines bundled dependencies. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addCompileCommand">addCompileCommand</a></code> | DEPRECATED. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addDeps">addDeps</a></code> | Defines normal dependencies. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addDevDeps">addDevDeps</a></code> | Defines development/test dependencies. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addFields">addFields</a></code> | Directly set fields in `package.json`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addKeywords">addKeywords</a></code> | Adds keywords to package.json (deduplicated). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addPeerDeps">addPeerDeps</a></code> | Defines peer dependencies. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addScripts">addScripts</a></code> | Replaces the contents of multiple npm package.json scripts. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.addTestCommand">addTestCommand</a></code> | DEPRECATED. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.hasScript">hasScript</a></code> | Indicates if a script by the name name is defined. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.removeScript">removeScript</a></code> | Removes the npm script (always successful). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.renderWorkflowSetup">renderWorkflowSetup</a></code> | Returns the set of workflow steps which should be executed to bootstrap a workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.setScript">setScript</a></code> | Replaces the contents of an npm package.json script. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addExcludeFromCleanup">addExcludeFromCleanup</a></code> | Exclude the matching files from pre-synth cleanup. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addGitIgnore">addGitIgnore</a></code> | Adds a .gitignore pattern. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addPackageIgnore">addPackageIgnore</a></code> | Adds patterns to be ignored by npm. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addTask">addTask</a></code> | Adds a new task to this project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addTip">addTip</a></code> | Prints a "tip" message during synthesis. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.annotateGenerated">annotateGenerated</a></code> | Marks the provided file(s) as being generated. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.postSynthesize">postSynthesize</a></code> | Called after all components are synthesized. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.preSynthesize">preSynthesize</a></code> | Called before all components are synthesized. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.removeTask">removeTask</a></code> | Removes a task from a project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.runTaskCommand">runTaskCommand</a></code> | Returns the shell command to execute in order to run a task. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.synth">synth</a></code> | Synthesize all project files into `outdir`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.tryFindJsonFile">tryFindJsonFile</a></code> | Finds a json file by name. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addBins">addBins</a></code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addBundledDeps">addBundledDeps</a></code> | Defines bundled dependencies. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addCompileCommand">addCompileCommand</a></code> | DEPRECATED. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addDeps">addDeps</a></code> | Defines normal dependencies. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addDevDeps">addDevDeps</a></code> | Defines development/test dependencies. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addFields">addFields</a></code> | Directly set fields in `package.json`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addKeywords">addKeywords</a></code> | Adds keywords to package.json (deduplicated). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addPeerDeps">addPeerDeps</a></code> | Defines peer dependencies. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addScripts">addScripts</a></code> | Replaces the contents of multiple npm package.json scripts. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.addTestCommand">addTestCommand</a></code> | DEPRECATED. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.hasScript">hasScript</a></code> | Indicates if a script by the name name is defined. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.removeScript">removeScript</a></code> | Removes the npm script (always successful). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.renderWorkflowSetup">renderWorkflowSetup</a></code> | Returns the set of workflow steps which should be executed to bootstrap a workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.setScript">setScript</a></code> | Replaces the contents of an npm package.json script. |
 
 ---
 
-##### `toString` <a name="toString" id="@cdktf/provider-project.CdktfProviderProject.toString"></a>
+##### `toString` <a name="toString" id="@cdktn/provider-project.CdktnProviderProject.toString"></a>
 
 ```typescript
 public toString(): string
@@ -69,7 +69,7 @@ public toString(): string
 
 Returns a string representation of this construct.
 
-##### `addExcludeFromCleanup` <a name="addExcludeFromCleanup" id="@cdktf/provider-project.CdktfProviderProject.addExcludeFromCleanup"></a>
+##### `addExcludeFromCleanup` <a name="addExcludeFromCleanup" id="@cdktn/provider-project.CdktnProviderProject.addExcludeFromCleanup"></a>
 
 ```typescript
 public addExcludeFromCleanup(globs: ...string[]): void
@@ -80,7 +80,7 @@ Exclude the matching files from pre-synth cleanup.
 Can be used when, for example, some
 source files include the projen marker and we don't want them to be erased during synth.
 
-###### `globs`<sup>Required</sup> <a name="globs" id="@cdktf/provider-project.CdktfProviderProject.addExcludeFromCleanup.parameter.globs"></a>
+###### `globs`<sup>Required</sup> <a name="globs" id="@cdktn/provider-project.CdktnProviderProject.addExcludeFromCleanup.parameter.globs"></a>
 
 - *Type:* ...string[]
 
@@ -88,7 +88,7 @@ The glob patterns to match.
 
 ---
 
-##### `addGitIgnore` <a name="addGitIgnore" id="@cdktf/provider-project.CdktfProviderProject.addGitIgnore"></a>
+##### `addGitIgnore` <a name="addGitIgnore" id="@cdktn/provider-project.CdktnProviderProject.addGitIgnore"></a>
 
 ```typescript
 public addGitIgnore(pattern: string): void
@@ -96,7 +96,7 @@ public addGitIgnore(pattern: string): void
 
 Adds a .gitignore pattern.
 
-###### `pattern`<sup>Required</sup> <a name="pattern" id="@cdktf/provider-project.CdktfProviderProject.addGitIgnore.parameter.pattern"></a>
+###### `pattern`<sup>Required</sup> <a name="pattern" id="@cdktn/provider-project.CdktnProviderProject.addGitIgnore.parameter.pattern"></a>
 
 - *Type:* string
 
@@ -104,7 +104,7 @@ The glob pattern to ignore.
 
 ---
 
-##### `addPackageIgnore` <a name="addPackageIgnore" id="@cdktf/provider-project.CdktfProviderProject.addPackageIgnore"></a>
+##### `addPackageIgnore` <a name="addPackageIgnore" id="@cdktn/provider-project.CdktnProviderProject.addPackageIgnore"></a>
 
 ```typescript
 public addPackageIgnore(pattern: string): void
@@ -112,7 +112,7 @@ public addPackageIgnore(pattern: string): void
 
 Adds patterns to be ignored by npm.
 
-###### `pattern`<sup>Required</sup> <a name="pattern" id="@cdktf/provider-project.CdktfProviderProject.addPackageIgnore.parameter.pattern"></a>
+###### `pattern`<sup>Required</sup> <a name="pattern" id="@cdktn/provider-project.CdktnProviderProject.addPackageIgnore.parameter.pattern"></a>
 
 - *Type:* string
 
@@ -120,7 +120,7 @@ The pattern to ignore.
 
 ---
 
-##### `addTask` <a name="addTask" id="@cdktf/provider-project.CdktfProviderProject.addTask"></a>
+##### `addTask` <a name="addTask" id="@cdktn/provider-project.CdktnProviderProject.addTask"></a>
 
 ```typescript
 public addTask(name: string, props?: TaskOptions): Task
@@ -131,7 +131,7 @@ Adds a new task to this project.
 This will fail if the project already has
 a task with this name.
 
-###### `name`<sup>Required</sup> <a name="name" id="@cdktf/provider-project.CdktfProviderProject.addTask.parameter.name"></a>
+###### `name`<sup>Required</sup> <a name="name" id="@cdktn/provider-project.CdktnProviderProject.addTask.parameter.name"></a>
 
 - *Type:* string
 
@@ -139,7 +139,7 @@ The task name to add.
 
 ---
 
-###### `props`<sup>Optional</sup> <a name="props" id="@cdktf/provider-project.CdktfProviderProject.addTask.parameter.props"></a>
+###### `props`<sup>Optional</sup> <a name="props" id="@cdktn/provider-project.CdktnProviderProject.addTask.parameter.props"></a>
 
 - *Type:* projen.TaskOptions
 
@@ -147,7 +147,7 @@ Task properties.
 
 ---
 
-##### ~~`addTip`~~ <a name="addTip" id="@cdktf/provider-project.CdktfProviderProject.addTip"></a>
+##### ~~`addTip`~~ <a name="addTip" id="@cdktn/provider-project.CdktnProviderProject.addTip"></a>
 
 ```typescript
 public addTip(message: string): void
@@ -155,7 +155,7 @@ public addTip(message: string): void
 
 Prints a "tip" message during synthesis.
 
-###### `message`<sup>Required</sup> <a name="message" id="@cdktf/provider-project.CdktfProviderProject.addTip.parameter.message"></a>
+###### `message`<sup>Required</sup> <a name="message" id="@cdktn/provider-project.CdktnProviderProject.addTip.parameter.message"></a>
 
 - *Type:* string
 
@@ -163,7 +163,7 @@ The message.
 
 ---
 
-##### `annotateGenerated` <a name="annotateGenerated" id="@cdktf/provider-project.CdktfProviderProject.annotateGenerated"></a>
+##### `annotateGenerated` <a name="annotateGenerated" id="@cdktn/provider-project.CdktnProviderProject.annotateGenerated"></a>
 
 ```typescript
 public annotateGenerated(glob: string): void
@@ -177,7 +177,7 @@ repository statistics and language breakdown.
 
 > [https://github.com/github/linguist/blob/master/docs/overrides.md](https://github.com/github/linguist/blob/master/docs/overrides.md)
 
-###### `glob`<sup>Required</sup> <a name="glob" id="@cdktf/provider-project.CdktfProviderProject.annotateGenerated.parameter.glob"></a>
+###### `glob`<sup>Required</sup> <a name="glob" id="@cdktn/provider-project.CdktnProviderProject.annotateGenerated.parameter.glob"></a>
 
 - *Type:* string
 
@@ -185,7 +185,7 @@ the glob pattern to match (could be a file path).
 
 ---
 
-##### `postSynthesize` <a name="postSynthesize" id="@cdktf/provider-project.CdktfProviderProject.postSynthesize"></a>
+##### `postSynthesize` <a name="postSynthesize" id="@cdktn/provider-project.CdktnProviderProject.postSynthesize"></a>
 
 ```typescript
 public postSynthesize(): void
@@ -195,7 +195,7 @@ Called after all components are synthesized.
 
 Order is *not* guaranteed.
 
-##### `preSynthesize` <a name="preSynthesize" id="@cdktf/provider-project.CdktfProviderProject.preSynthesize"></a>
+##### `preSynthesize` <a name="preSynthesize" id="@cdktn/provider-project.CdktnProviderProject.preSynthesize"></a>
 
 ```typescript
 public preSynthesize(): void
@@ -203,7 +203,7 @@ public preSynthesize(): void
 
 Called before all components are synthesized.
 
-##### `removeTask` <a name="removeTask" id="@cdktf/provider-project.CdktfProviderProject.removeTask"></a>
+##### `removeTask` <a name="removeTask" id="@cdktn/provider-project.CdktnProviderProject.removeTask"></a>
 
 ```typescript
 public removeTask(name: string): Task
@@ -211,7 +211,7 @@ public removeTask(name: string): Task
 
 Removes a task from a project.
 
-###### `name`<sup>Required</sup> <a name="name" id="@cdktf/provider-project.CdktfProviderProject.removeTask.parameter.name"></a>
+###### `name`<sup>Required</sup> <a name="name" id="@cdktn/provider-project.CdktnProviderProject.removeTask.parameter.name"></a>
 
 - *Type:* string
 
@@ -219,7 +219,7 @@ The name of the task to remove.
 
 ---
 
-##### `runTaskCommand` <a name="runTaskCommand" id="@cdktf/provider-project.CdktfProviderProject.runTaskCommand"></a>
+##### `runTaskCommand` <a name="runTaskCommand" id="@cdktn/provider-project.CdktnProviderProject.runTaskCommand"></a>
 
 ```typescript
 public runTaskCommand(task: Task): string
@@ -230,7 +230,7 @@ Returns the shell command to execute in order to run a task.
 This will
 typically be `npx projen TASK`.
 
-###### `task`<sup>Required</sup> <a name="task" id="@cdktf/provider-project.CdktfProviderProject.runTaskCommand.parameter.task"></a>
+###### `task`<sup>Required</sup> <a name="task" id="@cdktn/provider-project.CdktnProviderProject.runTaskCommand.parameter.task"></a>
 
 - *Type:* projen.Task
 
@@ -238,7 +238,7 @@ The task for which the command is required.
 
 ---
 
-##### `synth` <a name="synth" id="@cdktf/provider-project.CdktfProviderProject.synth"></a>
+##### `synth` <a name="synth" id="@cdktn/provider-project.CdktnProviderProject.synth"></a>
 
 ```typescript
 public synth(): void
@@ -253,7 +253,7 @@ Synthesize all project files into `outdir`.
 5. Call "postSynthesize()" for all components of this project
 6. Call "this.postSynthesize()"
 
-##### `tryFindFile` <a name="tryFindFile" id="@cdktf/provider-project.CdktfProviderProject.tryFindFile"></a>
+##### `tryFindFile` <a name="tryFindFile" id="@cdktn/provider-project.CdktnProviderProject.tryFindFile"></a>
 
 ```typescript
 public tryFindFile(filePath: string): FileBase
@@ -261,7 +261,7 @@ public tryFindFile(filePath: string): FileBase
 
 Finds a file at the specified relative path within this project and all its subprojects.
 
-###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktf/provider-project.CdktfProviderProject.tryFindFile.parameter.filePath"></a>
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktn/provider-project.CdktnProviderProject.tryFindFile.parameter.filePath"></a>
 
 - *Type:* string
 
@@ -272,7 +272,7 @@ from the root of _this_ project.
 
 ---
 
-##### ~~`tryFindJsonFile`~~ <a name="tryFindJsonFile" id="@cdktf/provider-project.CdktfProviderProject.tryFindJsonFile"></a>
+##### ~~`tryFindJsonFile`~~ <a name="tryFindJsonFile" id="@cdktn/provider-project.CdktnProviderProject.tryFindJsonFile"></a>
 
 ```typescript
 public tryFindJsonFile(filePath: string): JsonFile
@@ -280,7 +280,7 @@ public tryFindJsonFile(filePath: string): JsonFile
 
 Finds a json file by name.
 
-###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktf/provider-project.CdktfProviderProject.tryFindJsonFile.parameter.filePath"></a>
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktn/provider-project.CdktnProviderProject.tryFindJsonFile.parameter.filePath"></a>
 
 - *Type:* string
 
@@ -288,7 +288,7 @@ The file path.
 
 ---
 
-##### `tryFindObjectFile` <a name="tryFindObjectFile" id="@cdktf/provider-project.CdktfProviderProject.tryFindObjectFile"></a>
+##### `tryFindObjectFile` <a name="tryFindObjectFile" id="@cdktn/provider-project.CdktnProviderProject.tryFindObjectFile"></a>
 
 ```typescript
 public tryFindObjectFile(filePath: string): ObjectFile
@@ -296,7 +296,7 @@ public tryFindObjectFile(filePath: string): ObjectFile
 
 Finds an object file (like JsonFile, YamlFile, etc.) by name.
 
-###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktf/provider-project.CdktfProviderProject.tryFindObjectFile.parameter.filePath"></a>
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktn/provider-project.CdktnProviderProject.tryFindObjectFile.parameter.filePath"></a>
 
 - *Type:* string
 
@@ -304,7 +304,7 @@ The file path.
 
 ---
 
-##### `tryRemoveFile` <a name="tryRemoveFile" id="@cdktf/provider-project.CdktfProviderProject.tryRemoveFile"></a>
+##### `tryRemoveFile` <a name="tryRemoveFile" id="@cdktn/provider-project.CdktnProviderProject.tryRemoveFile"></a>
 
 ```typescript
 public tryRemoveFile(filePath: string): FileBase
@@ -312,7 +312,7 @@ public tryRemoveFile(filePath: string): FileBase
 
 Finds a file at the specified relative path within this project and removes it.
 
-###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktf/provider-project.CdktfProviderProject.tryRemoveFile.parameter.filePath"></a>
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@cdktn/provider-project.CdktnProviderProject.tryRemoveFile.parameter.filePath"></a>
 
 - *Type:* string
 
@@ -323,19 +323,19 @@ resolved from the root of _this_ project.
 
 ---
 
-##### `addBins` <a name="addBins" id="@cdktf/provider-project.CdktfProviderProject.addBins"></a>
+##### `addBins` <a name="addBins" id="@cdktn/provider-project.CdktnProviderProject.addBins"></a>
 
 ```typescript
 public addBins(bins: {[ key: string ]: string}): void
 ```
 
-###### `bins`<sup>Required</sup> <a name="bins" id="@cdktf/provider-project.CdktfProviderProject.addBins.parameter.bins"></a>
+###### `bins`<sup>Required</sup> <a name="bins" id="@cdktn/provider-project.CdktnProviderProject.addBins.parameter.bins"></a>
 
 - *Type:* {[ key: string ]: string}
 
 ---
 
-##### `addBundledDeps` <a name="addBundledDeps" id="@cdktf/provider-project.CdktfProviderProject.addBundledDeps"></a>
+##### `addBundledDeps` <a name="addBundledDeps" id="@cdktn/provider-project.CdktnProviderProject.addBundledDeps"></a>
 
 ```typescript
 public addBundledDeps(deps: ...string[]): void
@@ -346,7 +346,7 @@ Defines bundled dependencies.
 Bundled dependencies will be added as normal dependencies as well as to the
 `bundledDependencies` section of your `package.json`.
 
-###### `deps`<sup>Required</sup> <a name="deps" id="@cdktf/provider-project.CdktfProviderProject.addBundledDeps.parameter.deps"></a>
+###### `deps`<sup>Required</sup> <a name="deps" id="@cdktn/provider-project.CdktnProviderProject.addBundledDeps.parameter.deps"></a>
 
 - *Type:* ...string[]
 
@@ -360,7 +360,7 @@ add/upgrade`. If you wish to specify a version range use this syntax:
 
 ---
 
-##### ~~`addCompileCommand`~~ <a name="addCompileCommand" id="@cdktf/provider-project.CdktfProviderProject.addCompileCommand"></a>
+##### ~~`addCompileCommand`~~ <a name="addCompileCommand" id="@cdktn/provider-project.CdktnProviderProject.addCompileCommand"></a>
 
 ```typescript
 public addCompileCommand(commands: ...string[]): void
@@ -368,13 +368,13 @@ public addCompileCommand(commands: ...string[]): void
 
 DEPRECATED.
 
-###### `commands`<sup>Required</sup> <a name="commands" id="@cdktf/provider-project.CdktfProviderProject.addCompileCommand.parameter.commands"></a>
+###### `commands`<sup>Required</sup> <a name="commands" id="@cdktn/provider-project.CdktnProviderProject.addCompileCommand.parameter.commands"></a>
 
 - *Type:* ...string[]
 
 ---
 
-##### `addDeps` <a name="addDeps" id="@cdktf/provider-project.CdktfProviderProject.addDeps"></a>
+##### `addDeps` <a name="addDeps" id="@cdktn/provider-project.CdktnProviderProject.addDeps"></a>
 
 ```typescript
 public addDeps(deps: ...string[]): void
@@ -382,7 +382,7 @@ public addDeps(deps: ...string[]): void
 
 Defines normal dependencies.
 
-###### `deps`<sup>Required</sup> <a name="deps" id="@cdktf/provider-project.CdktfProviderProject.addDeps.parameter.deps"></a>
+###### `deps`<sup>Required</sup> <a name="deps" id="@cdktn/provider-project.CdktnProviderProject.addDeps.parameter.deps"></a>
 
 - *Type:* ...string[]
 
@@ -396,7 +396,7 @@ add/upgrade`. If you wish to specify a version range use this syntax:
 
 ---
 
-##### `addDevDeps` <a name="addDevDeps" id="@cdktf/provider-project.CdktfProviderProject.addDevDeps"></a>
+##### `addDevDeps` <a name="addDevDeps" id="@cdktn/provider-project.CdktnProviderProject.addDevDeps"></a>
 
 ```typescript
 public addDevDeps(deps: ...string[]): void
@@ -404,7 +404,7 @@ public addDevDeps(deps: ...string[]): void
 
 Defines development/test dependencies.
 
-###### `deps`<sup>Required</sup> <a name="deps" id="@cdktf/provider-project.CdktfProviderProject.addDevDeps.parameter.deps"></a>
+###### `deps`<sup>Required</sup> <a name="deps" id="@cdktn/provider-project.CdktnProviderProject.addDevDeps.parameter.deps"></a>
 
 - *Type:* ...string[]
 
@@ -418,7 +418,7 @@ add/upgrade`. If you wish to specify a version range use this syntax:
 
 ---
 
-##### `addFields` <a name="addFields" id="@cdktf/provider-project.CdktfProviderProject.addFields"></a>
+##### `addFields` <a name="addFields" id="@cdktn/provider-project.CdktnProviderProject.addFields"></a>
 
 ```typescript
 public addFields(fields: {[ key: string ]: any}): void
@@ -426,7 +426,7 @@ public addFields(fields: {[ key: string ]: any}): void
 
 Directly set fields in `package.json`.
 
-###### `fields`<sup>Required</sup> <a name="fields" id="@cdktf/provider-project.CdktfProviderProject.addFields.parameter.fields"></a>
+###### `fields`<sup>Required</sup> <a name="fields" id="@cdktn/provider-project.CdktnProviderProject.addFields.parameter.fields"></a>
 
 - *Type:* {[ key: string ]: any}
 
@@ -434,7 +434,7 @@ The fields to set.
 
 ---
 
-##### `addKeywords` <a name="addKeywords" id="@cdktf/provider-project.CdktfProviderProject.addKeywords"></a>
+##### `addKeywords` <a name="addKeywords" id="@cdktn/provider-project.CdktnProviderProject.addKeywords"></a>
 
 ```typescript
 public addKeywords(keywords: ...string[]): void
@@ -442,7 +442,7 @@ public addKeywords(keywords: ...string[]): void
 
 Adds keywords to package.json (deduplicated).
 
-###### `keywords`<sup>Required</sup> <a name="keywords" id="@cdktf/provider-project.CdktfProviderProject.addKeywords.parameter.keywords"></a>
+###### `keywords`<sup>Required</sup> <a name="keywords" id="@cdktn/provider-project.CdktnProviderProject.addKeywords.parameter.keywords"></a>
 
 - *Type:* ...string[]
 
@@ -450,7 +450,7 @@ The keywords to add.
 
 ---
 
-##### `addPeerDeps` <a name="addPeerDeps" id="@cdktf/provider-project.CdktfProviderProject.addPeerDeps"></a>
+##### `addPeerDeps` <a name="addPeerDeps" id="@cdktn/provider-project.CdktnProviderProject.addPeerDeps"></a>
 
 ```typescript
 public addPeerDeps(deps: ...string[]): void
@@ -462,7 +462,7 @@ When adding peer dependencies, a devDependency will also be added on the
 pinned version of the declared peer. This will ensure that you are testing
 your code against the minimum version required from your consumers.
 
-###### `deps`<sup>Required</sup> <a name="deps" id="@cdktf/provider-project.CdktfProviderProject.addPeerDeps.parameter.deps"></a>
+###### `deps`<sup>Required</sup> <a name="deps" id="@cdktn/provider-project.CdktnProviderProject.addPeerDeps.parameter.deps"></a>
 
 - *Type:* ...string[]
 
@@ -476,7 +476,7 @@ add/upgrade`. If you wish to specify a version range use this syntax:
 
 ---
 
-##### `addScripts` <a name="addScripts" id="@cdktf/provider-project.CdktfProviderProject.addScripts"></a>
+##### `addScripts` <a name="addScripts" id="@cdktn/provider-project.CdktnProviderProject.addScripts"></a>
 
 ```typescript
 public addScripts(scripts: {[ key: string ]: string}): void
@@ -484,7 +484,7 @@ public addScripts(scripts: {[ key: string ]: string}): void
 
 Replaces the contents of multiple npm package.json scripts.
 
-###### `scripts`<sup>Required</sup> <a name="scripts" id="@cdktf/provider-project.CdktfProviderProject.addScripts.parameter.scripts"></a>
+###### `scripts`<sup>Required</sup> <a name="scripts" id="@cdktn/provider-project.CdktnProviderProject.addScripts.parameter.scripts"></a>
 
 - *Type:* {[ key: string ]: string}
 
@@ -492,7 +492,7 @@ The scripts to set.
 
 ---
 
-##### ~~`addTestCommand`~~ <a name="addTestCommand" id="@cdktf/provider-project.CdktfProviderProject.addTestCommand"></a>
+##### ~~`addTestCommand`~~ <a name="addTestCommand" id="@cdktn/provider-project.CdktnProviderProject.addTestCommand"></a>
 
 ```typescript
 public addTestCommand(commands: ...string[]): void
@@ -500,13 +500,13 @@ public addTestCommand(commands: ...string[]): void
 
 DEPRECATED.
 
-###### `commands`<sup>Required</sup> <a name="commands" id="@cdktf/provider-project.CdktfProviderProject.addTestCommand.parameter.commands"></a>
+###### `commands`<sup>Required</sup> <a name="commands" id="@cdktn/provider-project.CdktnProviderProject.addTestCommand.parameter.commands"></a>
 
 - *Type:* ...string[]
 
 ---
 
-##### ~~`hasScript`~~ <a name="hasScript" id="@cdktf/provider-project.CdktfProviderProject.hasScript"></a>
+##### ~~`hasScript`~~ <a name="hasScript" id="@cdktn/provider-project.CdktnProviderProject.hasScript"></a>
 
 ```typescript
 public hasScript(name: string): boolean
@@ -514,7 +514,7 @@ public hasScript(name: string): boolean
 
 Indicates if a script by the name name is defined.
 
-###### `name`<sup>Required</sup> <a name="name" id="@cdktf/provider-project.CdktfProviderProject.hasScript.parameter.name"></a>
+###### `name`<sup>Required</sup> <a name="name" id="@cdktn/provider-project.CdktnProviderProject.hasScript.parameter.name"></a>
 
 - *Type:* string
 
@@ -522,7 +522,7 @@ The name of the script.
 
 ---
 
-##### `removeScript` <a name="removeScript" id="@cdktf/provider-project.CdktfProviderProject.removeScript"></a>
+##### `removeScript` <a name="removeScript" id="@cdktn/provider-project.CdktnProviderProject.removeScript"></a>
 
 ```typescript
 public removeScript(name: string): void
@@ -530,7 +530,7 @@ public removeScript(name: string): void
 
 Removes the npm script (always successful).
 
-###### `name`<sup>Required</sup> <a name="name" id="@cdktf/provider-project.CdktfProviderProject.removeScript.parameter.name"></a>
+###### `name`<sup>Required</sup> <a name="name" id="@cdktn/provider-project.CdktnProviderProject.removeScript.parameter.name"></a>
 
 - *Type:* string
 
@@ -538,7 +538,7 @@ The name of the script.
 
 ---
 
-##### `renderWorkflowSetup` <a name="renderWorkflowSetup" id="@cdktf/provider-project.CdktfProviderProject.renderWorkflowSetup"></a>
+##### `renderWorkflowSetup` <a name="renderWorkflowSetup" id="@cdktn/provider-project.CdktnProviderProject.renderWorkflowSetup"></a>
 
 ```typescript
 public renderWorkflowSetup(options?: RenderWorkflowSetupOptions): JobStep[]
@@ -546,7 +546,7 @@ public renderWorkflowSetup(options?: RenderWorkflowSetupOptions): JobStep[]
 
 Returns the set of workflow steps which should be executed to bootstrap a workflow.
 
-###### `options`<sup>Optional</sup> <a name="options" id="@cdktf/provider-project.CdktfProviderProject.renderWorkflowSetup.parameter.options"></a>
+###### `options`<sup>Optional</sup> <a name="options" id="@cdktn/provider-project.CdktnProviderProject.renderWorkflowSetup.parameter.options"></a>
 
 - *Type:* projen.javascript.RenderWorkflowSetupOptions
 
@@ -554,7 +554,7 @@ Options.
 
 ---
 
-##### `setScript` <a name="setScript" id="@cdktf/provider-project.CdktfProviderProject.setScript"></a>
+##### `setScript` <a name="setScript" id="@cdktn/provider-project.CdktnProviderProject.setScript"></a>
 
 ```typescript
 public setScript(name: string, command: string): void
@@ -562,7 +562,7 @@ public setScript(name: string, command: string): void
 
 Replaces the contents of an npm package.json script.
 
-###### `name`<sup>Required</sup> <a name="name" id="@cdktf/provider-project.CdktfProviderProject.setScript.parameter.name"></a>
+###### `name`<sup>Required</sup> <a name="name" id="@cdktn/provider-project.CdktnProviderProject.setScript.parameter.name"></a>
 
 - *Type:* string
 
@@ -570,7 +570,7 @@ The script name.
 
 ---
 
-###### `command`<sup>Required</sup> <a name="command" id="@cdktf/provider-project.CdktfProviderProject.setScript.parameter.command"></a>
+###### `command`<sup>Required</sup> <a name="command" id="@cdktn/provider-project.CdktnProviderProject.setScript.parameter.command"></a>
 
 - *Type:* string
 
@@ -582,18 +582,18 @@ The command to execute.
 
 | **Name** | **Description** |
 | --- | --- |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.isProject">isProject</a></code> | Test whether the given construct is a project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.of">of</a></code> | Find the closest ancestor project for given construct. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.isProject">isProject</a></code> | Test whether the given construct is a project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.of">of</a></code> | Find the closest ancestor project for given construct. |
 
 ---
 
-##### `isConstruct` <a name="isConstruct" id="@cdktf/provider-project.CdktfProviderProject.isConstruct"></a>
+##### `isConstruct` <a name="isConstruct" id="@cdktn/provider-project.CdktnProviderProject.isConstruct"></a>
 
 ```typescript
-import { CdktfProviderProject } from '@cdktf/provider-project'
+import { CdktnProviderProject } from '@cdktn/provider-project'
 
-CdktfProviderProject.isConstruct(x: any)
+CdktnProviderProject.isConstruct(x: any)
 ```
 
 Checks if `x` is a construct.
@@ -612,7 +612,7 @@ library can be accidentally installed, and `instanceof` will behave
 unpredictably. It is safest to avoid using `instanceof`, and using
 this type-testing method instead.
 
-###### `x`<sup>Required</sup> <a name="x" id="@cdktf/provider-project.CdktfProviderProject.isConstruct.parameter.x"></a>
+###### `x`<sup>Required</sup> <a name="x" id="@cdktn/provider-project.CdktnProviderProject.isConstruct.parameter.x"></a>
 
 - *Type:* any
 
@@ -620,35 +620,35 @@ Any object.
 
 ---
 
-##### `isProject` <a name="isProject" id="@cdktf/provider-project.CdktfProviderProject.isProject"></a>
+##### `isProject` <a name="isProject" id="@cdktn/provider-project.CdktnProviderProject.isProject"></a>
 
 ```typescript
-import { CdktfProviderProject } from '@cdktf/provider-project'
+import { CdktnProviderProject } from '@cdktn/provider-project'
 
-CdktfProviderProject.isProject(x: any)
+CdktnProviderProject.isProject(x: any)
 ```
 
 Test whether the given construct is a project.
 
-###### `x`<sup>Required</sup> <a name="x" id="@cdktf/provider-project.CdktfProviderProject.isProject.parameter.x"></a>
+###### `x`<sup>Required</sup> <a name="x" id="@cdktn/provider-project.CdktnProviderProject.isProject.parameter.x"></a>
 
 - *Type:* any
 
 ---
 
-##### `of` <a name="of" id="@cdktf/provider-project.CdktfProviderProject.of"></a>
+##### `of` <a name="of" id="@cdktn/provider-project.CdktnProviderProject.of"></a>
 
 ```typescript
-import { CdktfProviderProject } from '@cdktf/provider-project'
+import { CdktnProviderProject } from '@cdktn/provider-project'
 
-CdktfProviderProject.of(construct: IConstruct)
+CdktnProviderProject.of(construct: IConstruct)
 ```
 
 Find the closest ancestor project for given construct.
 
 When given a project, this it the project itself.
 
-###### `construct`<sup>Required</sup> <a name="construct" id="@cdktf/provider-project.CdktfProviderProject.of.parameter.construct"></a>
+###### `construct`<sup>Required</sup> <a name="construct" id="@cdktn/provider-project.CdktnProviderProject.of.parameter.construct"></a>
 
 - *Type:* constructs.IConstruct
 
@@ -658,72 +658,72 @@ When given a project, this it the project itself.
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.buildTask">buildTask</a></code> | <code>projen.Task</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.commitGenerated">commitGenerated</a></code> | <code>boolean</code> | Whether to commit the managed files by default. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.compileTask">compileTask</a></code> | <code>projen.Task</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.components">components</a></code> | <code>projen.Component[]</code> | Returns all the components within this project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.deps">deps</a></code> | <code>projen.Dependencies</code> | Project dependencies. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.ejected">ejected</a></code> | <code>boolean</code> | Whether or not the project is being ejected. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.files">files</a></code> | <code>projen.FileBase[]</code> | All files in this project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.gitattributes">gitattributes</a></code> | <code>projen.GitAttributesFile</code> | The .gitattributes file for this repository. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.gitignore">gitignore</a></code> | <code>projen.IgnoreFile</code> | .gitignore. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.logger">logger</a></code> | <code>projen.Logger</code> | Logging utilities. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.name">name</a></code> | <code>string</code> | Project name. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.outdir">outdir</a></code> | <code>string</code> | Absolute output directory of this project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.packageTask">packageTask</a></code> | <code>projen.Task</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.postCompileTask">postCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.preCompileTask">preCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.projectBuild">projectBuild</a></code> | <code>projen.ProjectBuild</code> | Manages the build process of the project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command to use in order to run the projen CLI. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.root">root</a></code> | <code>projen.Project</code> | The root project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.subprojects">subprojects</a></code> | <code>projen.Project[]</code> | Returns all the subprojects within this project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.tasks">tasks</a></code> | <code>projen.Tasks</code> | Project tasks. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.testTask">testTask</a></code> | <code>projen.Task</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.defaultTask">defaultTask</a></code> | <code>projen.Task</code> | This is the "default" task, the one that executes "projen". |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.initProject">initProject</a></code> | <code>projen.InitProject</code> | The options used when this project is bootstrapped via `projen new`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.parent">parent</a></code> | <code>projen.Project</code> | A parent project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.projectType">projectType</a></code> | <code>projen.ProjectType</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.autoApprove">autoApprove</a></code> | <code>projen.github.AutoApprove</code> | Auto approve set up for this project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.devContainer">devContainer</a></code> | <code>projen.vscode.DevContainer</code> | Access for .devcontainer.json (used for GitHub Codespaces). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.allowLibraryDependencies">allowLibraryDependencies</a></code> | <code>boolean</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.artifactsDirectory">artifactsDirectory</a></code> | <code>string</code> | The build output directory. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.artifactsJavascriptDirectory">artifactsJavascriptDirectory</a></code> | <code>string</code> | The location of the npm tarball after build (`${artifactsDirectory}/js`). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.bundler">bundler</a></code> | <code>projen.javascript.Bundler</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.entrypoint">entrypoint</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.manifest">manifest</a></code> | <code>any</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.npmrc">npmrc</a></code> | <code>projen.javascript.NpmConfig</code> | The .npmrc file. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.package">package</a></code> | <code>projen.javascript.NodePackage</code> | API for managing the node package. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.packageManager">packageManager</a></code> | <code>projen.javascript.NodePackageManager</code> | The package manager to use. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.runScriptCommand">runScriptCommand</a></code> | <code>string</code> | The command to use to run scripts (e.g. `yarn run` or `npm run` depends on the package manager). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.autoMerge">autoMerge</a></code> | <code>projen.github.AutoMerge</code> | Component that sets up mergify for merging approved pull requests. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.buildWorkflow">buildWorkflow</a></code> | <code>projen.build.BuildWorkflow</code> | The PR build GitHub workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.buildWorkflowJobId">buildWorkflowJobId</a></code> | <code>string</code> | The job ID of the build workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.jest">jest</a></code> | <code>projen.javascript.Jest</code> | The Jest configuration (if enabled). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | Maximum node version required by this package. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | Minimum node.js version required by this package. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.npmignore">npmignore</a></code> | <code>projen.IgnoreFile</code> | The .npmignore file. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.prettier">prettier</a></code> | <code>projen.javascript.Prettier</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.publisher">publisher</a></code> | <code>projen.release.Publisher</code> | Package publisher. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.release">release</a></code> | <code>projen.release.Release</code> | Release management. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>projen.javascript.UpgradeDependencies</code> | The upgrade workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.docsDirectory">docsDirectory</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.libdir">libdir</a></code> | <code>string</code> | The directory in which compiled .js files reside. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.srcdir">srcdir</a></code> | <code>string</code> | The directory in which the .ts sources reside. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.testdir">testdir</a></code> | <code>string</code> | The directory in which tests reside. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.tsconfigDev">tsconfigDev</a></code> | <code>projen.javascript.TypescriptConfig</code> | A typescript configuration file which covers all files (sources, tests, projen). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.watchTask">watchTask</a></code> | <code>projen.Task</code> | The "watch" task. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.docgen">docgen</a></code> | <code>boolean</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.eslint">eslint</a></code> | <code>projen.javascript.Eslint</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.tsconfig">tsconfig</a></code> | <code>projen.javascript.TypescriptConfig</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.tsconfigEslint">tsconfigEslint</a></code> | <code>projen.javascript.TypescriptConfig</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.buildTask">buildTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.commitGenerated">commitGenerated</a></code> | <code>boolean</code> | Whether to commit the managed files by default. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.compileTask">compileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.components">components</a></code> | <code>projen.Component[]</code> | Returns all the components within this project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.deps">deps</a></code> | <code>projen.Dependencies</code> | Project dependencies. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.ejected">ejected</a></code> | <code>boolean</code> | Whether or not the project is being ejected. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.files">files</a></code> | <code>projen.FileBase[]</code> | All files in this project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.gitattributes">gitattributes</a></code> | <code>projen.GitAttributesFile</code> | The .gitattributes file for this repository. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.gitignore">gitignore</a></code> | <code>projen.IgnoreFile</code> | .gitignore. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.logger">logger</a></code> | <code>projen.Logger</code> | Logging utilities. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.name">name</a></code> | <code>string</code> | Project name. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.outdir">outdir</a></code> | <code>string</code> | Absolute output directory of this project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.packageTask">packageTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.postCompileTask">postCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.preCompileTask">preCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.projectBuild">projectBuild</a></code> | <code>projen.ProjectBuild</code> | Manages the build process of the project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command to use in order to run the projen CLI. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.root">root</a></code> | <code>projen.Project</code> | The root project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.subprojects">subprojects</a></code> | <code>projen.Project[]</code> | Returns all the subprojects within this project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.tasks">tasks</a></code> | <code>projen.Tasks</code> | Project tasks. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.testTask">testTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.defaultTask">defaultTask</a></code> | <code>projen.Task</code> | This is the "default" task, the one that executes "projen". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.initProject">initProject</a></code> | <code>projen.InitProject</code> | The options used when this project is bootstrapped via `projen new`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.parent">parent</a></code> | <code>projen.Project</code> | A parent project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.projectType">projectType</a></code> | <code>projen.ProjectType</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.autoApprove">autoApprove</a></code> | <code>projen.github.AutoApprove</code> | Auto approve set up for this project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.devContainer">devContainer</a></code> | <code>projen.vscode.DevContainer</code> | Access for .devcontainer.json (used for GitHub Codespaces). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.allowLibraryDependencies">allowLibraryDependencies</a></code> | <code>boolean</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.artifactsDirectory">artifactsDirectory</a></code> | <code>string</code> | The build output directory. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.artifactsJavascriptDirectory">artifactsJavascriptDirectory</a></code> | <code>string</code> | The location of the npm tarball after build (`${artifactsDirectory}/js`). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.bundler">bundler</a></code> | <code>projen.javascript.Bundler</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.entrypoint">entrypoint</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.manifest">manifest</a></code> | <code>any</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.npmrc">npmrc</a></code> | <code>projen.javascript.NpmConfig</code> | The .npmrc file. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.package">package</a></code> | <code>projen.javascript.NodePackage</code> | API for managing the node package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.packageManager">packageManager</a></code> | <code>projen.javascript.NodePackageManager</code> | The package manager to use. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.runScriptCommand">runScriptCommand</a></code> | <code>string</code> | The command to use to run scripts (e.g. `yarn run` or `npm run` depends on the package manager). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.autoMerge">autoMerge</a></code> | <code>projen.github.AutoMerge</code> | Component that sets up mergify for merging approved pull requests. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.buildWorkflow">buildWorkflow</a></code> | <code>projen.build.BuildWorkflow</code> | The PR build GitHub workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.buildWorkflowJobId">buildWorkflowJobId</a></code> | <code>string</code> | The job ID of the build workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.jest">jest</a></code> | <code>projen.javascript.Jest</code> | The Jest configuration (if enabled). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | Maximum node version required by this package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | Minimum node.js version required by this package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.npmignore">npmignore</a></code> | <code>projen.IgnoreFile</code> | The .npmignore file. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.prettier">prettier</a></code> | <code>projen.javascript.Prettier</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.publisher">publisher</a></code> | <code>projen.release.Publisher</code> | Package publisher. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.release">release</a></code> | <code>projen.release.Release</code> | Release management. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>projen.javascript.UpgradeDependencies</code> | The upgrade workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.docsDirectory">docsDirectory</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.libdir">libdir</a></code> | <code>string</code> | The directory in which compiled .js files reside. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.srcdir">srcdir</a></code> | <code>string</code> | The directory in which the .ts sources reside. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.testdir">testdir</a></code> | <code>string</code> | The directory in which tests reside. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.tsconfigDev">tsconfigDev</a></code> | <code>projen.javascript.TypescriptConfig</code> | A typescript configuration file which covers all files (sources, tests, projen). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.watchTask">watchTask</a></code> | <code>projen.Task</code> | The "watch" task. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.docgen">docgen</a></code> | <code>boolean</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.eslint">eslint</a></code> | <code>projen.javascript.Eslint</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.tsconfig">tsconfig</a></code> | <code>projen.javascript.TypescriptConfig</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.tsconfigEslint">tsconfigEslint</a></code> | <code>projen.javascript.TypescriptConfig</code> | *No description.* |
 
 ---
 
-##### `node`<sup>Required</sup> <a name="node" id="@cdktf/provider-project.CdktfProviderProject.property.node"></a>
+##### `node`<sup>Required</sup> <a name="node" id="@cdktn/provider-project.CdktnProviderProject.property.node"></a>
 
 ```typescript
 public readonly node: Node;
@@ -735,7 +735,7 @@ The tree node.
 
 ---
 
-##### `buildTask`<sup>Required</sup> <a name="buildTask" id="@cdktf/provider-project.CdktfProviderProject.property.buildTask"></a>
+##### `buildTask`<sup>Required</sup> <a name="buildTask" id="@cdktn/provider-project.CdktnProviderProject.property.buildTask"></a>
 
 ```typescript
 public readonly buildTask: Task;
@@ -745,7 +745,7 @@ public readonly buildTask: Task;
 
 ---
 
-##### `commitGenerated`<sup>Required</sup> <a name="commitGenerated" id="@cdktf/provider-project.CdktfProviderProject.property.commitGenerated"></a>
+##### `commitGenerated`<sup>Required</sup> <a name="commitGenerated" id="@cdktn/provider-project.CdktnProviderProject.property.commitGenerated"></a>
 
 ```typescript
 public readonly commitGenerated: boolean;
@@ -757,7 +757,7 @@ Whether to commit the managed files by default.
 
 ---
 
-##### `compileTask`<sup>Required</sup> <a name="compileTask" id="@cdktf/provider-project.CdktfProviderProject.property.compileTask"></a>
+##### `compileTask`<sup>Required</sup> <a name="compileTask" id="@cdktn/provider-project.CdktnProviderProject.property.compileTask"></a>
 
 ```typescript
 public readonly compileTask: Task;
@@ -767,7 +767,7 @@ public readonly compileTask: Task;
 
 ---
 
-##### `components`<sup>Required</sup> <a name="components" id="@cdktf/provider-project.CdktfProviderProject.property.components"></a>
+##### `components`<sup>Required</sup> <a name="components" id="@cdktn/provider-project.CdktnProviderProject.property.components"></a>
 
 ```typescript
 public readonly components: Component[];
@@ -779,7 +779,7 @@ Returns all the components within this project.
 
 ---
 
-##### `deps`<sup>Required</sup> <a name="deps" id="@cdktf/provider-project.CdktfProviderProject.property.deps"></a>
+##### `deps`<sup>Required</sup> <a name="deps" id="@cdktn/provider-project.CdktnProviderProject.property.deps"></a>
 
 ```typescript
 public readonly deps: Dependencies;
@@ -791,7 +791,7 @@ Project dependencies.
 
 ---
 
-##### `ejected`<sup>Required</sup> <a name="ejected" id="@cdktf/provider-project.CdktfProviderProject.property.ejected"></a>
+##### `ejected`<sup>Required</sup> <a name="ejected" id="@cdktn/provider-project.CdktnProviderProject.property.ejected"></a>
 
 ```typescript
 public readonly ejected: boolean;
@@ -803,7 +803,7 @@ Whether or not the project is being ejected.
 
 ---
 
-##### `files`<sup>Required</sup> <a name="files" id="@cdktf/provider-project.CdktfProviderProject.property.files"></a>
+##### `files`<sup>Required</sup> <a name="files" id="@cdktn/provider-project.CdktnProviderProject.property.files"></a>
 
 ```typescript
 public readonly files: FileBase[];
@@ -815,7 +815,7 @@ All files in this project.
 
 ---
 
-##### `gitattributes`<sup>Required</sup> <a name="gitattributes" id="@cdktf/provider-project.CdktfProviderProject.property.gitattributes"></a>
+##### `gitattributes`<sup>Required</sup> <a name="gitattributes" id="@cdktn/provider-project.CdktnProviderProject.property.gitattributes"></a>
 
 ```typescript
 public readonly gitattributes: GitAttributesFile;
@@ -827,7 +827,7 @@ The .gitattributes file for this repository.
 
 ---
 
-##### `gitignore`<sup>Required</sup> <a name="gitignore" id="@cdktf/provider-project.CdktfProviderProject.property.gitignore"></a>
+##### `gitignore`<sup>Required</sup> <a name="gitignore" id="@cdktn/provider-project.CdktnProviderProject.property.gitignore"></a>
 
 ```typescript
 public readonly gitignore: IgnoreFile;
@@ -839,7 +839,7 @@ public readonly gitignore: IgnoreFile;
 
 ---
 
-##### `logger`<sup>Required</sup> <a name="logger" id="@cdktf/provider-project.CdktfProviderProject.property.logger"></a>
+##### `logger`<sup>Required</sup> <a name="logger" id="@cdktn/provider-project.CdktnProviderProject.property.logger"></a>
 
 ```typescript
 public readonly logger: Logger;
@@ -851,7 +851,7 @@ Logging utilities.
 
 ---
 
-##### `name`<sup>Required</sup> <a name="name" id="@cdktf/provider-project.CdktfProviderProject.property.name"></a>
+##### `name`<sup>Required</sup> <a name="name" id="@cdktn/provider-project.CdktnProviderProject.property.name"></a>
 
 ```typescript
 public readonly name: string;
@@ -863,7 +863,7 @@ Project name.
 
 ---
 
-##### `outdir`<sup>Required</sup> <a name="outdir" id="@cdktf/provider-project.CdktfProviderProject.property.outdir"></a>
+##### `outdir`<sup>Required</sup> <a name="outdir" id="@cdktn/provider-project.CdktnProviderProject.property.outdir"></a>
 
 ```typescript
 public readonly outdir: string;
@@ -875,7 +875,7 @@ Absolute output directory of this project.
 
 ---
 
-##### `packageTask`<sup>Required</sup> <a name="packageTask" id="@cdktf/provider-project.CdktfProviderProject.property.packageTask"></a>
+##### `packageTask`<sup>Required</sup> <a name="packageTask" id="@cdktn/provider-project.CdktnProviderProject.property.packageTask"></a>
 
 ```typescript
 public readonly packageTask: Task;
@@ -885,7 +885,7 @@ public readonly packageTask: Task;
 
 ---
 
-##### `postCompileTask`<sup>Required</sup> <a name="postCompileTask" id="@cdktf/provider-project.CdktfProviderProject.property.postCompileTask"></a>
+##### `postCompileTask`<sup>Required</sup> <a name="postCompileTask" id="@cdktn/provider-project.CdktnProviderProject.property.postCompileTask"></a>
 
 ```typescript
 public readonly postCompileTask: Task;
@@ -895,7 +895,7 @@ public readonly postCompileTask: Task;
 
 ---
 
-##### `preCompileTask`<sup>Required</sup> <a name="preCompileTask" id="@cdktf/provider-project.CdktfProviderProject.property.preCompileTask"></a>
+##### `preCompileTask`<sup>Required</sup> <a name="preCompileTask" id="@cdktn/provider-project.CdktnProviderProject.property.preCompileTask"></a>
 
 ```typescript
 public readonly preCompileTask: Task;
@@ -905,7 +905,7 @@ public readonly preCompileTask: Task;
 
 ---
 
-##### `projectBuild`<sup>Required</sup> <a name="projectBuild" id="@cdktf/provider-project.CdktfProviderProject.property.projectBuild"></a>
+##### `projectBuild`<sup>Required</sup> <a name="projectBuild" id="@cdktn/provider-project.CdktnProviderProject.property.projectBuild"></a>
 
 ```typescript
 public readonly projectBuild: ProjectBuild;
@@ -917,7 +917,7 @@ Manages the build process of the project.
 
 ---
 
-##### `projenCommand`<sup>Required</sup> <a name="projenCommand" id="@cdktf/provider-project.CdktfProviderProject.property.projenCommand"></a>
+##### `projenCommand`<sup>Required</sup> <a name="projenCommand" id="@cdktn/provider-project.CdktnProviderProject.property.projenCommand"></a>
 
 ```typescript
 public readonly projenCommand: string;
@@ -929,7 +929,7 @@ The command to use in order to run the projen CLI.
 
 ---
 
-##### `root`<sup>Required</sup> <a name="root" id="@cdktf/provider-project.CdktfProviderProject.property.root"></a>
+##### `root`<sup>Required</sup> <a name="root" id="@cdktn/provider-project.CdktnProviderProject.property.root"></a>
 
 ```typescript
 public readonly root: Project;
@@ -941,7 +941,7 @@ The root project.
 
 ---
 
-##### `subprojects`<sup>Required</sup> <a name="subprojects" id="@cdktf/provider-project.CdktfProviderProject.property.subprojects"></a>
+##### `subprojects`<sup>Required</sup> <a name="subprojects" id="@cdktn/provider-project.CdktnProviderProject.property.subprojects"></a>
 
 ```typescript
 public readonly subprojects: Project[];
@@ -953,7 +953,7 @@ Returns all the subprojects within this project.
 
 ---
 
-##### `tasks`<sup>Required</sup> <a name="tasks" id="@cdktf/provider-project.CdktfProviderProject.property.tasks"></a>
+##### `tasks`<sup>Required</sup> <a name="tasks" id="@cdktn/provider-project.CdktnProviderProject.property.tasks"></a>
 
 ```typescript
 public readonly tasks: Tasks;
@@ -965,7 +965,7 @@ Project tasks.
 
 ---
 
-##### `testTask`<sup>Required</sup> <a name="testTask" id="@cdktf/provider-project.CdktfProviderProject.property.testTask"></a>
+##### `testTask`<sup>Required</sup> <a name="testTask" id="@cdktn/provider-project.CdktnProviderProject.property.testTask"></a>
 
 ```typescript
 public readonly testTask: Task;
@@ -975,7 +975,7 @@ public readonly testTask: Task;
 
 ---
 
-##### `defaultTask`<sup>Optional</sup> <a name="defaultTask" id="@cdktf/provider-project.CdktfProviderProject.property.defaultTask"></a>
+##### `defaultTask`<sup>Optional</sup> <a name="defaultTask" id="@cdktn/provider-project.CdktnProviderProject.property.defaultTask"></a>
 
 ```typescript
 public readonly defaultTask: Task;
@@ -990,7 +990,7 @@ the project is being ejected.
 
 ---
 
-##### `initProject`<sup>Optional</sup> <a name="initProject" id="@cdktf/provider-project.CdktfProviderProject.property.initProject"></a>
+##### `initProject`<sup>Optional</sup> <a name="initProject" id="@cdktn/provider-project.CdktnProviderProject.property.initProject"></a>
 
 ```typescript
 public readonly initProject: InitProject;
@@ -1006,7 +1006,7 @@ FQN of the project type.
 
 ---
 
-##### `parent`<sup>Optional</sup> <a name="parent" id="@cdktf/provider-project.CdktfProviderProject.property.parent"></a>
+##### `parent`<sup>Optional</sup> <a name="parent" id="@cdktn/provider-project.CdktnProviderProject.property.parent"></a>
 
 ```typescript
 public readonly parent: Project;
@@ -1020,7 +1020,7 @@ If undefined, this is the root project.
 
 ---
 
-##### `projectType`<sup>Required</sup> <a name="projectType" id="@cdktf/provider-project.CdktfProviderProject.property.projectType"></a>
+##### `projectType`<sup>Required</sup> <a name="projectType" id="@cdktn/provider-project.CdktnProviderProject.property.projectType"></a>
 
 ```typescript
 public readonly projectType: ProjectType;
@@ -1030,7 +1030,7 @@ public readonly projectType: ProjectType;
 
 ---
 
-##### `autoApprove`<sup>Optional</sup> <a name="autoApprove" id="@cdktf/provider-project.CdktfProviderProject.property.autoApprove"></a>
+##### `autoApprove`<sup>Optional</sup> <a name="autoApprove" id="@cdktn/provider-project.CdktnProviderProject.property.autoApprove"></a>
 
 ```typescript
 public readonly autoApprove: AutoApprove;
@@ -1042,7 +1042,7 @@ Auto approve set up for this project.
 
 ---
 
-##### `devContainer`<sup>Optional</sup> <a name="devContainer" id="@cdktf/provider-project.CdktfProviderProject.property.devContainer"></a>
+##### `devContainer`<sup>Optional</sup> <a name="devContainer" id="@cdktn/provider-project.CdktnProviderProject.property.devContainer"></a>
 
 ```typescript
 public readonly devContainer: DevContainer;
@@ -1056,7 +1056,7 @@ This will be `undefined` if devContainer boolean is false
 
 ---
 
-##### `github`<sup>Optional</sup> <a name="github" id="@cdktf/provider-project.CdktfProviderProject.property.github"></a>
+##### `github`<sup>Optional</sup> <a name="github" id="@cdktn/provider-project.CdktnProviderProject.property.github"></a>
 
 ```typescript
 public readonly github: GitHub;
@@ -1070,7 +1070,7 @@ This will be `undefined` for subprojects.
 
 ---
 
-##### `gitpod`<sup>Optional</sup> <a name="gitpod" id="@cdktf/provider-project.CdktfProviderProject.property.gitpod"></a>
+##### `gitpod`<sup>Optional</sup> <a name="gitpod" id="@cdktn/provider-project.CdktnProviderProject.property.gitpod"></a>
 
 ```typescript
 public readonly gitpod: Gitpod;
@@ -1084,7 +1084,7 @@ This will be `undefined` if gitpod boolean is false
 
 ---
 
-##### `vscode`<sup>Optional</sup> <a name="vscode" id="@cdktf/provider-project.CdktfProviderProject.property.vscode"></a>
+##### `vscode`<sup>Optional</sup> <a name="vscode" id="@cdktn/provider-project.CdktnProviderProject.property.vscode"></a>
 
 ```typescript
 public readonly vscode: VsCode;
@@ -1098,7 +1098,7 @@ This will be `undefined` for subprojects.
 
 ---
 
-##### ~~`allowLibraryDependencies`~~<sup>Required</sup> <a name="allowLibraryDependencies" id="@cdktf/provider-project.CdktfProviderProject.property.allowLibraryDependencies"></a>
+##### ~~`allowLibraryDependencies`~~<sup>Required</sup> <a name="allowLibraryDependencies" id="@cdktn/provider-project.CdktnProviderProject.property.allowLibraryDependencies"></a>
 
 - *Deprecated:* use `package.allowLibraryDependencies`
 
@@ -1110,7 +1110,7 @@ public readonly allowLibraryDependencies: boolean;
 
 ---
 
-##### `artifactsDirectory`<sup>Required</sup> <a name="artifactsDirectory" id="@cdktf/provider-project.CdktfProviderProject.property.artifactsDirectory"></a>
+##### `artifactsDirectory`<sup>Required</sup> <a name="artifactsDirectory" id="@cdktn/provider-project.CdktnProviderProject.property.artifactsDirectory"></a>
 
 ```typescript
 public readonly artifactsDirectory: string;
@@ -1126,7 +1126,7 @@ tarball will be placed under `dist/js/boom-boom-1.2.3.tg`.
 
 ---
 
-##### `artifactsJavascriptDirectory`<sup>Required</sup> <a name="artifactsJavascriptDirectory" id="@cdktf/provider-project.CdktfProviderProject.property.artifactsJavascriptDirectory"></a>
+##### `artifactsJavascriptDirectory`<sup>Required</sup> <a name="artifactsJavascriptDirectory" id="@cdktn/provider-project.CdktnProviderProject.property.artifactsJavascriptDirectory"></a>
 
 ```typescript
 public readonly artifactsJavascriptDirectory: string;
@@ -1138,7 +1138,7 @@ The location of the npm tarball after build (`${artifactsDirectory}/js`).
 
 ---
 
-##### `bundler`<sup>Required</sup> <a name="bundler" id="@cdktf/provider-project.CdktfProviderProject.property.bundler"></a>
+##### `bundler`<sup>Required</sup> <a name="bundler" id="@cdktn/provider-project.CdktnProviderProject.property.bundler"></a>
 
 ```typescript
 public readonly bundler: Bundler;
@@ -1148,7 +1148,7 @@ public readonly bundler: Bundler;
 
 ---
 
-##### ~~`entrypoint`~~<sup>Required</sup> <a name="entrypoint" id="@cdktf/provider-project.CdktfProviderProject.property.entrypoint"></a>
+##### ~~`entrypoint`~~<sup>Required</sup> <a name="entrypoint" id="@cdktn/provider-project.CdktnProviderProject.property.entrypoint"></a>
 
 - *Deprecated:* use `package.entrypoint`
 
@@ -1160,7 +1160,7 @@ public readonly entrypoint: string;
 
 ---
 
-##### ~~`manifest`~~<sup>Required</sup> <a name="manifest" id="@cdktf/provider-project.CdktfProviderProject.property.manifest"></a>
+##### ~~`manifest`~~<sup>Required</sup> <a name="manifest" id="@cdktn/provider-project.CdktnProviderProject.property.manifest"></a>
 
 - *Deprecated:* use `package.addField(x, y)`
 
@@ -1172,7 +1172,7 @@ public readonly manifest: any;
 
 ---
 
-##### `npmrc`<sup>Required</sup> <a name="npmrc" id="@cdktf/provider-project.CdktfProviderProject.property.npmrc"></a>
+##### `npmrc`<sup>Required</sup> <a name="npmrc" id="@cdktn/provider-project.CdktnProviderProject.property.npmrc"></a>
 
 ```typescript
 public readonly npmrc: NpmConfig;
@@ -1184,7 +1184,7 @@ The .npmrc file.
 
 ---
 
-##### `package`<sup>Required</sup> <a name="package" id="@cdktf/provider-project.CdktfProviderProject.property.package"></a>
+##### `package`<sup>Required</sup> <a name="package" id="@cdktn/provider-project.CdktnProviderProject.property.package"></a>
 
 ```typescript
 public readonly package: NodePackage;
@@ -1196,7 +1196,7 @@ API for managing the node package.
 
 ---
 
-##### ~~`packageManager`~~<sup>Required</sup> <a name="packageManager" id="@cdktf/provider-project.CdktfProviderProject.property.packageManager"></a>
+##### ~~`packageManager`~~<sup>Required</sup> <a name="packageManager" id="@cdktn/provider-project.CdktnProviderProject.property.packageManager"></a>
 
 - *Deprecated:* use `package.packageManager`
 
@@ -1210,7 +1210,7 @@ The package manager to use.
 
 ---
 
-##### `runScriptCommand`<sup>Required</sup> <a name="runScriptCommand" id="@cdktf/provider-project.CdktfProviderProject.property.runScriptCommand"></a>
+##### `runScriptCommand`<sup>Required</sup> <a name="runScriptCommand" id="@cdktn/provider-project.CdktnProviderProject.property.runScriptCommand"></a>
 
 ```typescript
 public readonly runScriptCommand: string;
@@ -1222,7 +1222,7 @@ The command to use to run scripts (e.g. `yarn run` or `npm run` depends on the p
 
 ---
 
-##### `autoMerge`<sup>Optional</sup> <a name="autoMerge" id="@cdktf/provider-project.CdktfProviderProject.property.autoMerge"></a>
+##### `autoMerge`<sup>Optional</sup> <a name="autoMerge" id="@cdktn/provider-project.CdktnProviderProject.property.autoMerge"></a>
 
 ```typescript
 public readonly autoMerge: AutoMerge;
@@ -1234,7 +1234,7 @@ Component that sets up mergify for merging approved pull requests.
 
 ---
 
-##### `buildWorkflow`<sup>Optional</sup> <a name="buildWorkflow" id="@cdktf/provider-project.CdktfProviderProject.property.buildWorkflow"></a>
+##### `buildWorkflow`<sup>Optional</sup> <a name="buildWorkflow" id="@cdktn/provider-project.CdktnProviderProject.property.buildWorkflow"></a>
 
 ```typescript
 public readonly buildWorkflow: BuildWorkflow;
@@ -1248,7 +1248,7 @@ The PR build GitHub workflow.
 
 ---
 
-##### `buildWorkflowJobId`<sup>Optional</sup> <a name="buildWorkflowJobId" id="@cdktf/provider-project.CdktfProviderProject.property.buildWorkflowJobId"></a>
+##### `buildWorkflowJobId`<sup>Optional</sup> <a name="buildWorkflowJobId" id="@cdktn/provider-project.CdktnProviderProject.property.buildWorkflowJobId"></a>
 
 ```typescript
 public readonly buildWorkflowJobId: string;
@@ -1260,7 +1260,7 @@ The job ID of the build workflow.
 
 ---
 
-##### `jest`<sup>Optional</sup> <a name="jest" id="@cdktf/provider-project.CdktfProviderProject.property.jest"></a>
+##### `jest`<sup>Optional</sup> <a name="jest" id="@cdktn/provider-project.CdktnProviderProject.property.jest"></a>
 
 ```typescript
 public readonly jest: Jest;
@@ -1272,7 +1272,7 @@ The Jest configuration (if enabled).
 
 ---
 
-##### `maxNodeVersion`<sup>Optional</sup> <a name="maxNodeVersion" id="@cdktf/provider-project.CdktfProviderProject.property.maxNodeVersion"></a>
+##### `maxNodeVersion`<sup>Optional</sup> <a name="maxNodeVersion" id="@cdktn/provider-project.CdktnProviderProject.property.maxNodeVersion"></a>
 
 ```typescript
 public readonly maxNodeVersion: string;
@@ -1284,7 +1284,7 @@ Maximum node version required by this package.
 
 ---
 
-##### `minNodeVersion`<sup>Optional</sup> <a name="minNodeVersion" id="@cdktf/provider-project.CdktfProviderProject.property.minNodeVersion"></a>
+##### `minNodeVersion`<sup>Optional</sup> <a name="minNodeVersion" id="@cdktn/provider-project.CdktnProviderProject.property.minNodeVersion"></a>
 
 ```typescript
 public readonly minNodeVersion: string;
@@ -1296,7 +1296,7 @@ Minimum node.js version required by this package.
 
 ---
 
-##### `npmignore`<sup>Optional</sup> <a name="npmignore" id="@cdktf/provider-project.CdktfProviderProject.property.npmignore"></a>
+##### `npmignore`<sup>Optional</sup> <a name="npmignore" id="@cdktn/provider-project.CdktnProviderProject.property.npmignore"></a>
 
 ```typescript
 public readonly npmignore: IgnoreFile;
@@ -1308,7 +1308,7 @@ The .npmignore file.
 
 ---
 
-##### `prettier`<sup>Optional</sup> <a name="prettier" id="@cdktf/provider-project.CdktfProviderProject.property.prettier"></a>
+##### `prettier`<sup>Optional</sup> <a name="prettier" id="@cdktn/provider-project.CdktnProviderProject.property.prettier"></a>
 
 ```typescript
 public readonly prettier: Prettier;
@@ -1318,7 +1318,7 @@ public readonly prettier: Prettier;
 
 ---
 
-##### ~~`publisher`~~<sup>Optional</sup> <a name="publisher" id="@cdktf/provider-project.CdktfProviderProject.property.publisher"></a>
+##### ~~`publisher`~~<sup>Optional</sup> <a name="publisher" id="@cdktn/provider-project.CdktnProviderProject.property.publisher"></a>
 
 - *Deprecated:* use `release.publisher`.
 
@@ -1335,7 +1335,7 @@ release workflow.
 
 ---
 
-##### `release`<sup>Optional</sup> <a name="release" id="@cdktf/provider-project.CdktfProviderProject.property.release"></a>
+##### `release`<sup>Optional</sup> <a name="release" id="@cdktn/provider-project.CdktnProviderProject.property.release"></a>
 
 ```typescript
 public readonly release: Release;
@@ -1347,7 +1347,7 @@ Release management.
 
 ---
 
-##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@cdktf/provider-project.CdktfProviderProject.property.upgradeWorkflow"></a>
+##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@cdktn/provider-project.CdktnProviderProject.property.upgradeWorkflow"></a>
 
 ```typescript
 public readonly upgradeWorkflow: UpgradeDependencies;
@@ -1359,7 +1359,7 @@ The upgrade workflow.
 
 ---
 
-##### `docsDirectory`<sup>Required</sup> <a name="docsDirectory" id="@cdktf/provider-project.CdktfProviderProject.property.docsDirectory"></a>
+##### `docsDirectory`<sup>Required</sup> <a name="docsDirectory" id="@cdktn/provider-project.CdktnProviderProject.property.docsDirectory"></a>
 
 ```typescript
 public readonly docsDirectory: string;
@@ -1369,7 +1369,7 @@ public readonly docsDirectory: string;
 
 ---
 
-##### `libdir`<sup>Required</sup> <a name="libdir" id="@cdktf/provider-project.CdktfProviderProject.property.libdir"></a>
+##### `libdir`<sup>Required</sup> <a name="libdir" id="@cdktn/provider-project.CdktnProviderProject.property.libdir"></a>
 
 ```typescript
 public readonly libdir: string;
@@ -1381,7 +1381,7 @@ The directory in which compiled .js files reside.
 
 ---
 
-##### `srcdir`<sup>Required</sup> <a name="srcdir" id="@cdktf/provider-project.CdktfProviderProject.property.srcdir"></a>
+##### `srcdir`<sup>Required</sup> <a name="srcdir" id="@cdktn/provider-project.CdktnProviderProject.property.srcdir"></a>
 
 ```typescript
 public readonly srcdir: string;
@@ -1393,7 +1393,7 @@ The directory in which the .ts sources reside.
 
 ---
 
-##### `testdir`<sup>Required</sup> <a name="testdir" id="@cdktf/provider-project.CdktfProviderProject.property.testdir"></a>
+##### `testdir`<sup>Required</sup> <a name="testdir" id="@cdktn/provider-project.CdktnProviderProject.property.testdir"></a>
 
 ```typescript
 public readonly testdir: string;
@@ -1405,7 +1405,7 @@ The directory in which tests reside.
 
 ---
 
-##### `tsconfigDev`<sup>Required</sup> <a name="tsconfigDev" id="@cdktf/provider-project.CdktfProviderProject.property.tsconfigDev"></a>
+##### `tsconfigDev`<sup>Required</sup> <a name="tsconfigDev" id="@cdktn/provider-project.CdktnProviderProject.property.tsconfigDev"></a>
 
 ```typescript
 public readonly tsconfigDev: TypescriptConfig;
@@ -1417,7 +1417,7 @@ A typescript configuration file which covers all files (sources, tests, projen).
 
 ---
 
-##### `watchTask`<sup>Required</sup> <a name="watchTask" id="@cdktf/provider-project.CdktfProviderProject.property.watchTask"></a>
+##### `watchTask`<sup>Required</sup> <a name="watchTask" id="@cdktn/provider-project.CdktnProviderProject.property.watchTask"></a>
 
 ```typescript
 public readonly watchTask: Task;
@@ -1429,7 +1429,7 @@ The "watch" task.
 
 ---
 
-##### `docgen`<sup>Optional</sup> <a name="docgen" id="@cdktf/provider-project.CdktfProviderProject.property.docgen"></a>
+##### `docgen`<sup>Optional</sup> <a name="docgen" id="@cdktn/provider-project.CdktnProviderProject.property.docgen"></a>
 
 ```typescript
 public readonly docgen: boolean;
@@ -1439,7 +1439,7 @@ public readonly docgen: boolean;
 
 ---
 
-##### `eslint`<sup>Optional</sup> <a name="eslint" id="@cdktf/provider-project.CdktfProviderProject.property.eslint"></a>
+##### `eslint`<sup>Optional</sup> <a name="eslint" id="@cdktn/provider-project.CdktnProviderProject.property.eslint"></a>
 
 ```typescript
 public readonly eslint: Eslint;
@@ -1449,7 +1449,7 @@ public readonly eslint: Eslint;
 
 ---
 
-##### `tsconfig`<sup>Optional</sup> <a name="tsconfig" id="@cdktf/provider-project.CdktfProviderProject.property.tsconfig"></a>
+##### `tsconfig`<sup>Optional</sup> <a name="tsconfig" id="@cdktn/provider-project.CdktnProviderProject.property.tsconfig"></a>
 
 ```typescript
 public readonly tsconfig: TypescriptConfig;
@@ -1459,7 +1459,7 @@ public readonly tsconfig: TypescriptConfig;
 
 ---
 
-##### `tsconfigEslint`<sup>Optional</sup> <a name="tsconfigEslint" id="@cdktf/provider-project.CdktfProviderProject.property.tsconfigEslint"></a>
+##### `tsconfigEslint`<sup>Optional</sup> <a name="tsconfigEslint" id="@cdktn/provider-project.CdktnProviderProject.property.tsconfigEslint"></a>
 
 ```typescript
 public readonly tsconfigEslint: TypescriptConfig;
@@ -1473,12 +1473,12 @@ public readonly tsconfigEslint: TypescriptConfig;
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.DEFAULT_TASK">DEFAULT_TASK</a></code> | <code>string</code> | The name of the default task (the task executed when `projen` is run without arguments). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProject.property.DEFAULT_TS_JEST_TRANFORM_PATTERN">DEFAULT_TS_JEST_TRANFORM_PATTERN</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.DEFAULT_TASK">DEFAULT_TASK</a></code> | <code>string</code> | The name of the default task (the task executed when `projen` is run without arguments). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.DEFAULT_TS_JEST_TRANFORM_PATTERN">DEFAULT_TS_JEST_TRANFORM_PATTERN</a></code> | <code>string</code> | *No description.* |
 
 ---
 
-##### `DEFAULT_TASK`<sup>Required</sup> <a name="DEFAULT_TASK" id="@cdktf/provider-project.CdktfProviderProject.property.DEFAULT_TASK"></a>
+##### `DEFAULT_TASK`<sup>Required</sup> <a name="DEFAULT_TASK" id="@cdktn/provider-project.CdktnProviderProject.property.DEFAULT_TASK"></a>
 
 ```typescript
 public readonly DEFAULT_TASK: string;
@@ -1493,7 +1493,7 @@ this task should synthesize the project files.
 
 ---
 
-##### `DEFAULT_TS_JEST_TRANFORM_PATTERN`<sup>Required</sup> <a name="DEFAULT_TS_JEST_TRANFORM_PATTERN" id="@cdktf/provider-project.CdktfProviderProject.property.DEFAULT_TS_JEST_TRANFORM_PATTERN"></a>
+##### `DEFAULT_TS_JEST_TRANFORM_PATTERN`<sup>Required</sup> <a name="DEFAULT_TS_JEST_TRANFORM_PATTERN" id="@cdktn/provider-project.CdktnProviderProject.property.DEFAULT_TS_JEST_TRANFORM_PATTERN"></a>
 
 ```typescript
 public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
@@ -1505,200 +1505,200 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 
 ## Structs <a name="Structs" id="Structs"></a>
 
-### CdktfProviderProjectOptions <a name="CdktfProviderProjectOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions"></a>
+### CdktnProviderProjectOptions <a name="CdktnProviderProjectOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions"></a>
 
-#### Initializer <a name="Initializer" id="@cdktf/provider-project.CdktfProviderProjectOptions.Initializer"></a>
+#### Initializer <a name="Initializer" id="@cdktn/provider-project.CdktnProviderProjectOptions.Initializer"></a>
 
 ```typescript
-import { CdktfProviderProjectOptions } from '@cdktf/provider-project'
+import { CdktnProviderProjectOptions } from '@cdktn/provider-project'
 
-const cdktfProviderProjectOptions: CdktfProviderProjectOptions = { ... }
+const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 ```
 
 #### Properties <a name="Properties" id="Properties"></a>
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.name">name</a></code> | <code>string</code> | This is the name of your project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.commitGenerated">commitGenerated</a></code> | <code>boolean</code> | Whether to commit the managed files by default. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.gitIgnoreOptions">gitIgnoreOptions</a></code> | <code>projen.IgnoreFileOptions</code> | Configuration options for .gitignore file. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.gitOptions">gitOptions</a></code> | <code>projen.GitOptions</code> | Configuration options for git. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.logging">logging</a></code> | <code>projen.LoggerOptions</code> | Configure logging options such as verbosity. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.outdir">outdir</a></code> | <code>string</code> | The root directory of the project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.parent">parent</a></code> | <code>projen.Project</code> | The parent project, if this project is part of a bigger project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The shell command to use in order to run the projen CLI. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJson">projenrcJson</a></code> | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJsonOptions">projenrcJsonOptions</a></code> | <code>projen.ProjenrcJsonOptions</code> | Options for .projenrc.json. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.renovatebot">renovatebot</a></code> | <code>boolean</code> | Use renovatebot to handle dependency upgrades. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.renovatebotOptions">renovatebotOptions</a></code> | <code>projen.RenovatebotOptions</code> | Options for renovatebot. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.autoApproveOptions">autoApproveOptions</a></code> | <code>projen.github.AutoApproveOptions</code> | Enable and configure the 'auto approve' workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.autoMerge">autoMerge</a></code> | <code>boolean</code> | Enable automatic merging on GitHub. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.autoMergeOptions">autoMergeOptions</a></code> | <code>projen.github.AutoMergeOptions</code> | Configure options for automatic merging on GitHub. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.clobber">clobber</a></code> | <code>boolean</code> | Add a `clobber` task which resets the repo to origin. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.devContainer">devContainer</a></code> | <code>boolean</code> | Add a VSCode development environment (used for GitHub Codespaces). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.github">github</a></code> | <code>boolean</code> | Enable GitHub integration. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.githubOptions">githubOptions</a></code> | <code>projen.github.GitHubOptions</code> | Options for GitHub integration. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.gitpod">gitpod</a></code> | <code>boolean</code> | Add a Gitpod development environment. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.mergify">mergify</a></code> | <code>boolean</code> | Whether mergify should be enabled on this repository or not. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.mergifyOptions">mergifyOptions</a></code> | <code>projen.github.MergifyOptions</code> | Options for mergify. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projectType">projectType</a></code> | <code>projen.ProjectType</code> | Which type of project this is (library/app). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | Choose a method of providing GitHub API access for projen workflows. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenTokenSecret">projenTokenSecret</a></code> | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.readme">readme</a></code> | <code>projen.SampleReadmeProps</code> | The README setup. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.stale">stale</a></code> | <code>boolean</code> | Auto-close of stale issues and pull request. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.staleOptions">staleOptions</a></code> | <code>projen.github.StaleOptions</code> | Auto-close stale issues and pull requests. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.vscode">vscode</a></code> | <code>boolean</code> | Enable VSCode integration. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.allowLibraryDependencies">allowLibraryDependencies</a></code> | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.authorEmail">authorEmail</a></code> | <code>string</code> | Author's e-mail. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.authorName">authorName</a></code> | <code>string</code> | Author's name. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.authorOrganization">authorOrganization</a></code> | <code>boolean</code> | Is the author an organization. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.authorUrl">authorUrl</a></code> | <code>string</code> | Author's URL / Website. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.autoDetectBin">autoDetectBin</a></code> | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.bin">bin</a></code> | <code>{[ key: string ]: string}</code> | Binary programs vended with your module. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.bugsEmail">bugsEmail</a></code> | <code>string</code> | The email address to which issues should be reported. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.bugsUrl">bugsUrl</a></code> | <code>string</code> | The url to your project's issue tracker. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.bundledDeps">bundledDeps</a></code> | <code>string[]</code> | List of dependencies to bundle into this module. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.codeArtifactOptions">codeArtifactOptions</a></code> | <code>projen.javascript.CodeArtifactOptions</code> | Options for npm packages using AWS CodeArtifact. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.deps">deps</a></code> | <code>string[]</code> | Runtime dependencies of this module. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.description">description</a></code> | <code>string</code> | The description is just a string that helps people understand the purpose of the package. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.devDeps">devDeps</a></code> | <code>string[]</code> | Build dependencies for this module. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.entrypoint">entrypoint</a></code> | <code>string</code> | Module entrypoint (`main` in `package.json`). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.homepage">homepage</a></code> | <code>string</code> | Package's Homepage / Website. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.keywords">keywords</a></code> | <code>string[]</code> | Keywords to include in `package.json`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.license">license</a></code> | <code>string</code> | License's SPDX identifier. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Indicates if a license should be added. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | Minimum node.js version to require via `engines` (inclusive). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | Minimum Node.js version to require via package.json `engines` (inclusive). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmAccess">npmAccess</a></code> | <code>projen.javascript.NpmAccess</code> | Access level of the npm package. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmProvenance">npmProvenance</a></code> | <code>boolean</code> | Should provenance statements be generated when the package is published. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmRegistry">npmRegistry</a></code> | <code>string</code> | The host name of the npm registry to publish to. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmRegistryUrl">npmRegistryUrl</a></code> | <code>string</code> | The base URL of the npm package registry. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmTokenSecret">npmTokenSecret</a></code> | <code>string</code> | GitHub secret which contains the NPM token to use when publishing packages. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.packageManager">packageManager</a></code> | <code>projen.javascript.NodePackageManager</code> | The Node Package Manager used to execute scripts. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.packageName">packageName</a></code> | <code>string</code> | The "name" in package.json. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.peerDependencyOptions">peerDependencyOptions</a></code> | <code>projen.javascript.PeerDependencyOptions</code> | Options for `peerDeps`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.peerDeps">peerDeps</a></code> | <code>string[]</code> | Peer dependencies for this module. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.pnpmVersion">pnpmVersion</a></code> | <code>string</code> | The version of PNPM to use if using PNPM as a package manager. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.repository">repository</a></code> | <code>string</code> | The repository is the location where the actual code for your package lives. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.repositoryDirectory">repositoryDirectory</a></code> | <code>string</code> | If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.scopedPackagesOptions">scopedPackagesOptions</a></code> | <code>projen.javascript.ScopedPackagesOptions[]</code> | Options for privately hosted scoped packages. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.scripts">scripts</a></code> | <code>{[ key: string ]: string}</code> | npm scripts to include. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.stability">stability</a></code> | <code>string</code> | Package's Stability. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.yarnBerryOptions">yarnBerryOptions</a></code> | <code>projen.javascript.YarnBerryOptions</code> | Options for Yarn Berry. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.jsiiReleaseVersion">jsiiReleaseVersion</a></code> | <code>string</code> | Version requirement of `publib` which is used to publish modules to npm. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.majorVersion">majorVersion</a></code> | <code>number</code> | Major version to release from the default branch. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.minMajorVersion">minMajorVersion</a></code> | <code>number</code> | Minimal Major version to release. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmDistTag">npmDistTag</a></code> | <code>string</code> | The npmDistTag to use when publishing from the default branch. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.postBuildSteps">postBuildSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps to execute after build as part of the release workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.prerelease">prerelease</a></code> | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre"). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.publishDryRun">publishDryRun</a></code> | <code>boolean</code> | Instead of actually publishing to package managers, just print the publishing command. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.publishTasks">publishTasks</a></code> | <code>boolean</code> | Define publishing tasks that can be executed manually as well as workflows. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releasableCommits">releasableCommits</a></code> | <code>projen.ReleasableCommits</code> | Find commits that should be considered releasable Used to decide if a release is required. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseBranches">releaseBranches</a></code> | <code>{[ key: string ]: projen.release.BranchOptions}</code> | Defines additional release branches. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseEveryCommit">releaseEveryCommit</a></code> | <code>boolean</code> | Automatically release new versions every commit to one of branches in `releaseBranches`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseFailureIssue">releaseFailureIssue</a></code> | <code>boolean</code> | Create a github issue on every failed publishing task. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseFailureIssueLabel">releaseFailureIssueLabel</a></code> | <code>string</code> | The label to apply to issues indicating publish failures. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseSchedule">releaseSchedule</a></code> | <code>string</code> | CRON schedule to trigger new releases. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseTagPrefix">releaseTagPrefix</a></code> | <code>string</code> | Automatically add the given prefix to release tags. Useful if you are releasing on multiple branches with overlapping version numbers. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseTrigger">releaseTrigger</a></code> | <code>projen.release.ReleaseTrigger</code> | The release trigger to use. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseWorkflowName">releaseWorkflowName</a></code> | <code>string</code> | The name of the default release workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseWorkflowSetupSteps">releaseWorkflowSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | A set of workflow steps to execute in order to setup the workflow container. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.versionrcOptions">versionrcOptions</a></code> | <code>{[ key: string ]: any}</code> | Custom configuration used when creating changelog with commit-and-tag-version package. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowContainerImage">workflowContainerImage</a></code> | <code>string</code> | Container image to use for GitHub workflows. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowRunsOn">workflowRunsOn</a></code> | <code>string[]</code> | Github Runner selection labels. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowRunsOnGroup">workflowRunsOnGroup</a></code> | <code>projen.GroupRunnerOptions</code> | Github Runner Group selection options. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.defaultReleaseBranch">defaultReleaseBranch</a></code> | <code>string</code> | The name of the main release branch. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.artifactsDirectory">artifactsDirectory</a></code> | <code>string</code> | A directory which will contain build artifacts. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.autoApproveUpgrades">autoApproveUpgrades</a></code> | <code>boolean</code> | Automatically approve deps upgrade PRs, allowing them to be merged by mergify (if configued). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.buildWorkflow">buildWorkflow</a></code> | <code>boolean</code> | Define a GitHub workflow for building PRs. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.buildWorkflowOptions">buildWorkflowOptions</a></code> | <code>projen.javascript.BuildWorkflowOptions</code> | Options for PR build workflow. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.buildWorkflowTriggers">buildWorkflowTriggers</a></code> | <code>projen.github.workflows.Triggers</code> | Build workflow triggers. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.bundlerOptions">bundlerOptions</a></code> | <code>projen.javascript.BundlerOptions</code> | Options for `Bundler`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.checkLicenses">checkLicenses</a></code> | <code>projen.javascript.LicenseCheckerOptions</code> | Configure which licenses should be deemed acceptable for use by dependencies. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.codeCov">codeCov</a></code> | <code>boolean</code> | Define a GitHub workflow step for sending code coverage metrics to https://codecov.io/ Uses codecov/codecov-action@v4 A secret is required for private repos. Configured with `@codeCovTokenSecret`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.codeCovTokenSecret">codeCovTokenSecret</a></code> | <code>string</code> | Define the secret name for a specified https://codecov.io/ token A secret is required to send coverage for private repositories. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | License copyright owner. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | The copyright years to put in the LICENSE file. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.dependabot">dependabot</a></code> | <code>boolean</code> | Use dependabot to handle dependency upgrades. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.dependabotOptions">dependabotOptions</a></code> | <code>projen.github.DependabotOptions</code> | Options for dependabot. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.depsUpgrade">depsUpgrade</a></code> | <code>boolean</code> | Use tasks and github workflows to handle dependency upgrades. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.depsUpgradeOptions">depsUpgradeOptions</a></code> | <code>projen.javascript.UpgradeDependenciesOptions</code> | Options for `UpgradeDependencies`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.gitignore">gitignore</a></code> | <code>string[]</code> | Additional entries to .gitignore. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.jest">jest</a></code> | <code>boolean</code> | Setup jest unit tests. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.jestOptions">jestOptions</a></code> | <code>projen.javascript.JestOptions</code> | Jest options. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.mutableBuild">mutableBuild</a></code> | <code>boolean</code> | Automatically update files modified during builds to pull-request branches. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmignore">npmignore</a></code> | <code>string[]</code> | Additional entries to .npmignore. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmignoreEnabled">npmignoreEnabled</a></code> | <code>boolean</code> | Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.npmIgnoreOptions">npmIgnoreOptions</a></code> | <code>projen.IgnoreFileOptions</code> | Configuration options for .npmignore file. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.package">package</a></code> | <code>boolean</code> | Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.prettier">prettier</a></code> | <code>boolean</code> | Setup prettier. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.prettierOptions">prettierOptions</a></code> | <code>projen.javascript.PrettierOptions</code> | Prettier options. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenDevDependency">projenDevDependency</a></code> | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJs">projenrcJs</a></code> | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJsOptions">projenrcJsOptions</a></code> | <code>projen.javascript.ProjenrcOptions</code> | Options for .projenrc.js. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenVersion">projenVersion</a></code> | <code>string</code> | Version of projen to install. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.pullRequestTemplate">pullRequestTemplate</a></code> | <code>boolean</code> | Include a GitHub pull request template. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.pullRequestTemplateContents">pullRequestTemplateContents</a></code> | <code>string[]</code> | The contents of the pull request template. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.release">release</a></code> | <code>boolean</code> | Add release management to this project. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseToNpm">releaseToNpm</a></code> | <code>boolean</code> | Automatically release to npm when new versions are introduced. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseWorkflow">releaseWorkflow</a></code> | <code>boolean</code> | DEPRECATED: renamed to `release`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowBootstrapSteps">workflowBootstrapSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Workflow steps to use in order to bootstrap this repo. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowGitIdentity">workflowGitIdentity</a></code> | <code>projen.github.GitIdentity</code> | The git identity to use in workflows. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowNodeVersion">workflowNodeVersion</a></code> | <code>string</code> | The node version to use in GitHub workflows. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowPackageCache">workflowPackageCache</a></code> | <code>boolean</code> | Enable Node.js package cache in GitHub workflows. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.disableTsconfig">disableTsconfig</a></code> | <code>boolean</code> | Do not generate a `tsconfig.json` file (used by jsii projects since tsconfig.json is generated by the jsii compiler). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.disableTsconfigDev">disableTsconfigDev</a></code> | <code>boolean</code> | Do not generate a `tsconfig.dev.json` file. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.docgen">docgen</a></code> | <code>boolean</code> | Docgen by Typedoc. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.docsDirectory">docsDirectory</a></code> | <code>string</code> | Docs directory. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.entrypointTypes">entrypointTypes</a></code> | <code>string</code> | The .d.ts file that includes the type declarations for this module. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.eslint">eslint</a></code> | <code>boolean</code> | Setup eslint. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.eslintOptions">eslintOptions</a></code> | <code>projen.javascript.EslintOptions</code> | Eslint options. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.libdir">libdir</a></code> | <code>string</code> | Typescript  artifacts output directory. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcTs">projenrcTs</a></code> | <code>boolean</code> | Use TypeScript for your projenrc file (`.projenrc.ts`). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcTsOptions">projenrcTsOptions</a></code> | <code>projen.typescript.ProjenrcOptions</code> | Options for .projenrc.ts. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.sampleCode">sampleCode</a></code> | <code>boolean</code> | Generate one-time sample in `src/` and `test/` if there are no files there. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.srcdir">srcdir</a></code> | <code>string</code> | Typescript sources directory. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.testdir">testdir</a></code> | <code>string</code> | Jest tests directory. Tests files should be named `xxx.test.ts`. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.tsconfig">tsconfig</a></code> | <code>projen.javascript.TypescriptConfigOptions</code> | Custom TSConfig. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.tsconfigDev">tsconfigDev</a></code> | <code>projen.javascript.TypescriptConfigOptions</code> | Custom tsconfig options for the development tsconfig.json file (used for testing). |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.tsconfigDevFile">tsconfigDevFile</a></code> | <code>string</code> | The name of the development tsconfig.json file. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.tsJestOptions">tsJestOptions</a></code> | <code>projen.typescript.TsJestOptions</code> | Options for ts-jest. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.typescriptVersion">typescriptVersion</a></code> | <code>string</code> | TypeScript version to use. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.author">author</a></code> | <code>string</code> | The name of the library author. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.authorAddress">authorAddress</a></code> | <code>string</code> | Email or URL of the library author. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.repositoryUrl">repositoryUrl</a></code> | <code>string</code> | Git repository URL. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.compat">compat</a></code> | <code>boolean</code> | Automatically run API compatibility test against the latest version published to npm after compilation. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.compatIgnore">compatIgnore</a></code> | <code>string</code> | Name of the ignore file for API compatibility tests. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.compressAssembly">compressAssembly</a></code> | <code>boolean</code> | Emit a compressed version of the assembly. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.docgenFilePath">docgenFilePath</a></code> | <code>string</code> | File path for generated docs. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.dotnet">dotnet</a></code> | <code>projen.cdk.JsiiDotNetTarget</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.excludeTypescript">excludeTypescript</a></code> | <code>string[]</code> | Accepts a list of glob patterns. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.jsiiVersion">jsiiVersion</a></code> | <code>string</code> | Version of the jsii compiler to use. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToGo">publishToGo</a></code> | <code>projen.cdk.JsiiGoTarget</code> | Publish Go bindings to a git repository. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToMaven">publishToMaven</a></code> | <code>projen.cdk.JsiiJavaTarget</code> | Publish to maven. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToNuget">publishToNuget</a></code> | <code>projen.cdk.JsiiDotNetTarget</code> | Publish to NuGet. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToPypi">publishToPypi</a></code> | <code>projen.cdk.JsiiPythonTarget</code> | Publish to pypi. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.python">python</a></code> | <code>projen.cdk.JsiiPythonTarget</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.rootdir">rootdir</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.cdktfVersion">cdktfVersion</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.constructsVersion">constructsVersion</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.terraformProvider">terraformProvider</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.creationYear">creationYear</a></code> | <code>number</code> | The year of the creation of the repository, for copyright purposes. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.deprecationDate">deprecationDate</a></code> | <code>string</code> | An optional date when the project should be considered deprecated, to be used in the README text. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.forceMajorVersion">forceMajorVersion</a></code> | <code>number</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.githubNamespace">githubNamespace</a></code> | <code>string</code> | defaults to "cdktf" previously was "hashicorp". |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.isDeprecated">isDeprecated</a></code> | <code>boolean</code> | Whether or not this prebuilt provider is deprecated. |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.licensee">licensee</a></code> | <code>string</code> | defaults to "HashiCorp, Inc.". |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.mavenEndpoint">mavenEndpoint</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.mavenGroupId">mavenGroupId</a></code> | <code>string</code> | defaults to "com.${mavenOrg}". |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.mavenOrg">mavenOrg</a></code> | <code>string</code> | defaults to "hashicorp". |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.namespace">namespace</a></code> | <code>string</code> | defaults to "cdktf". |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.nugetOrg">nugetOrg</a></code> | <code>string</code> | defaults to "HashiCorp". |
-| <code><a href="#@cdktf/provider-project.CdktfProviderProjectOptions.property.useCustomGithubRunner">useCustomGithubRunner</a></code> | <code>boolean</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.name">name</a></code> | <code>string</code> | This is the name of your project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.commitGenerated">commitGenerated</a></code> | <code>boolean</code> | Whether to commit the managed files by default. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.gitIgnoreOptions">gitIgnoreOptions</a></code> | <code>projen.IgnoreFileOptions</code> | Configuration options for .gitignore file. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.gitOptions">gitOptions</a></code> | <code>projen.GitOptions</code> | Configuration options for git. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.logging">logging</a></code> | <code>projen.LoggerOptions</code> | Configure logging options such as verbosity. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.outdir">outdir</a></code> | <code>string</code> | The root directory of the project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.parent">parent</a></code> | <code>projen.Project</code> | The parent project, if this project is part of a bigger project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The shell command to use in order to run the projen CLI. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJson">projenrcJson</a></code> | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJsonOptions">projenrcJsonOptions</a></code> | <code>projen.ProjenrcJsonOptions</code> | Options for .projenrc.json. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.renovatebot">renovatebot</a></code> | <code>boolean</code> | Use renovatebot to handle dependency upgrades. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.renovatebotOptions">renovatebotOptions</a></code> | <code>projen.RenovatebotOptions</code> | Options for renovatebot. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.autoApproveOptions">autoApproveOptions</a></code> | <code>projen.github.AutoApproveOptions</code> | Enable and configure the 'auto approve' workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.autoMerge">autoMerge</a></code> | <code>boolean</code> | Enable automatic merging on GitHub. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.autoMergeOptions">autoMergeOptions</a></code> | <code>projen.github.AutoMergeOptions</code> | Configure options for automatic merging on GitHub. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.clobber">clobber</a></code> | <code>boolean</code> | Add a `clobber` task which resets the repo to origin. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.devContainer">devContainer</a></code> | <code>boolean</code> | Add a VSCode development environment (used for GitHub Codespaces). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.github">github</a></code> | <code>boolean</code> | Enable GitHub integration. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.githubOptions">githubOptions</a></code> | <code>projen.github.GitHubOptions</code> | Options for GitHub integration. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.gitpod">gitpod</a></code> | <code>boolean</code> | Add a Gitpod development environment. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mergify">mergify</a></code> | <code>boolean</code> | Whether mergify should be enabled on this repository or not. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mergifyOptions">mergifyOptions</a></code> | <code>projen.github.MergifyOptions</code> | Options for mergify. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projectType">projectType</a></code> | <code>projen.ProjectType</code> | Which type of project this is (library/app). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | Choose a method of providing GitHub API access for projen workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenTokenSecret">projenTokenSecret</a></code> | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.readme">readme</a></code> | <code>projen.SampleReadmeProps</code> | The README setup. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.stale">stale</a></code> | <code>boolean</code> | Auto-close of stale issues and pull request. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.staleOptions">staleOptions</a></code> | <code>projen.github.StaleOptions</code> | Auto-close stale issues and pull requests. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.vscode">vscode</a></code> | <code>boolean</code> | Enable VSCode integration. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.allowLibraryDependencies">allowLibraryDependencies</a></code> | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.authorEmail">authorEmail</a></code> | <code>string</code> | Author's e-mail. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.authorName">authorName</a></code> | <code>string</code> | Author's name. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.authorOrganization">authorOrganization</a></code> | <code>boolean</code> | Is the author an organization. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.authorUrl">authorUrl</a></code> | <code>string</code> | Author's URL / Website. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.autoDetectBin">autoDetectBin</a></code> | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bin">bin</a></code> | <code>{[ key: string ]: string}</code> | Binary programs vended with your module. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bugsEmail">bugsEmail</a></code> | <code>string</code> | The email address to which issues should be reported. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bugsUrl">bugsUrl</a></code> | <code>string</code> | The url to your project's issue tracker. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bundledDeps">bundledDeps</a></code> | <code>string[]</code> | List of dependencies to bundle into this module. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeArtifactOptions">codeArtifactOptions</a></code> | <code>projen.javascript.CodeArtifactOptions</code> | Options for npm packages using AWS CodeArtifact. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.deps">deps</a></code> | <code>string[]</code> | Runtime dependencies of this module. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.description">description</a></code> | <code>string</code> | The description is just a string that helps people understand the purpose of the package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.devDeps">devDeps</a></code> | <code>string[]</code> | Build dependencies for this module. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.entrypoint">entrypoint</a></code> | <code>string</code> | Module entrypoint (`main` in `package.json`). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.homepage">homepage</a></code> | <code>string</code> | Package's Homepage / Website. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.keywords">keywords</a></code> | <code>string[]</code> | Keywords to include in `package.json`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.license">license</a></code> | <code>string</code> | License's SPDX identifier. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Indicates if a license should be added. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | Minimum node.js version to require via `engines` (inclusive). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | Minimum Node.js version to require via package.json `engines` (inclusive). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmAccess">npmAccess</a></code> | <code>projen.javascript.NpmAccess</code> | Access level of the npm package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmProvenance">npmProvenance</a></code> | <code>boolean</code> | Should provenance statements be generated when the package is published. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmRegistry">npmRegistry</a></code> | <code>string</code> | The host name of the npm registry to publish to. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmRegistryUrl">npmRegistryUrl</a></code> | <code>string</code> | The base URL of the npm package registry. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmTokenSecret">npmTokenSecret</a></code> | <code>string</code> | GitHub secret which contains the NPM token to use when publishing packages. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.packageManager">packageManager</a></code> | <code>projen.javascript.NodePackageManager</code> | The Node Package Manager used to execute scripts. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.packageName">packageName</a></code> | <code>string</code> | The "name" in package.json. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.peerDependencyOptions">peerDependencyOptions</a></code> | <code>projen.javascript.PeerDependencyOptions</code> | Options for `peerDeps`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.peerDeps">peerDeps</a></code> | <code>string[]</code> | Peer dependencies for this module. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.pnpmVersion">pnpmVersion</a></code> | <code>string</code> | The version of PNPM to use if using PNPM as a package manager. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.repository">repository</a></code> | <code>string</code> | The repository is the location where the actual code for your package lives. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.repositoryDirectory">repositoryDirectory</a></code> | <code>string</code> | If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.scopedPackagesOptions">scopedPackagesOptions</a></code> | <code>projen.javascript.ScopedPackagesOptions[]</code> | Options for privately hosted scoped packages. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.scripts">scripts</a></code> | <code>{[ key: string ]: string}</code> | npm scripts to include. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.stability">stability</a></code> | <code>string</code> | Package's Stability. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.yarnBerryOptions">yarnBerryOptions</a></code> | <code>projen.javascript.YarnBerryOptions</code> | Options for Yarn Berry. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.jsiiReleaseVersion">jsiiReleaseVersion</a></code> | <code>string</code> | Version requirement of `publib` which is used to publish modules to npm. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.majorVersion">majorVersion</a></code> | <code>number</code> | Major version to release from the default branch. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.minMajorVersion">minMajorVersion</a></code> | <code>number</code> | Minimal Major version to release. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmDistTag">npmDistTag</a></code> | <code>string</code> | The npmDistTag to use when publishing from the default branch. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.postBuildSteps">postBuildSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps to execute after build as part of the release workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.prerelease">prerelease</a></code> | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre"). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishDryRun">publishDryRun</a></code> | <code>boolean</code> | Instead of actually publishing to package managers, just print the publishing command. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishTasks">publishTasks</a></code> | <code>boolean</code> | Define publishing tasks that can be executed manually as well as workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releasableCommits">releasableCommits</a></code> | <code>projen.ReleasableCommits</code> | Find commits that should be considered releasable Used to decide if a release is required. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseBranches">releaseBranches</a></code> | <code>{[ key: string ]: projen.release.BranchOptions}</code> | Defines additional release branches. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseEveryCommit">releaseEveryCommit</a></code> | <code>boolean</code> | Automatically release new versions every commit to one of branches in `releaseBranches`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseFailureIssue">releaseFailureIssue</a></code> | <code>boolean</code> | Create a github issue on every failed publishing task. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseFailureIssueLabel">releaseFailureIssueLabel</a></code> | <code>string</code> | The label to apply to issues indicating publish failures. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseSchedule">releaseSchedule</a></code> | <code>string</code> | CRON schedule to trigger new releases. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseTagPrefix">releaseTagPrefix</a></code> | <code>string</code> | Automatically add the given prefix to release tags. Useful if you are releasing on multiple branches with overlapping version numbers. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseTrigger">releaseTrigger</a></code> | <code>projen.release.ReleaseTrigger</code> | The release trigger to use. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowName">releaseWorkflowName</a></code> | <code>string</code> | The name of the default release workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowSetupSteps">releaseWorkflowSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | A set of workflow steps to execute in order to setup the workflow container. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.versionrcOptions">versionrcOptions</a></code> | <code>{[ key: string ]: any}</code> | Custom configuration used when creating changelog with commit-and-tag-version package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowContainerImage">workflowContainerImage</a></code> | <code>string</code> | Container image to use for GitHub workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowRunsOn">workflowRunsOn</a></code> | <code>string[]</code> | Github Runner selection labels. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowRunsOnGroup">workflowRunsOnGroup</a></code> | <code>projen.GroupRunnerOptions</code> | Github Runner Group selection options. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.defaultReleaseBranch">defaultReleaseBranch</a></code> | <code>string</code> | The name of the main release branch. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.artifactsDirectory">artifactsDirectory</a></code> | <code>string</code> | A directory which will contain build artifacts. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.autoApproveUpgrades">autoApproveUpgrades</a></code> | <code>boolean</code> | Automatically approve deps upgrade PRs, allowing them to be merged by mergify (if configued). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflow">buildWorkflow</a></code> | <code>boolean</code> | Define a GitHub workflow for building PRs. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflowOptions">buildWorkflowOptions</a></code> | <code>projen.javascript.BuildWorkflowOptions</code> | Options for PR build workflow. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflowTriggers">buildWorkflowTriggers</a></code> | <code>projen.github.workflows.Triggers</code> | Build workflow triggers. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bundlerOptions">bundlerOptions</a></code> | <code>projen.javascript.BundlerOptions</code> | Options for `Bundler`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.checkLicenses">checkLicenses</a></code> | <code>projen.javascript.LicenseCheckerOptions</code> | Configure which licenses should be deemed acceptable for use by dependencies. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCov">codeCov</a></code> | <code>boolean</code> | Define a GitHub workflow step for sending code coverage metrics to https://codecov.io/ Uses codecov/codecov-action@v4 A secret is required for private repos. Configured with `@codeCovTokenSecret`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCovTokenSecret">codeCovTokenSecret</a></code> | <code>string</code> | Define the secret name for a specified https://codecov.io/ token A secret is required to send coverage for private repositories. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | License copyright owner. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | The copyright years to put in the LICENSE file. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.dependabot">dependabot</a></code> | <code>boolean</code> | Use dependabot to handle dependency upgrades. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.dependabotOptions">dependabotOptions</a></code> | <code>projen.github.DependabotOptions</code> | Options for dependabot. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.depsUpgrade">depsUpgrade</a></code> | <code>boolean</code> | Use tasks and github workflows to handle dependency upgrades. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.depsUpgradeOptions">depsUpgradeOptions</a></code> | <code>projen.javascript.UpgradeDependenciesOptions</code> | Options for `UpgradeDependencies`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.gitignore">gitignore</a></code> | <code>string[]</code> | Additional entries to .gitignore. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.jest">jest</a></code> | <code>boolean</code> | Setup jest unit tests. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.jestOptions">jestOptions</a></code> | <code>projen.javascript.JestOptions</code> | Jest options. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mutableBuild">mutableBuild</a></code> | <code>boolean</code> | Automatically update files modified during builds to pull-request branches. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmignore">npmignore</a></code> | <code>string[]</code> | Additional entries to .npmignore. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmignoreEnabled">npmignoreEnabled</a></code> | <code>boolean</code> | Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmIgnoreOptions">npmIgnoreOptions</a></code> | <code>projen.IgnoreFileOptions</code> | Configuration options for .npmignore file. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.package">package</a></code> | <code>boolean</code> | Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.prettier">prettier</a></code> | <code>boolean</code> | Setup prettier. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.prettierOptions">prettierOptions</a></code> | <code>projen.javascript.PrettierOptions</code> | Prettier options. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenDevDependency">projenDevDependency</a></code> | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJs">projenrcJs</a></code> | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJsOptions">projenrcJsOptions</a></code> | <code>projen.javascript.ProjenrcOptions</code> | Options for .projenrc.js. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenVersion">projenVersion</a></code> | <code>string</code> | Version of projen to install. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.pullRequestTemplate">pullRequestTemplate</a></code> | <code>boolean</code> | Include a GitHub pull request template. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.pullRequestTemplateContents">pullRequestTemplateContents</a></code> | <code>string[]</code> | The contents of the pull request template. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.release">release</a></code> | <code>boolean</code> | Add release management to this project. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseToNpm">releaseToNpm</a></code> | <code>boolean</code> | Automatically release to npm when new versions are introduced. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflow">releaseWorkflow</a></code> | <code>boolean</code> | DEPRECATED: renamed to `release`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowBootstrapSteps">workflowBootstrapSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Workflow steps to use in order to bootstrap this repo. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowGitIdentity">workflowGitIdentity</a></code> | <code>projen.github.GitIdentity</code> | The git identity to use in workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowNodeVersion">workflowNodeVersion</a></code> | <code>string</code> | The node version to use in GitHub workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowPackageCache">workflowPackageCache</a></code> | <code>boolean</code> | Enable Node.js package cache in GitHub workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.disableTsconfig">disableTsconfig</a></code> | <code>boolean</code> | Do not generate a `tsconfig.json` file (used by jsii projects since tsconfig.json is generated by the jsii compiler). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.disableTsconfigDev">disableTsconfigDev</a></code> | <code>boolean</code> | Do not generate a `tsconfig.dev.json` file. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.docgen">docgen</a></code> | <code>boolean</code> | Docgen by Typedoc. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.docsDirectory">docsDirectory</a></code> | <code>string</code> | Docs directory. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.entrypointTypes">entrypointTypes</a></code> | <code>string</code> | The .d.ts file that includes the type declarations for this module. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.eslint">eslint</a></code> | <code>boolean</code> | Setup eslint. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.eslintOptions">eslintOptions</a></code> | <code>projen.javascript.EslintOptions</code> | Eslint options. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.libdir">libdir</a></code> | <code>string</code> | Typescript  artifacts output directory. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcTs">projenrcTs</a></code> | <code>boolean</code> | Use TypeScript for your projenrc file (`.projenrc.ts`). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcTsOptions">projenrcTsOptions</a></code> | <code>projen.typescript.ProjenrcOptions</code> | Options for .projenrc.ts. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.sampleCode">sampleCode</a></code> | <code>boolean</code> | Generate one-time sample in `src/` and `test/` if there are no files there. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.srcdir">srcdir</a></code> | <code>string</code> | Typescript sources directory. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.testdir">testdir</a></code> | <code>string</code> | Jest tests directory. Tests files should be named `xxx.test.ts`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.tsconfig">tsconfig</a></code> | <code>projen.javascript.TypescriptConfigOptions</code> | Custom TSConfig. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.tsconfigDev">tsconfigDev</a></code> | <code>projen.javascript.TypescriptConfigOptions</code> | Custom tsconfig options for the development tsconfig.json file (used for testing). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.tsconfigDevFile">tsconfigDevFile</a></code> | <code>string</code> | The name of the development tsconfig.json file. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.tsJestOptions">tsJestOptions</a></code> | <code>projen.typescript.TsJestOptions</code> | Options for ts-jest. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.typescriptVersion">typescriptVersion</a></code> | <code>string</code> | TypeScript version to use. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.author">author</a></code> | <code>string</code> | The name of the library author. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.authorAddress">authorAddress</a></code> | <code>string</code> | Email or URL of the library author. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.repositoryUrl">repositoryUrl</a></code> | <code>string</code> | Git repository URL. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.compat">compat</a></code> | <code>boolean</code> | Automatically run API compatibility test against the latest version published to npm after compilation. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.compatIgnore">compatIgnore</a></code> | <code>string</code> | Name of the ignore file for API compatibility tests. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.compressAssembly">compressAssembly</a></code> | <code>boolean</code> | Emit a compressed version of the assembly. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.docgenFilePath">docgenFilePath</a></code> | <code>string</code> | File path for generated docs. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.dotnet">dotnet</a></code> | <code>projen.cdk.JsiiDotNetTarget</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.excludeTypescript">excludeTypescript</a></code> | <code>string[]</code> | Accepts a list of glob patterns. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.jsiiVersion">jsiiVersion</a></code> | <code>string</code> | Version of the jsii compiler to use. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToGo">publishToGo</a></code> | <code>projen.cdk.JsiiGoTarget</code> | Publish Go bindings to a git repository. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToMaven">publishToMaven</a></code> | <code>projen.cdk.JsiiJavaTarget</code> | Publish to maven. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToNuget">publishToNuget</a></code> | <code>projen.cdk.JsiiDotNetTarget</code> | Publish to NuGet. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToPypi">publishToPypi</a></code> | <code>projen.cdk.JsiiPythonTarget</code> | Publish to pypi. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.python">python</a></code> | <code>projen.cdk.JsiiPythonTarget</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.rootdir">rootdir</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktfVersion">cdktfVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.constructsVersion">constructsVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.terraformProvider">terraformProvider</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.creationYear">creationYear</a></code> | <code>number</code> | The year of the creation of the repository, for copyright purposes. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.deprecationDate">deprecationDate</a></code> | <code>string</code> | An optional date when the project should be considered deprecated, to be used in the README text. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.forceMajorVersion">forceMajorVersion</a></code> | <code>number</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.githubNamespace">githubNamespace</a></code> | <code>string</code> | defaults to "cdktn-io" previously was "cdktf". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.isDeprecated">isDeprecated</a></code> | <code>boolean</code> | Whether or not this prebuilt provider is deprecated. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.licensee">licensee</a></code> | <code>string</code> | defaults to "HashiCorp, Inc.". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenEndpoint">mavenEndpoint</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenGroupId">mavenGroupId</a></code> | <code>string</code> | defaults to "io.${mavenOrg}". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenOrg">mavenOrg</a></code> | <code>string</code> | defaults to "cdktn". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.namespace">namespace</a></code> | <code>string</code> | defaults to "cdktn". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.nugetOrg">nugetOrg</a></code> | <code>string</code> | defaults to "Io.Cdktn". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.useCustomGithubRunner">useCustomGithubRunner</a></code> | <code>boolean</code> | *No description.* |
 
 ---
 
-##### `name`<sup>Required</sup> <a name="name" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.name"></a>
+##### `name`<sup>Required</sup> <a name="name" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.name"></a>
 
 ```typescript
 public readonly name: string;
@@ -1711,7 +1711,7 @@ This is the name of your project.
 
 ---
 
-##### `commitGenerated`<sup>Optional</sup> <a name="commitGenerated" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.commitGenerated"></a>
+##### `commitGenerated`<sup>Optional</sup> <a name="commitGenerated" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.commitGenerated"></a>
 
 ```typescript
 public readonly commitGenerated: boolean;
@@ -1724,7 +1724,7 @@ Whether to commit the managed files by default.
 
 ---
 
-##### `gitIgnoreOptions`<sup>Optional</sup> <a name="gitIgnoreOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.gitIgnoreOptions"></a>
+##### `gitIgnoreOptions`<sup>Optional</sup> <a name="gitIgnoreOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.gitIgnoreOptions"></a>
 
 ```typescript
 public readonly gitIgnoreOptions: IgnoreFileOptions;
@@ -1736,7 +1736,7 @@ Configuration options for .gitignore file.
 
 ---
 
-##### `gitOptions`<sup>Optional</sup> <a name="gitOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.gitOptions"></a>
+##### `gitOptions`<sup>Optional</sup> <a name="gitOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.gitOptions"></a>
 
 ```typescript
 public readonly gitOptions: GitOptions;
@@ -1748,7 +1748,7 @@ Configuration options for git.
 
 ---
 
-##### `logging`<sup>Optional</sup> <a name="logging" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.logging"></a>
+##### `logging`<sup>Optional</sup> <a name="logging" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.logging"></a>
 
 ```typescript
 public readonly logging: LoggerOptions;
@@ -1761,7 +1761,7 @@ Configure logging options such as verbosity.
 
 ---
 
-##### `outdir`<sup>Optional</sup> <a name="outdir" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.outdir"></a>
+##### `outdir`<sup>Optional</sup> <a name="outdir" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.outdir"></a>
 
 ```typescript
 public readonly outdir: string;
@@ -1780,7 +1780,7 @@ subprojects.
 
 ---
 
-##### `parent`<sup>Optional</sup> <a name="parent" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.parent"></a>
+##### `parent`<sup>Optional</sup> <a name="parent" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.parent"></a>
 
 ```typescript
 public readonly parent: Project;
@@ -1792,7 +1792,7 @@ The parent project, if this project is part of a bigger project.
 
 ---
 
-##### `projenCommand`<sup>Optional</sup> <a name="projenCommand" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenCommand"></a>
+##### `projenCommand`<sup>Optional</sup> <a name="projenCommand" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenCommand"></a>
 
 ```typescript
 public readonly projenCommand: string;
@@ -1807,7 +1807,7 @@ Can be used to customize in special environments.
 
 ---
 
-##### `projenrcJson`<sup>Optional</sup> <a name="projenrcJson" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJson"></a>
+##### `projenrcJson`<sup>Optional</sup> <a name="projenrcJson" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJson"></a>
 
 ```typescript
 public readonly projenrcJson: boolean;
@@ -1820,7 +1820,7 @@ Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .pr
 
 ---
 
-##### `projenrcJsonOptions`<sup>Optional</sup> <a name="projenrcJsonOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJsonOptions"></a>
+##### `projenrcJsonOptions`<sup>Optional</sup> <a name="projenrcJsonOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJsonOptions"></a>
 
 ```typescript
 public readonly projenrcJsonOptions: ProjenrcJsonOptions;
@@ -1833,7 +1833,7 @@ Options for .projenrc.json.
 
 ---
 
-##### `renovatebot`<sup>Optional</sup> <a name="renovatebot" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.renovatebot"></a>
+##### `renovatebot`<sup>Optional</sup> <a name="renovatebot" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.renovatebot"></a>
 
 ```typescript
 public readonly renovatebot: boolean;
@@ -1846,7 +1846,7 @@ Use renovatebot to handle dependency upgrades.
 
 ---
 
-##### `renovatebotOptions`<sup>Optional</sup> <a name="renovatebotOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.renovatebotOptions"></a>
+##### `renovatebotOptions`<sup>Optional</sup> <a name="renovatebotOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.renovatebotOptions"></a>
 
 ```typescript
 public readonly renovatebotOptions: RenovatebotOptions;
@@ -1859,7 +1859,7 @@ Options for renovatebot.
 
 ---
 
-##### `autoApproveOptions`<sup>Optional</sup> <a name="autoApproveOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.autoApproveOptions"></a>
+##### `autoApproveOptions`<sup>Optional</sup> <a name="autoApproveOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.autoApproveOptions"></a>
 
 ```typescript
 public readonly autoApproveOptions: AutoApproveOptions;
@@ -1872,7 +1872,7 @@ Enable and configure the 'auto approve' workflow.
 
 ---
 
-##### `autoMerge`<sup>Optional</sup> <a name="autoMerge" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.autoMerge"></a>
+##### `autoMerge`<sup>Optional</sup> <a name="autoMerge" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.autoMerge"></a>
 
 ```typescript
 public readonly autoMerge: boolean;
@@ -1888,7 +1888,7 @@ is set to false.
 
 ---
 
-##### `autoMergeOptions`<sup>Optional</sup> <a name="autoMergeOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.autoMergeOptions"></a>
+##### `autoMergeOptions`<sup>Optional</sup> <a name="autoMergeOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.autoMergeOptions"></a>
 
 ```typescript
 public readonly autoMergeOptions: AutoMergeOptions;
@@ -1904,7 +1904,7 @@ Has no effect if
 
 ---
 
-##### `clobber`<sup>Optional</sup> <a name="clobber" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.clobber"></a>
+##### `clobber`<sup>Optional</sup> <a name="clobber" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.clobber"></a>
 
 ```typescript
 public readonly clobber: boolean;
@@ -1917,7 +1917,7 @@ Add a `clobber` task which resets the repo to origin.
 
 ---
 
-##### `devContainer`<sup>Optional</sup> <a name="devContainer" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.devContainer"></a>
+##### `devContainer`<sup>Optional</sup> <a name="devContainer" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.devContainer"></a>
 
 ```typescript
 public readonly devContainer: boolean;
@@ -1930,7 +1930,7 @@ Add a VSCode development environment (used for GitHub Codespaces).
 
 ---
 
-##### `github`<sup>Optional</sup> <a name="github" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.github"></a>
+##### `github`<sup>Optional</sup> <a name="github" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.github"></a>
 
 ```typescript
 public readonly github: boolean;
@@ -1945,7 +1945,7 @@ Enabled by default for root projects. Disabled for non-root projects.
 
 ---
 
-##### `githubOptions`<sup>Optional</sup> <a name="githubOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.githubOptions"></a>
+##### `githubOptions`<sup>Optional</sup> <a name="githubOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.githubOptions"></a>
 
 ```typescript
 public readonly githubOptions: GitHubOptions;
@@ -1958,7 +1958,7 @@ Options for GitHub integration.
 
 ---
 
-##### `gitpod`<sup>Optional</sup> <a name="gitpod" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.gitpod"></a>
+##### `gitpod`<sup>Optional</sup> <a name="gitpod" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.gitpod"></a>
 
 ```typescript
 public readonly gitpod: boolean;
@@ -1971,7 +1971,7 @@ Add a Gitpod development environment.
 
 ---
 
-##### ~~`mergify`~~<sup>Optional</sup> <a name="mergify" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.mergify"></a>
+##### ~~`mergify`~~<sup>Optional</sup> <a name="mergify" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.mergify"></a>
 
 - *Deprecated:* use `githubOptions.mergify` instead
 
@@ -1986,7 +1986,7 @@ Whether mergify should be enabled on this repository or not.
 
 ---
 
-##### ~~`mergifyOptions`~~<sup>Optional</sup> <a name="mergifyOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.mergifyOptions"></a>
+##### ~~`mergifyOptions`~~<sup>Optional</sup> <a name="mergifyOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.mergifyOptions"></a>
 
 - *Deprecated:* use `githubOptions.mergifyOptions` instead
 
@@ -2001,7 +2001,7 @@ Options for mergify.
 
 ---
 
-##### ~~`projectType`~~<sup>Optional</sup> <a name="projectType" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projectType"></a>
+##### ~~`projectType`~~<sup>Optional</sup> <a name="projectType" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projectType"></a>
 
 - *Deprecated:* no longer supported at the base project level
 
@@ -2016,7 +2016,7 @@ Which type of project this is (library/app).
 
 ---
 
-##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenCredentials"></a>
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenCredentials"></a>
 
 ```typescript
 public readonly projenCredentials: GithubCredentials;
@@ -2029,7 +2029,7 @@ Choose a method of providing GitHub API access for projen workflows.
 
 ---
 
-##### ~~`projenTokenSecret`~~<sup>Optional</sup> <a name="projenTokenSecret" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenTokenSecret"></a>
+##### ~~`projenTokenSecret`~~<sup>Optional</sup> <a name="projenTokenSecret" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenTokenSecret"></a>
 
 - *Deprecated:* use `projenCredentials`
 
@@ -2047,7 +2047,7 @@ and `packages` scope.
 
 ---
 
-##### `readme`<sup>Optional</sup> <a name="readme" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.readme"></a>
+##### `readme`<sup>Optional</sup> <a name="readme" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.readme"></a>
 
 ```typescript
 public readonly readme: SampleReadmeProps;
@@ -2067,7 +2067,7 @@ The README setup.
 ```
 
 
-##### `stale`<sup>Optional</sup> <a name="stale" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.stale"></a>
+##### `stale`<sup>Optional</sup> <a name="stale" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.stale"></a>
 
 ```typescript
 public readonly stale: boolean;
@@ -2082,7 +2082,7 @@ See `staleOptions` for options.
 
 ---
 
-##### `staleOptions`<sup>Optional</sup> <a name="staleOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.staleOptions"></a>
+##### `staleOptions`<sup>Optional</sup> <a name="staleOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.staleOptions"></a>
 
 ```typescript
 public readonly staleOptions: StaleOptions;
@@ -2097,7 +2097,7 @@ To disable set `stale` to `false`.
 
 ---
 
-##### `vscode`<sup>Optional</sup> <a name="vscode" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.vscode"></a>
+##### `vscode`<sup>Optional</sup> <a name="vscode" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.vscode"></a>
 
 ```typescript
 public readonly vscode: boolean;
@@ -2112,7 +2112,7 @@ Enabled by default for root projects. Disabled for non-root projects.
 
 ---
 
-##### `allowLibraryDependencies`<sup>Optional</sup> <a name="allowLibraryDependencies" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.allowLibraryDependencies"></a>
+##### `allowLibraryDependencies`<sup>Optional</sup> <a name="allowLibraryDependencies" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.allowLibraryDependencies"></a>
 
 ```typescript
 public readonly allowLibraryDependencies: boolean;
@@ -2128,7 +2128,7 @@ for specifying these.
 
 ---
 
-##### `authorEmail`<sup>Optional</sup> <a name="authorEmail" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.authorEmail"></a>
+##### `authorEmail`<sup>Optional</sup> <a name="authorEmail" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.authorEmail"></a>
 
 ```typescript
 public readonly authorEmail: string;
@@ -2140,7 +2140,7 @@ Author's e-mail.
 
 ---
 
-##### `authorName`<sup>Optional</sup> <a name="authorName" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.authorName"></a>
+##### `authorName`<sup>Optional</sup> <a name="authorName" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.authorName"></a>
 
 ```typescript
 public readonly authorName: string;
@@ -2152,7 +2152,7 @@ Author's name.
 
 ---
 
-##### `authorOrganization`<sup>Optional</sup> <a name="authorOrganization" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.authorOrganization"></a>
+##### `authorOrganization`<sup>Optional</sup> <a name="authorOrganization" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.authorOrganization"></a>
 
 ```typescript
 public readonly authorOrganization: boolean;
@@ -2164,7 +2164,7 @@ Is the author an organization.
 
 ---
 
-##### `authorUrl`<sup>Optional</sup> <a name="authorUrl" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.authorUrl"></a>
+##### `authorUrl`<sup>Optional</sup> <a name="authorUrl" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.authorUrl"></a>
 
 ```typescript
 public readonly authorUrl: string;
@@ -2176,7 +2176,7 @@ Author's URL / Website.
 
 ---
 
-##### `autoDetectBin`<sup>Optional</sup> <a name="autoDetectBin" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.autoDetectBin"></a>
+##### `autoDetectBin`<sup>Optional</sup> <a name="autoDetectBin" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.autoDetectBin"></a>
 
 ```typescript
 public readonly autoDetectBin: boolean;
@@ -2189,7 +2189,7 @@ Automatically add all executables under the `bin` directory to your `package.jso
 
 ---
 
-##### `bin`<sup>Optional</sup> <a name="bin" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.bin"></a>
+##### `bin`<sup>Optional</sup> <a name="bin" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.bin"></a>
 
 ```typescript
 public readonly bin: {[ key: string ]: string};
@@ -2205,7 +2205,7 @@ executable file under `bin` will automatically be added to this section.
 
 ---
 
-##### `bugsEmail`<sup>Optional</sup> <a name="bugsEmail" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.bugsEmail"></a>
+##### `bugsEmail`<sup>Optional</sup> <a name="bugsEmail" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.bugsEmail"></a>
 
 ```typescript
 public readonly bugsEmail: string;
@@ -2217,7 +2217,7 @@ The email address to which issues should be reported.
 
 ---
 
-##### `bugsUrl`<sup>Optional</sup> <a name="bugsUrl" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.bugsUrl"></a>
+##### `bugsUrl`<sup>Optional</sup> <a name="bugsUrl" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.bugsUrl"></a>
 
 ```typescript
 public readonly bugsUrl: string;
@@ -2229,7 +2229,7 @@ The url to your project's issue tracker.
 
 ---
 
-##### `bundledDeps`<sup>Optional</sup> <a name="bundledDeps" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.bundledDeps"></a>
+##### `bundledDeps`<sup>Optional</sup> <a name="bundledDeps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.bundledDeps"></a>
 
 ```typescript
 public readonly bundledDeps: string[];
@@ -2252,7 +2252,7 @@ this will be what you `package.json` will eventually include.
 
 ---
 
-##### `codeArtifactOptions`<sup>Optional</sup> <a name="codeArtifactOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.codeArtifactOptions"></a>
+##### `codeArtifactOptions`<sup>Optional</sup> <a name="codeArtifactOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.codeArtifactOptions"></a>
 
 ```typescript
 public readonly codeArtifactOptions: CodeArtifactOptions;
@@ -2267,7 +2267,7 @@ This is required if publishing packages to, or installing scoped packages from A
 
 ---
 
-##### `deps`<sup>Optional</sup> <a name="deps" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.deps"></a>
+##### `deps`<sup>Optional</sup> <a name="deps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.deps"></a>
 
 ```typescript
 public readonly deps: string[];
@@ -2294,7 +2294,7 @@ this will be what you `package.json` will eventually include.
 ```
 
 
-##### `description`<sup>Optional</sup> <a name="description" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.description"></a>
+##### `description`<sup>Optional</sup> <a name="description" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.description"></a>
 
 ```typescript
 public readonly description: string;
@@ -2309,7 +2309,7 @@ See https://classic.yarnpkg.com/en/docs/package-json/#toc-description
 
 ---
 
-##### `devDeps`<sup>Optional</sup> <a name="devDeps" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.devDeps"></a>
+##### `devDeps`<sup>Optional</sup> <a name="devDeps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.devDeps"></a>
 
 ```typescript
 public readonly devDeps: string[];
@@ -2340,7 +2340,7 @@ this will be what you `package.json` will eventually include.
 ```
 
 
-##### `entrypoint`<sup>Optional</sup> <a name="entrypoint" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.entrypoint"></a>
+##### `entrypoint`<sup>Optional</sup> <a name="entrypoint" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.entrypoint"></a>
 
 ```typescript
 public readonly entrypoint: string;
@@ -2355,7 +2355,7 @@ Set to an empty string to not include `main` in your package.json
 
 ---
 
-##### `homepage`<sup>Optional</sup> <a name="homepage" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.homepage"></a>
+##### `homepage`<sup>Optional</sup> <a name="homepage" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.homepage"></a>
 
 ```typescript
 public readonly homepage: string;
@@ -2367,7 +2367,7 @@ Package's Homepage / Website.
 
 ---
 
-##### `keywords`<sup>Optional</sup> <a name="keywords" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.keywords"></a>
+##### `keywords`<sup>Optional</sup> <a name="keywords" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.keywords"></a>
 
 ```typescript
 public readonly keywords: string[];
@@ -2379,7 +2379,7 @@ Keywords to include in `package.json`.
 
 ---
 
-##### `license`<sup>Optional</sup> <a name="license" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.license"></a>
+##### `license`<sup>Optional</sup> <a name="license" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.license"></a>
 
 ```typescript
 public readonly license: string;
@@ -2395,7 +2395,7 @@ Use the `licensed` option if you want to no license to be specified.
 
 ---
 
-##### `licensed`<sup>Optional</sup> <a name="licensed" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.licensed"></a>
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.licensed"></a>
 
 ```typescript
 public readonly licensed: boolean;
@@ -2408,7 +2408,7 @@ Indicates if a license should be added.
 
 ---
 
-##### `maxNodeVersion`<sup>Optional</sup> <a name="maxNodeVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.maxNodeVersion"></a>
+##### `maxNodeVersion`<sup>Optional</sup> <a name="maxNodeVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.maxNodeVersion"></a>
 
 ```typescript
 public readonly maxNodeVersion: string;
@@ -2421,7 +2421,7 @@ Minimum node.js version to require via `engines` (inclusive).
 
 ---
 
-##### `minNodeVersion`<sup>Optional</sup> <a name="minNodeVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.minNodeVersion"></a>
+##### `minNodeVersion`<sup>Optional</sup> <a name="minNodeVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.minNodeVersion"></a>
 
 ```typescript
 public readonly minNodeVersion: string;
@@ -2434,7 +2434,7 @@ Minimum Node.js version to require via package.json `engines` (inclusive).
 
 ---
 
-##### `npmAccess`<sup>Optional</sup> <a name="npmAccess" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmAccess"></a>
+##### `npmAccess`<sup>Optional</sup> <a name="npmAccess" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmAccess"></a>
 
 ```typescript
 public readonly npmAccess: NpmAccess;
@@ -2447,7 +2447,7 @@ Access level of the npm package.
 
 ---
 
-##### `npmProvenance`<sup>Optional</sup> <a name="npmProvenance" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmProvenance"></a>
+##### `npmProvenance`<sup>Optional</sup> <a name="npmProvenance" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmProvenance"></a>
 
 ```typescript
 public readonly npmProvenance: boolean;
@@ -2468,7 +2468,7 @@ which is using npm internally and supports provenance statements independently o
 
 ---
 
-##### ~~`npmRegistry`~~<sup>Optional</sup> <a name="npmRegistry" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmRegistry"></a>
+##### ~~`npmRegistry`~~<sup>Optional</sup> <a name="npmRegistry" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmRegistry"></a>
 
 - *Deprecated:* use `npmRegistryUrl` instead
 
@@ -2484,7 +2484,7 @@ Cannot be set together with `npmRegistryUrl`.
 
 ---
 
-##### `npmRegistryUrl`<sup>Optional</sup> <a name="npmRegistryUrl" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmRegistryUrl"></a>
+##### `npmRegistryUrl`<sup>Optional</sup> <a name="npmRegistryUrl" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmRegistryUrl"></a>
 
 ```typescript
 public readonly npmRegistryUrl: string;
@@ -2499,7 +2499,7 @@ Must be a URL (e.g. start with "https://" or "http://")
 
 ---
 
-##### `npmTokenSecret`<sup>Optional</sup> <a name="npmTokenSecret" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmTokenSecret"></a>
+##### `npmTokenSecret`<sup>Optional</sup> <a name="npmTokenSecret" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmTokenSecret"></a>
 
 ```typescript
 public readonly npmTokenSecret: string;
@@ -2512,7 +2512,7 @@ GitHub secret which contains the NPM token to use when publishing packages.
 
 ---
 
-##### `packageManager`<sup>Optional</sup> <a name="packageManager" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.packageManager"></a>
+##### `packageManager`<sup>Optional</sup> <a name="packageManager" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.packageManager"></a>
 
 ```typescript
 public readonly packageManager: NodePackageManager;
@@ -2525,7 +2525,7 @@ The Node Package Manager used to execute scripts.
 
 ---
 
-##### `packageName`<sup>Optional</sup> <a name="packageName" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.packageName"></a>
+##### `packageName`<sup>Optional</sup> <a name="packageName" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.packageName"></a>
 
 ```typescript
 public readonly packageName: string;
@@ -2538,7 +2538,7 @@ The "name" in package.json.
 
 ---
 
-##### `peerDependencyOptions`<sup>Optional</sup> <a name="peerDependencyOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.peerDependencyOptions"></a>
+##### `peerDependencyOptions`<sup>Optional</sup> <a name="peerDependencyOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.peerDependencyOptions"></a>
 
 ```typescript
 public readonly peerDependencyOptions: PeerDependencyOptions;
@@ -2550,7 +2550,7 @@ Options for `peerDeps`.
 
 ---
 
-##### `peerDeps`<sup>Optional</sup> <a name="peerDeps" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.peerDeps"></a>
+##### `peerDeps`<sup>Optional</sup> <a name="peerDeps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.peerDeps"></a>
 
 ```typescript
 public readonly peerDeps: string[];
@@ -2577,7 +2577,7 @@ test your module against the lowest peer version required.
 
 ---
 
-##### `pnpmVersion`<sup>Optional</sup> <a name="pnpmVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.pnpmVersion"></a>
+##### `pnpmVersion`<sup>Optional</sup> <a name="pnpmVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.pnpmVersion"></a>
 
 ```typescript
 public readonly pnpmVersion: string;
@@ -2590,7 +2590,7 @@ The version of PNPM to use if using PNPM as a package manager.
 
 ---
 
-##### `repository`<sup>Optional</sup> <a name="repository" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.repository"></a>
+##### `repository`<sup>Optional</sup> <a name="repository" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.repository"></a>
 
 ```typescript
 public readonly repository: string;
@@ -2604,7 +2604,7 @@ See https://classic.yarnpkg.com/en/docs/package-json/#toc-repository
 
 ---
 
-##### `repositoryDirectory`<sup>Optional</sup> <a name="repositoryDirectory" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.repositoryDirectory"></a>
+##### `repositoryDirectory`<sup>Optional</sup> <a name="repositoryDirectory" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.repositoryDirectory"></a>
 
 ```typescript
 public readonly repositoryDirectory: string;
@@ -2616,7 +2616,7 @@ If the package.json for your package is not in the root directory (for example i
 
 ---
 
-##### `scopedPackagesOptions`<sup>Optional</sup> <a name="scopedPackagesOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.scopedPackagesOptions"></a>
+##### `scopedPackagesOptions`<sup>Optional</sup> <a name="scopedPackagesOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.scopedPackagesOptions"></a>
 
 ```typescript
 public readonly scopedPackagesOptions: ScopedPackagesOptions[];
@@ -2629,7 +2629,7 @@ Options for privately hosted scoped packages.
 
 ---
 
-##### ~~`scripts`~~<sup>Optional</sup> <a name="scripts" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.scripts"></a>
+##### ~~`scripts`~~<sup>Optional</sup> <a name="scripts" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.scripts"></a>
 
 - *Deprecated:* use `project.addTask()` or `package.setScript()`
 
@@ -2648,7 +2648,7 @@ Also adds the script as a task.
 
 ---
 
-##### `stability`<sup>Optional</sup> <a name="stability" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.stability"></a>
+##### `stability`<sup>Optional</sup> <a name="stability" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.stability"></a>
 
 ```typescript
 public readonly stability: string;
@@ -2660,7 +2660,7 @@ Package's Stability.
 
 ---
 
-##### `yarnBerryOptions`<sup>Optional</sup> <a name="yarnBerryOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.yarnBerryOptions"></a>
+##### `yarnBerryOptions`<sup>Optional</sup> <a name="yarnBerryOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.yarnBerryOptions"></a>
 
 ```typescript
 public readonly yarnBerryOptions: YarnBerryOptions;
@@ -2673,7 +2673,7 @@ Options for Yarn Berry.
 
 ---
 
-##### `jsiiReleaseVersion`<sup>Optional</sup> <a name="jsiiReleaseVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.jsiiReleaseVersion"></a>
+##### `jsiiReleaseVersion`<sup>Optional</sup> <a name="jsiiReleaseVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.jsiiReleaseVersion"></a>
 
 ```typescript
 public readonly jsiiReleaseVersion: string;
@@ -2686,7 +2686,7 @@ Version requirement of `publib` which is used to publish modules to npm.
 
 ---
 
-##### `majorVersion`<sup>Optional</sup> <a name="majorVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.majorVersion"></a>
+##### `majorVersion`<sup>Optional</sup> <a name="majorVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.majorVersion"></a>
 
 ```typescript
 public readonly majorVersion: number;
@@ -2702,7 +2702,7 @@ If not specified, we bump the global latest version.
 
 ---
 
-##### `minMajorVersion`<sup>Optional</sup> <a name="minMajorVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.minMajorVersion"></a>
+##### `minMajorVersion`<sup>Optional</sup> <a name="minMajorVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.minMajorVersion"></a>
 
 ```typescript
 public readonly minMajorVersion: number;
@@ -2720,7 +2720,7 @@ Can not be set together with `majorVersion`.
 
 ---
 
-##### `npmDistTag`<sup>Optional</sup> <a name="npmDistTag" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmDistTag"></a>
+##### `npmDistTag`<sup>Optional</sup> <a name="npmDistTag" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmDistTag"></a>
 
 ```typescript
 public readonly npmDistTag: string;
@@ -2736,7 +2736,7 @@ for each branch.
 
 ---
 
-##### `postBuildSteps`<sup>Optional</sup> <a name="postBuildSteps" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.postBuildSteps"></a>
+##### `postBuildSteps`<sup>Optional</sup> <a name="postBuildSteps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.postBuildSteps"></a>
 
 ```typescript
 public readonly postBuildSteps: JobStep[];
@@ -2749,7 +2749,7 @@ Steps to execute after build as part of the release workflow.
 
 ---
 
-##### `prerelease`<sup>Optional</sup> <a name="prerelease" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.prerelease"></a>
+##### `prerelease`<sup>Optional</sup> <a name="prerelease" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.prerelease"></a>
 
 ```typescript
 public readonly prerelease: string;
@@ -2762,7 +2762,7 @@ Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pr
 
 ---
 
-##### `publishDryRun`<sup>Optional</sup> <a name="publishDryRun" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.publishDryRun"></a>
+##### `publishDryRun`<sup>Optional</sup> <a name="publishDryRun" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.publishDryRun"></a>
 
 ```typescript
 public readonly publishDryRun: boolean;
@@ -2775,7 +2775,7 @@ Instead of actually publishing to package managers, just print the publishing co
 
 ---
 
-##### `publishTasks`<sup>Optional</sup> <a name="publishTasks" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.publishTasks"></a>
+##### `publishTasks`<sup>Optional</sup> <a name="publishTasks" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.publishTasks"></a>
 
 ```typescript
 public readonly publishTasks: boolean;
@@ -2791,7 +2791,7 @@ in order to create a publishing task for each publishing activity.
 
 ---
 
-##### `releasableCommits`<sup>Optional</sup> <a name="releasableCommits" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releasableCommits"></a>
+##### `releasableCommits`<sup>Optional</sup> <a name="releasableCommits" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releasableCommits"></a>
 
 ```typescript
 public readonly releasableCommits: ReleasableCommits;
@@ -2804,7 +2804,7 @@ Find commits that should be considered releasable Used to decide if a release is
 
 ---
 
-##### `releaseBranches`<sup>Optional</sup> <a name="releaseBranches" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseBranches"></a>
+##### `releaseBranches`<sup>Optional</sup> <a name="releaseBranches" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseBranches"></a>
 
 ```typescript
 public readonly releaseBranches: {[ key: string ]: BranchOptions};
@@ -2824,7 +2824,7 @@ be provided for the default branch.
 
 ---
 
-##### ~~`releaseEveryCommit`~~<sup>Optional</sup> <a name="releaseEveryCommit" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseEveryCommit"></a>
+##### ~~`releaseEveryCommit`~~<sup>Optional</sup> <a name="releaseEveryCommit" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseEveryCommit"></a>
 
 - *Deprecated:* Use `releaseTrigger: ReleaseTrigger.continuous()` instead
 
@@ -2839,7 +2839,7 @@ Automatically release new versions every commit to one of branches in `releaseBr
 
 ---
 
-##### `releaseFailureIssue`<sup>Optional</sup> <a name="releaseFailureIssue" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseFailureIssue"></a>
+##### `releaseFailureIssue`<sup>Optional</sup> <a name="releaseFailureIssue" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseFailureIssue"></a>
 
 ```typescript
 public readonly releaseFailureIssue: boolean;
@@ -2852,7 +2852,7 @@ Create a github issue on every failed publishing task.
 
 ---
 
-##### `releaseFailureIssueLabel`<sup>Optional</sup> <a name="releaseFailureIssueLabel" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseFailureIssueLabel"></a>
+##### `releaseFailureIssueLabel`<sup>Optional</sup> <a name="releaseFailureIssueLabel" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseFailureIssueLabel"></a>
 
 ```typescript
 public readonly releaseFailureIssueLabel: string;
@@ -2867,7 +2867,7 @@ Only applies if `releaseFailureIssue` is true.
 
 ---
 
-##### ~~`releaseSchedule`~~<sup>Optional</sup> <a name="releaseSchedule" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseSchedule"></a>
+##### ~~`releaseSchedule`~~<sup>Optional</sup> <a name="releaseSchedule" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseSchedule"></a>
 
 - *Deprecated:* Use `releaseTrigger: ReleaseTrigger.scheduled()` instead
 
@@ -2882,7 +2882,7 @@ CRON schedule to trigger new releases.
 
 ---
 
-##### `releaseTagPrefix`<sup>Optional</sup> <a name="releaseTagPrefix" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseTagPrefix"></a>
+##### `releaseTagPrefix`<sup>Optional</sup> <a name="releaseTagPrefix" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseTagPrefix"></a>
 
 ```typescript
 public readonly releaseTagPrefix: string;
@@ -2900,7 +2900,7 @@ with the new prefix.
 
 ---
 
-##### `releaseTrigger`<sup>Optional</sup> <a name="releaseTrigger" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseTrigger"></a>
+##### `releaseTrigger`<sup>Optional</sup> <a name="releaseTrigger" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseTrigger"></a>
 
 ```typescript
 public readonly releaseTrigger: ReleaseTrigger;
@@ -2913,7 +2913,7 @@ The release trigger to use.
 
 ---
 
-##### `releaseWorkflowName`<sup>Optional</sup> <a name="releaseWorkflowName" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseWorkflowName"></a>
+##### `releaseWorkflowName`<sup>Optional</sup> <a name="releaseWorkflowName" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowName"></a>
 
 ```typescript
 public readonly releaseWorkflowName: string;
@@ -2926,7 +2926,7 @@ The name of the default release workflow.
 
 ---
 
-##### `releaseWorkflowSetupSteps`<sup>Optional</sup> <a name="releaseWorkflowSetupSteps" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseWorkflowSetupSteps"></a>
+##### `releaseWorkflowSetupSteps`<sup>Optional</sup> <a name="releaseWorkflowSetupSteps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowSetupSteps"></a>
 
 ```typescript
 public readonly releaseWorkflowSetupSteps: JobStep[];
@@ -2938,7 +2938,7 @@ A set of workflow steps to execute in order to setup the workflow container.
 
 ---
 
-##### `versionrcOptions`<sup>Optional</sup> <a name="versionrcOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.versionrcOptions"></a>
+##### `versionrcOptions`<sup>Optional</sup> <a name="versionrcOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.versionrcOptions"></a>
 
 ```typescript
 public readonly versionrcOptions: {[ key: string ]: any};
@@ -2953,7 +2953,7 @@ Given values either append to default configuration or overwrite values in it.
 
 ---
 
-##### `workflowContainerImage`<sup>Optional</sup> <a name="workflowContainerImage" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowContainerImage"></a>
+##### `workflowContainerImage`<sup>Optional</sup> <a name="workflowContainerImage" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowContainerImage"></a>
 
 ```typescript
 public readonly workflowContainerImage: string;
@@ -2966,7 +2966,7 @@ Container image to use for GitHub workflows.
 
 ---
 
-##### `workflowRunsOn`<sup>Optional</sup> <a name="workflowRunsOn" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowRunsOn"></a>
+##### `workflowRunsOn`<sup>Optional</sup> <a name="workflowRunsOn" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowRunsOn"></a>
 
 ```typescript
 public readonly workflowRunsOn: string[];
@@ -2979,7 +2979,7 @@ Github Runner selection labels.
 
 ---
 
-##### `workflowRunsOnGroup`<sup>Optional</sup> <a name="workflowRunsOnGroup" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowRunsOnGroup"></a>
+##### `workflowRunsOnGroup`<sup>Optional</sup> <a name="workflowRunsOnGroup" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowRunsOnGroup"></a>
 
 ```typescript
 public readonly workflowRunsOnGroup: GroupRunnerOptions;
@@ -2991,7 +2991,7 @@ Github Runner Group selection options.
 
 ---
 
-##### `defaultReleaseBranch`<sup>Required</sup> <a name="defaultReleaseBranch" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.defaultReleaseBranch"></a>
+##### `defaultReleaseBranch`<sup>Required</sup> <a name="defaultReleaseBranch" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.defaultReleaseBranch"></a>
 
 ```typescript
 public readonly defaultReleaseBranch: string;
@@ -3004,7 +3004,7 @@ The name of the main release branch.
 
 ---
 
-##### `artifactsDirectory`<sup>Optional</sup> <a name="artifactsDirectory" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.artifactsDirectory"></a>
+##### `artifactsDirectory`<sup>Optional</sup> <a name="artifactsDirectory" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.artifactsDirectory"></a>
 
 ```typescript
 public readonly artifactsDirectory: string;
@@ -3017,7 +3017,7 @@ A directory which will contain build artifacts.
 
 ---
 
-##### `autoApproveUpgrades`<sup>Optional</sup> <a name="autoApproveUpgrades" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.autoApproveUpgrades"></a>
+##### `autoApproveUpgrades`<sup>Optional</sup> <a name="autoApproveUpgrades" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.autoApproveUpgrades"></a>
 
 ```typescript
 public readonly autoApproveUpgrades: boolean;
@@ -3032,7 +3032,7 @@ Throw if set to true but `autoApproveOptions` are not defined.
 
 ---
 
-##### `buildWorkflow`<sup>Optional</sup> <a name="buildWorkflow" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.buildWorkflow"></a>
+##### `buildWorkflow`<sup>Optional</sup> <a name="buildWorkflow" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflow"></a>
 
 ```typescript
 public readonly buildWorkflow: boolean;
@@ -3045,7 +3045,7 @@ Define a GitHub workflow for building PRs.
 
 ---
 
-##### `buildWorkflowOptions`<sup>Optional</sup> <a name="buildWorkflowOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.buildWorkflowOptions"></a>
+##### `buildWorkflowOptions`<sup>Optional</sup> <a name="buildWorkflowOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflowOptions"></a>
 
 ```typescript
 public readonly buildWorkflowOptions: BuildWorkflowOptions;
@@ -3057,7 +3057,7 @@ Options for PR build workflow.
 
 ---
 
-##### ~~`buildWorkflowTriggers`~~<sup>Optional</sup> <a name="buildWorkflowTriggers" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.buildWorkflowTriggers"></a>
+##### ~~`buildWorkflowTriggers`~~<sup>Optional</sup> <a name="buildWorkflowTriggers" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflowTriggers"></a>
 
 - *Deprecated:* - Use `buildWorkflowOptions.workflowTriggers`
 
@@ -3072,7 +3072,7 @@ Build workflow triggers.
 
 ---
 
-##### `bundlerOptions`<sup>Optional</sup> <a name="bundlerOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.bundlerOptions"></a>
+##### `bundlerOptions`<sup>Optional</sup> <a name="bundlerOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.bundlerOptions"></a>
 
 ```typescript
 public readonly bundlerOptions: BundlerOptions;
@@ -3084,7 +3084,7 @@ Options for `Bundler`.
 
 ---
 
-##### `checkLicenses`<sup>Optional</sup> <a name="checkLicenses" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.checkLicenses"></a>
+##### `checkLicenses`<sup>Optional</sup> <a name="checkLicenses" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.checkLicenses"></a>
 
 ```typescript
 public readonly checkLicenses: LicenseCheckerOptions;
@@ -3099,7 +3099,7 @@ This setting will cause the build to fail, if any prohibited or not allowed lice
 
 ---
 
-##### `codeCov`<sup>Optional</sup> <a name="codeCov" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.codeCov"></a>
+##### `codeCov`<sup>Optional</sup> <a name="codeCov" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCov"></a>
 
 ```typescript
 public readonly codeCov: boolean;
@@ -3112,7 +3112,7 @@ Define a GitHub workflow step for sending code coverage metrics to https://codec
 
 ---
 
-##### `codeCovTokenSecret`<sup>Optional</sup> <a name="codeCovTokenSecret" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.codeCovTokenSecret"></a>
+##### `codeCovTokenSecret`<sup>Optional</sup> <a name="codeCovTokenSecret" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCovTokenSecret"></a>
 
 ```typescript
 public readonly codeCovTokenSecret: string;
@@ -3125,7 +3125,7 @@ Define the secret name for a specified https://codecov.io/ token A secret is req
 
 ---
 
-##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.copyrightOwner"></a>
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.copyrightOwner"></a>
 
 ```typescript
 public readonly copyrightOwner: string;
@@ -3138,7 +3138,7 @@ License copyright owner.
 
 ---
 
-##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.copyrightPeriod"></a>
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.copyrightPeriod"></a>
 
 ```typescript
 public readonly copyrightPeriod: string;
@@ -3151,7 +3151,7 @@ The copyright years to put in the LICENSE file.
 
 ---
 
-##### `dependabot`<sup>Optional</sup> <a name="dependabot" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.dependabot"></a>
+##### `dependabot`<sup>Optional</sup> <a name="dependabot" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.dependabot"></a>
 
 ```typescript
 public readonly dependabot: boolean;
@@ -3166,7 +3166,7 @@ Cannot be used in conjunction with `depsUpgrade`.
 
 ---
 
-##### `dependabotOptions`<sup>Optional</sup> <a name="dependabotOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.dependabotOptions"></a>
+##### `dependabotOptions`<sup>Optional</sup> <a name="dependabotOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.dependabotOptions"></a>
 
 ```typescript
 public readonly dependabotOptions: DependabotOptions;
@@ -3179,7 +3179,7 @@ Options for dependabot.
 
 ---
 
-##### `depsUpgrade`<sup>Optional</sup> <a name="depsUpgrade" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.depsUpgrade"></a>
+##### `depsUpgrade`<sup>Optional</sup> <a name="depsUpgrade" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.depsUpgrade"></a>
 
 ```typescript
 public readonly depsUpgrade: boolean;
@@ -3194,7 +3194,7 @@ Cannot be used in conjunction with `dependabot`.
 
 ---
 
-##### `depsUpgradeOptions`<sup>Optional</sup> <a name="depsUpgradeOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.depsUpgradeOptions"></a>
+##### `depsUpgradeOptions`<sup>Optional</sup> <a name="depsUpgradeOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.depsUpgradeOptions"></a>
 
 ```typescript
 public readonly depsUpgradeOptions: UpgradeDependenciesOptions;
@@ -3207,7 +3207,7 @@ Options for `UpgradeDependencies`.
 
 ---
 
-##### `gitignore`<sup>Optional</sup> <a name="gitignore" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.gitignore"></a>
+##### `gitignore`<sup>Optional</sup> <a name="gitignore" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.gitignore"></a>
 
 ```typescript
 public readonly gitignore: string[];
@@ -3219,7 +3219,7 @@ Additional entries to .gitignore.
 
 ---
 
-##### `jest`<sup>Optional</sup> <a name="jest" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.jest"></a>
+##### `jest`<sup>Optional</sup> <a name="jest" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.jest"></a>
 
 ```typescript
 public readonly jest: boolean;
@@ -3232,7 +3232,7 @@ Setup jest unit tests.
 
 ---
 
-##### `jestOptions`<sup>Optional</sup> <a name="jestOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.jestOptions"></a>
+##### `jestOptions`<sup>Optional</sup> <a name="jestOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.jestOptions"></a>
 
 ```typescript
 public readonly jestOptions: JestOptions;
@@ -3245,7 +3245,7 @@ Jest options.
 
 ---
 
-##### ~~`mutableBuild`~~<sup>Optional</sup> <a name="mutableBuild" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.mutableBuild"></a>
+##### ~~`mutableBuild`~~<sup>Optional</sup> <a name="mutableBuild" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.mutableBuild"></a>
 
 - *Deprecated:* - Use `buildWorkflowOptions.mutableBuild`
 
@@ -3266,7 +3266,7 @@ Implies that PR builds do not have anti-tamper checks.
 
 ---
 
-##### ~~`npmignore`~~<sup>Optional</sup> <a name="npmignore" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmignore"></a>
+##### ~~`npmignore`~~<sup>Optional</sup> <a name="npmignore" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmignore"></a>
 
 - *Deprecated:* - use `project.addPackageIgnore`
 
@@ -3280,7 +3280,7 @@ Additional entries to .npmignore.
 
 ---
 
-##### `npmignoreEnabled`<sup>Optional</sup> <a name="npmignoreEnabled" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmignoreEnabled"></a>
+##### `npmignoreEnabled`<sup>Optional</sup> <a name="npmignoreEnabled" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmignoreEnabled"></a>
 
 ```typescript
 public readonly npmignoreEnabled: boolean;
@@ -3293,7 +3293,7 @@ Defines an .npmignore file. Normally this is only needed for libraries that are 
 
 ---
 
-##### `npmIgnoreOptions`<sup>Optional</sup> <a name="npmIgnoreOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.npmIgnoreOptions"></a>
+##### `npmIgnoreOptions`<sup>Optional</sup> <a name="npmIgnoreOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmIgnoreOptions"></a>
 
 ```typescript
 public readonly npmIgnoreOptions: IgnoreFileOptions;
@@ -3305,7 +3305,7 @@ Configuration options for .npmignore file.
 
 ---
 
-##### `package`<sup>Optional</sup> <a name="package" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.package"></a>
+##### `package`<sup>Optional</sup> <a name="package" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.package"></a>
 
 ```typescript
 public readonly package: boolean;
@@ -3318,7 +3318,7 @@ Defines a `package` task that will produce an npm tarball under the artifacts di
 
 ---
 
-##### `prettier`<sup>Optional</sup> <a name="prettier" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.prettier"></a>
+##### `prettier`<sup>Optional</sup> <a name="prettier" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.prettier"></a>
 
 ```typescript
 public readonly prettier: boolean;
@@ -3331,7 +3331,7 @@ Setup prettier.
 
 ---
 
-##### `prettierOptions`<sup>Optional</sup> <a name="prettierOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.prettierOptions"></a>
+##### `prettierOptions`<sup>Optional</sup> <a name="prettierOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.prettierOptions"></a>
 
 ```typescript
 public readonly prettierOptions: PrettierOptions;
@@ -3344,7 +3344,7 @@ Prettier options.
 
 ---
 
-##### `projenDevDependency`<sup>Optional</sup> <a name="projenDevDependency" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenDevDependency"></a>
+##### `projenDevDependency`<sup>Optional</sup> <a name="projenDevDependency" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenDevDependency"></a>
 
 ```typescript
 public readonly projenDevDependency: boolean;
@@ -3357,7 +3357,7 @@ Indicates of "projen" should be installed as a devDependency.
 
 ---
 
-##### `projenrcJs`<sup>Optional</sup> <a name="projenrcJs" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJs"></a>
+##### `projenrcJs`<sup>Optional</sup> <a name="projenrcJs" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJs"></a>
 
 ```typescript
 public readonly projenrcJs: boolean;
@@ -3370,7 +3370,7 @@ Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable
 
 ---
 
-##### `projenrcJsOptions`<sup>Optional</sup> <a name="projenrcJsOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcJsOptions"></a>
+##### `projenrcJsOptions`<sup>Optional</sup> <a name="projenrcJsOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcJsOptions"></a>
 
 ```typescript
 public readonly projenrcJsOptions: ProjenrcOptions;
@@ -3383,7 +3383,7 @@ Options for .projenrc.js.
 
 ---
 
-##### `projenVersion`<sup>Optional</sup> <a name="projenVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenVersion"></a>
+##### `projenVersion`<sup>Optional</sup> <a name="projenVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenVersion"></a>
 
 ```typescript
 public readonly projenVersion: string;
@@ -3396,7 +3396,7 @@ Version of projen to install.
 
 ---
 
-##### `pullRequestTemplate`<sup>Optional</sup> <a name="pullRequestTemplate" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.pullRequestTemplate"></a>
+##### `pullRequestTemplate`<sup>Optional</sup> <a name="pullRequestTemplate" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.pullRequestTemplate"></a>
 
 ```typescript
 public readonly pullRequestTemplate: boolean;
@@ -3409,7 +3409,7 @@ Include a GitHub pull request template.
 
 ---
 
-##### `pullRequestTemplateContents`<sup>Optional</sup> <a name="pullRequestTemplateContents" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.pullRequestTemplateContents"></a>
+##### `pullRequestTemplateContents`<sup>Optional</sup> <a name="pullRequestTemplateContents" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.pullRequestTemplateContents"></a>
 
 ```typescript
 public readonly pullRequestTemplateContents: string[];
@@ -3422,7 +3422,7 @@ The contents of the pull request template.
 
 ---
 
-##### `release`<sup>Optional</sup> <a name="release" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.release"></a>
+##### `release`<sup>Optional</sup> <a name="release" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.release"></a>
 
 ```typescript
 public readonly release: boolean;
@@ -3435,7 +3435,7 @@ Add release management to this project.
 
 ---
 
-##### `releaseToNpm`<sup>Optional</sup> <a name="releaseToNpm" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseToNpm"></a>
+##### `releaseToNpm`<sup>Optional</sup> <a name="releaseToNpm" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseToNpm"></a>
 
 ```typescript
 public readonly releaseToNpm: boolean;
@@ -3448,7 +3448,7 @@ Automatically release to npm when new versions are introduced.
 
 ---
 
-##### ~~`releaseWorkflow`~~<sup>Optional</sup> <a name="releaseWorkflow" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.releaseWorkflow"></a>
+##### ~~`releaseWorkflow`~~<sup>Optional</sup> <a name="releaseWorkflow" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflow"></a>
 
 - *Deprecated:* see `release`.
 
@@ -3463,7 +3463,7 @@ DEPRECATED: renamed to `release`.
 
 ---
 
-##### `workflowBootstrapSteps`<sup>Optional</sup> <a name="workflowBootstrapSteps" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowBootstrapSteps"></a>
+##### `workflowBootstrapSteps`<sup>Optional</sup> <a name="workflowBootstrapSteps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowBootstrapSteps"></a>
 
 ```typescript
 public readonly workflowBootstrapSteps: JobStep[];
@@ -3476,7 +3476,7 @@ Workflow steps to use in order to bootstrap this repo.
 
 ---
 
-##### `workflowGitIdentity`<sup>Optional</sup> <a name="workflowGitIdentity" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowGitIdentity"></a>
+##### `workflowGitIdentity`<sup>Optional</sup> <a name="workflowGitIdentity" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowGitIdentity"></a>
 
 ```typescript
 public readonly workflowGitIdentity: GitIdentity;
@@ -3489,7 +3489,7 @@ The git identity to use in workflows.
 
 ---
 
-##### `workflowNodeVersion`<sup>Optional</sup> <a name="workflowNodeVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowNodeVersion"></a>
+##### `workflowNodeVersion`<sup>Optional</sup> <a name="workflowNodeVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowNodeVersion"></a>
 
 ```typescript
 public readonly workflowNodeVersion: string;
@@ -3502,7 +3502,7 @@ The node version to use in GitHub workflows.
 
 ---
 
-##### `workflowPackageCache`<sup>Optional</sup> <a name="workflowPackageCache" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.workflowPackageCache"></a>
+##### `workflowPackageCache`<sup>Optional</sup> <a name="workflowPackageCache" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowPackageCache"></a>
 
 ```typescript
 public readonly workflowPackageCache: boolean;
@@ -3515,7 +3515,7 @@ Enable Node.js package cache in GitHub workflows.
 
 ---
 
-##### `disableTsconfig`<sup>Optional</sup> <a name="disableTsconfig" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.disableTsconfig"></a>
+##### `disableTsconfig`<sup>Optional</sup> <a name="disableTsconfig" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.disableTsconfig"></a>
 
 ```typescript
 public readonly disableTsconfig: boolean;
@@ -3528,7 +3528,7 @@ Do not generate a `tsconfig.json` file (used by jsii projects since tsconfig.jso
 
 ---
 
-##### `disableTsconfigDev`<sup>Optional</sup> <a name="disableTsconfigDev" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.disableTsconfigDev"></a>
+##### `disableTsconfigDev`<sup>Optional</sup> <a name="disableTsconfigDev" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.disableTsconfigDev"></a>
 
 ```typescript
 public readonly disableTsconfigDev: boolean;
@@ -3541,7 +3541,7 @@ Do not generate a `tsconfig.dev.json` file.
 
 ---
 
-##### `docgen`<sup>Optional</sup> <a name="docgen" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.docgen"></a>
+##### `docgen`<sup>Optional</sup> <a name="docgen" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.docgen"></a>
 
 ```typescript
 public readonly docgen: boolean;
@@ -3554,7 +3554,7 @@ Docgen by Typedoc.
 
 ---
 
-##### `docsDirectory`<sup>Optional</sup> <a name="docsDirectory" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.docsDirectory"></a>
+##### `docsDirectory`<sup>Optional</sup> <a name="docsDirectory" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.docsDirectory"></a>
 
 ```typescript
 public readonly docsDirectory: string;
@@ -3567,7 +3567,7 @@ Docs directory.
 
 ---
 
-##### `entrypointTypes`<sup>Optional</sup> <a name="entrypointTypes" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.entrypointTypes"></a>
+##### `entrypointTypes`<sup>Optional</sup> <a name="entrypointTypes" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.entrypointTypes"></a>
 
 ```typescript
 public readonly entrypointTypes: string;
@@ -3580,7 +3580,7 @@ The .d.ts file that includes the type declarations for this module.
 
 ---
 
-##### `eslint`<sup>Optional</sup> <a name="eslint" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.eslint"></a>
+##### `eslint`<sup>Optional</sup> <a name="eslint" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.eslint"></a>
 
 ```typescript
 public readonly eslint: boolean;
@@ -3593,7 +3593,7 @@ Setup eslint.
 
 ---
 
-##### `eslintOptions`<sup>Optional</sup> <a name="eslintOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.eslintOptions"></a>
+##### `eslintOptions`<sup>Optional</sup> <a name="eslintOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.eslintOptions"></a>
 
 ```typescript
 public readonly eslintOptions: EslintOptions;
@@ -3606,7 +3606,7 @@ Eslint options.
 
 ---
 
-##### `libdir`<sup>Optional</sup> <a name="libdir" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.libdir"></a>
+##### `libdir`<sup>Optional</sup> <a name="libdir" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.libdir"></a>
 
 ```typescript
 public readonly libdir: string;
@@ -3619,7 +3619,7 @@ Typescript  artifacts output directory.
 
 ---
 
-##### `projenrcTs`<sup>Optional</sup> <a name="projenrcTs" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcTs"></a>
+##### `projenrcTs`<sup>Optional</sup> <a name="projenrcTs" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcTs"></a>
 
 ```typescript
 public readonly projenrcTs: boolean;
@@ -3632,7 +3632,7 @@ Use TypeScript for your projenrc file (`.projenrc.ts`).
 
 ---
 
-##### `projenrcTsOptions`<sup>Optional</sup> <a name="projenrcTsOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.projenrcTsOptions"></a>
+##### `projenrcTsOptions`<sup>Optional</sup> <a name="projenrcTsOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.projenrcTsOptions"></a>
 
 ```typescript
 public readonly projenrcTsOptions: ProjenrcOptions;
@@ -3644,7 +3644,7 @@ Options for .projenrc.ts.
 
 ---
 
-##### `sampleCode`<sup>Optional</sup> <a name="sampleCode" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.sampleCode"></a>
+##### `sampleCode`<sup>Optional</sup> <a name="sampleCode" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.sampleCode"></a>
 
 ```typescript
 public readonly sampleCode: boolean;
@@ -3657,7 +3657,7 @@ Generate one-time sample in `src/` and `test/` if there are no files there.
 
 ---
 
-##### `srcdir`<sup>Optional</sup> <a name="srcdir" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.srcdir"></a>
+##### `srcdir`<sup>Optional</sup> <a name="srcdir" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.srcdir"></a>
 
 ```typescript
 public readonly srcdir: string;
@@ -3670,7 +3670,7 @@ Typescript sources directory.
 
 ---
 
-##### `testdir`<sup>Optional</sup> <a name="testdir" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.testdir"></a>
+##### `testdir`<sup>Optional</sup> <a name="testdir" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.testdir"></a>
 
 ```typescript
 public readonly testdir: string;
@@ -3688,7 +3688,7 @@ compile the code in-memory.
 
 ---
 
-##### `tsconfig`<sup>Optional</sup> <a name="tsconfig" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.tsconfig"></a>
+##### `tsconfig`<sup>Optional</sup> <a name="tsconfig" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.tsconfig"></a>
 
 ```typescript
 public readonly tsconfig: TypescriptConfigOptions;
@@ -3701,7 +3701,7 @@ Custom TSConfig.
 
 ---
 
-##### `tsconfigDev`<sup>Optional</sup> <a name="tsconfigDev" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.tsconfigDev"></a>
+##### `tsconfigDev`<sup>Optional</sup> <a name="tsconfigDev" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.tsconfigDev"></a>
 
 ```typescript
 public readonly tsconfigDev: TypescriptConfigOptions;
@@ -3714,7 +3714,7 @@ Custom tsconfig options for the development tsconfig.json file (used for testing
 
 ---
 
-##### `tsconfigDevFile`<sup>Optional</sup> <a name="tsconfigDevFile" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.tsconfigDevFile"></a>
+##### `tsconfigDevFile`<sup>Optional</sup> <a name="tsconfigDevFile" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.tsconfigDevFile"></a>
 
 ```typescript
 public readonly tsconfigDevFile: string;
@@ -3727,7 +3727,7 @@ The name of the development tsconfig.json file.
 
 ---
 
-##### `tsJestOptions`<sup>Optional</sup> <a name="tsJestOptions" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.tsJestOptions"></a>
+##### `tsJestOptions`<sup>Optional</sup> <a name="tsJestOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.tsJestOptions"></a>
 
 ```typescript
 public readonly tsJestOptions: TsJestOptions;
@@ -3739,7 +3739,7 @@ Options for ts-jest.
 
 ---
 
-##### `typescriptVersion`<sup>Optional</sup> <a name="typescriptVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.typescriptVersion"></a>
+##### `typescriptVersion`<sup>Optional</sup> <a name="typescriptVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.typescriptVersion"></a>
 
 ```typescript
 public readonly typescriptVersion: string;
@@ -3755,7 +3755,7 @@ same minor, so we recommend using a `~` dependency (e.g. `~1.2.3`).
 
 ---
 
-##### `author`<sup>Required</sup> <a name="author" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.author"></a>
+##### `author`<sup>Required</sup> <a name="author" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.author"></a>
 
 ```typescript
 public readonly author: string;
@@ -3768,7 +3768,7 @@ The name of the library author.
 
 ---
 
-##### `authorAddress`<sup>Required</sup> <a name="authorAddress" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.authorAddress"></a>
+##### `authorAddress`<sup>Required</sup> <a name="authorAddress" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.authorAddress"></a>
 
 ```typescript
 public readonly authorAddress: string;
@@ -3781,7 +3781,7 @@ Email or URL of the library author.
 
 ---
 
-##### `repositoryUrl`<sup>Required</sup> <a name="repositoryUrl" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.repositoryUrl"></a>
+##### `repositoryUrl`<sup>Required</sup> <a name="repositoryUrl" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.repositoryUrl"></a>
 
 ```typescript
 public readonly repositoryUrl: string;
@@ -3794,7 +3794,7 @@ Git repository URL.
 
 ---
 
-##### `compat`<sup>Optional</sup> <a name="compat" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.compat"></a>
+##### `compat`<sup>Optional</sup> <a name="compat" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.compat"></a>
 
 ```typescript
 public readonly compat: boolean;
@@ -3810,7 +3810,7 @@ You can manually run compatibility tests using `yarn compat` if this feature is 
 
 ---
 
-##### `compatIgnore`<sup>Optional</sup> <a name="compatIgnore" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.compatIgnore"></a>
+##### `compatIgnore`<sup>Optional</sup> <a name="compatIgnore" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.compatIgnore"></a>
 
 ```typescript
 public readonly compatIgnore: string;
@@ -3823,7 +3823,7 @@ Name of the ignore file for API compatibility tests.
 
 ---
 
-##### `compressAssembly`<sup>Optional</sup> <a name="compressAssembly" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.compressAssembly"></a>
+##### `compressAssembly`<sup>Optional</sup> <a name="compressAssembly" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.compressAssembly"></a>
 
 ```typescript
 public readonly compressAssembly: boolean;
@@ -3836,7 +3836,7 @@ Emit a compressed version of the assembly.
 
 ---
 
-##### `docgenFilePath`<sup>Optional</sup> <a name="docgenFilePath" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.docgenFilePath"></a>
+##### `docgenFilePath`<sup>Optional</sup> <a name="docgenFilePath" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.docgenFilePath"></a>
 
 ```typescript
 public readonly docgenFilePath: string;
@@ -3849,7 +3849,7 @@ File path for generated docs.
 
 ---
 
-##### ~~`dotnet`~~<sup>Optional</sup> <a name="dotnet" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.dotnet"></a>
+##### ~~`dotnet`~~<sup>Optional</sup> <a name="dotnet" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.dotnet"></a>
 
 - *Deprecated:* use `publishToNuget`
 
@@ -3861,7 +3861,7 @@ public readonly dotnet: JsiiDotNetTarget;
 
 ---
 
-##### `excludeTypescript`<sup>Optional</sup> <a name="excludeTypescript" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.excludeTypescript"></a>
+##### `excludeTypescript`<sup>Optional</sup> <a name="excludeTypescript" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.excludeTypescript"></a>
 
 ```typescript
 public readonly excludeTypescript: string[];
@@ -3879,7 +3879,7 @@ that cannot be compiled with jsii's compiler settings.
 
 ---
 
-##### `jsiiVersion`<sup>Optional</sup> <a name="jsiiVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.jsiiVersion"></a>
+##### `jsiiVersion`<sup>Optional</sup> <a name="jsiiVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.jsiiVersion"></a>
 
 ```typescript
 public readonly jsiiVersion: string;
@@ -3899,7 +3899,7 @@ and should remain on the same minor, so we recommend using a `~` dependency
 
 ---
 
-##### `publishToGo`<sup>Optional</sup> <a name="publishToGo" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToGo"></a>
+##### `publishToGo`<sup>Optional</sup> <a name="publishToGo" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToGo"></a>
 
 ```typescript
 public readonly publishToGo: JsiiGoTarget;
@@ -3912,7 +3912,7 @@ Publish Go bindings to a git repository.
 
 ---
 
-##### `publishToMaven`<sup>Optional</sup> <a name="publishToMaven" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToMaven"></a>
+##### `publishToMaven`<sup>Optional</sup> <a name="publishToMaven" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToMaven"></a>
 
 ```typescript
 public readonly publishToMaven: JsiiJavaTarget;
@@ -3925,7 +3925,7 @@ Publish to maven.
 
 ---
 
-##### `publishToNuget`<sup>Optional</sup> <a name="publishToNuget" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToNuget"></a>
+##### `publishToNuget`<sup>Optional</sup> <a name="publishToNuget" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToNuget"></a>
 
 ```typescript
 public readonly publishToNuget: JsiiDotNetTarget;
@@ -3938,7 +3938,7 @@ Publish to NuGet.
 
 ---
 
-##### `publishToPypi`<sup>Optional</sup> <a name="publishToPypi" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.publishToPypi"></a>
+##### `publishToPypi`<sup>Optional</sup> <a name="publishToPypi" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToPypi"></a>
 
 ```typescript
 public readonly publishToPypi: JsiiPythonTarget;
@@ -3951,7 +3951,7 @@ Publish to pypi.
 
 ---
 
-##### ~~`python`~~<sup>Optional</sup> <a name="python" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.python"></a>
+##### ~~`python`~~<sup>Optional</sup> <a name="python" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.python"></a>
 
 - *Deprecated:* use `publishToPyPi`
 
@@ -3963,7 +3963,7 @@ public readonly python: JsiiPythonTarget;
 
 ---
 
-##### `rootdir`<sup>Optional</sup> <a name="rootdir" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.rootdir"></a>
+##### `rootdir`<sup>Optional</sup> <a name="rootdir" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.rootdir"></a>
 
 ```typescript
 public readonly rootdir: string;
@@ -3974,7 +3974,7 @@ public readonly rootdir: string;
 
 ---
 
-##### `cdktfVersion`<sup>Required</sup> <a name="cdktfVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.cdktfVersion"></a>
+##### `cdktfVersion`<sup>Required</sup> <a name="cdktfVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktfVersion"></a>
 
 ```typescript
 public readonly cdktfVersion: string;
@@ -3984,7 +3984,7 @@ public readonly cdktfVersion: string;
 
 ---
 
-##### `constructsVersion`<sup>Required</sup> <a name="constructsVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.constructsVersion"></a>
+##### `constructsVersion`<sup>Required</sup> <a name="constructsVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.constructsVersion"></a>
 
 ```typescript
 public readonly constructsVersion: string;
@@ -3994,7 +3994,7 @@ public readonly constructsVersion: string;
 
 ---
 
-##### `terraformProvider`<sup>Required</sup> <a name="terraformProvider" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.terraformProvider"></a>
+##### `terraformProvider`<sup>Required</sup> <a name="terraformProvider" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.terraformProvider"></a>
 
 ```typescript
 public readonly terraformProvider: string;
@@ -4004,7 +4004,7 @@ public readonly terraformProvider: string;
 
 ---
 
-##### `creationYear`<sup>Optional</sup> <a name="creationYear" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.creationYear"></a>
+##### `creationYear`<sup>Optional</sup> <a name="creationYear" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.creationYear"></a>
 
 ```typescript
 public readonly creationYear: number;
@@ -4018,7 +4018,7 @@ Will fall back to the current year if not specified.
 
 ---
 
-##### `deprecationDate`<sup>Optional</sup> <a name="deprecationDate" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.deprecationDate"></a>
+##### `deprecationDate`<sup>Optional</sup> <a name="deprecationDate" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.deprecationDate"></a>
 
 ```typescript
 public readonly deprecationDate: string;
@@ -4032,7 +4032,7 @@ If no date is provided, then the date of the build will be used by default.
 
 ---
 
-##### `forceMajorVersion`<sup>Optional</sup> <a name="forceMajorVersion" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.forceMajorVersion"></a>
+##### `forceMajorVersion`<sup>Optional</sup> <a name="forceMajorVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.forceMajorVersion"></a>
 
 ```typescript
 public readonly forceMajorVersion: number;
@@ -4042,7 +4042,7 @@ public readonly forceMajorVersion: number;
 
 ---
 
-##### `githubNamespace`<sup>Optional</sup> <a name="githubNamespace" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.githubNamespace"></a>
+##### `githubNamespace`<sup>Optional</sup> <a name="githubNamespace" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.githubNamespace"></a>
 
 ```typescript
 public readonly githubNamespace: string;
@@ -4050,13 +4050,13 @@ public readonly githubNamespace: string;
 
 - *Type:* string
 
-defaults to "cdktf" previously was "hashicorp".
+defaults to "cdktn-io" previously was "cdktf".
 
 Used for GitHub org name and package scoping
 
 ---
 
-##### `isDeprecated`<sup>Optional</sup> <a name="isDeprecated" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.isDeprecated"></a>
+##### `isDeprecated`<sup>Optional</sup> <a name="isDeprecated" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.isDeprecated"></a>
 
 ```typescript
 public readonly isDeprecated: boolean;
@@ -4070,7 +4070,7 @@ If true, no new versions will be published.
 
 ---
 
-##### `licensee`<sup>Optional</sup> <a name="licensee" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.licensee"></a>
+##### `licensee`<sup>Optional</sup> <a name="licensee" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.licensee"></a>
 
 ```typescript
 public readonly licensee: string;
@@ -4082,7 +4082,7 @@ defaults to "HashiCorp, Inc.".
 
 ---
 
-##### `mavenEndpoint`<sup>Optional</sup> <a name="mavenEndpoint" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.mavenEndpoint"></a>
+##### `mavenEndpoint`<sup>Optional</sup> <a name="mavenEndpoint" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenEndpoint"></a>
 
 ```typescript
 public readonly mavenEndpoint: string;
@@ -4092,7 +4092,7 @@ public readonly mavenEndpoint: string;
 
 ---
 
-##### `mavenGroupId`<sup>Optional</sup> <a name="mavenGroupId" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.mavenGroupId"></a>
+##### `mavenGroupId`<sup>Optional</sup> <a name="mavenGroupId" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenGroupId"></a>
 
 ```typescript
 public readonly mavenGroupId: string;
@@ -4100,11 +4100,11 @@ public readonly mavenGroupId: string;
 
 - *Type:* string
 
-defaults to "com.${mavenOrg}".
+defaults to "io.${mavenOrg}".
 
 ---
 
-##### `mavenOrg`<sup>Optional</sup> <a name="mavenOrg" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.mavenOrg"></a>
+##### `mavenOrg`<sup>Optional</sup> <a name="mavenOrg" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenOrg"></a>
 
 ```typescript
 public readonly mavenOrg: string;
@@ -4112,11 +4112,11 @@ public readonly mavenOrg: string;
 
 - *Type:* string
 
-defaults to "hashicorp".
+defaults to "cdktn".
 
 ---
 
-##### `namespace`<sup>Optional</sup> <a name="namespace" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.namespace"></a>
+##### `namespace`<sup>Optional</sup> <a name="namespace" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.namespace"></a>
 
 ```typescript
 public readonly namespace: string;
@@ -4124,11 +4124,11 @@ public readonly namespace: string;
 
 - *Type:* string
 
-defaults to "cdktf".
+defaults to "cdktn".
 
 ---
 
-##### `nugetOrg`<sup>Optional</sup> <a name="nugetOrg" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.nugetOrg"></a>
+##### `nugetOrg`<sup>Optional</sup> <a name="nugetOrg" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.nugetOrg"></a>
 
 ```typescript
 public readonly nugetOrg: string;
@@ -4136,11 +4136,11 @@ public readonly nugetOrg: string;
 
 - *Type:* string
 
-defaults to "HashiCorp".
+defaults to "Io.Cdktn".
 
 ---
 
-##### `useCustomGithubRunner`<sup>Optional</sup> <a name="useCustomGithubRunner" id="@cdktf/provider-project.CdktfProviderProjectOptions.property.useCustomGithubRunner"></a>
+##### `useCustomGithubRunner`<sup>Optional</sup> <a name="useCustomGithubRunner" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.useCustomGithubRunner"></a>
 
 ```typescript
 public readonly useCustomGithubRunner: boolean;

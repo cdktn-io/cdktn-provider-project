@@ -1,8 +1,8 @@
 {
-  "name": "@cdktf/provider-project",
+  "name": "@cdktn/provider-project",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cdktf/cdktf-provider-project.git"
+    "url": "https://github.com/cdktn-io/cdktn-provider-project.git"
   },
   "scripts": {
     "build": "npx projen build",
@@ -31,8 +31,8 @@
     "projen": "npx projen"
   },
   "author": {
-    "name": "HashiCorp",
-    "url": "https://hashicorp.com",
+    "name": "CDK Terrain Maintainers",
+    "url": "https://cdktn.io",
     "organization": true
   },
   "devDependencies": {

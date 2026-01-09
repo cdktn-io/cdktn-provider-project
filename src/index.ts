@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import assert = require("assert");
 import { pascalCase } from "change-case";
-import { TextFile, cdk, github, JsonPatch } from "projen";
+import { TextFile, cdk } from "projen";
 import { JobStep } from "projen/lib/github/workflows-model";
 import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { AlertOpenPrs } from "./alert-open-prs";
@@ -25,32 +25,32 @@ import { generateRandomCron, Schedule } from "./util/random-cron";
 // ensure new projects start with 1.0.0 so that every following breaking change leads to an increased major version
 const MIN_MAJOR_VERSION = 1;
 
-export interface CdktfProviderProjectOptions extends cdk.JsiiProjectOptions {
+export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
   readonly useCustomGithubRunner?: boolean;
   readonly terraformProvider: string;
   readonly cdktfVersion: string;
   readonly constructsVersion: string;
   readonly forceMajorVersion?: number;
   /**
-   * defaults to "cdktf"
+   * defaults to "cdktn"
    */
   readonly namespace?: string;
   /**
-   * defaults to "cdktf"
-   * previously was "hashicorp". Used for GitHub org name and package scoping
+   * defaults to "cdktn-io"
+   * previously was "cdktf". Used for GitHub org name and package scoping
    */
   readonly githubNamespace?: string;
   readonly mavenEndpoint?: string;
   /**
-   * defaults to "HashiCorp"
+   * defaults to "Io.Cdktn"
    */
   readonly nugetOrg?: string;
   /**
-   * defaults to "hashicorp"
+   * defaults to "cdktn"
    */
   readonly mavenOrg?: string;
   /**
-   * defaults to "com.${mavenOrg}"
+   * defaults to "io.${mavenOrg}"
    */
   readonly mavenGroupId?: string;
   /**
@@ -101,8 +101,8 @@ const githubActionPinnedVersions = {
   "slackapi/slack-github-action": "485a9d42d3a73031f12ec201c457e2162c45d02d", // v2.0.0
 };
 
-export class CdktfProviderProject extends cdk.JsiiProject {
-  constructor(options: CdktfProviderProjectOptions) {
+export class CdktnProviderProject extends cdk.JsiiProject {
+  constructor(options: CdktnProviderProjectOptions) {
     const {
       terraformProvider,
       workflowContainerImage,
@@ -113,13 +113,14 @@ export class CdktfProviderProject extends cdk.JsiiProject {
       typescriptVersion,
       isDeprecated,
       deprecationDate,
-      authorName = "HashiCorp",
-      authorAddress = "https://hashicorp.com",
-      namespace = "cdktf",
-      githubNamespace = "cdktf",
-      mavenEndpoint = "https://hashicorp.oss.sonatype.org",
-      nugetOrg = "HashiCorp",
-      mavenOrg = "hashicorp",
+      // TODO: Confirm default Author Name
+      authorName = "CDK Terrain Maintainers",
+      authorAddress = "https://cdktn.io",
+      namespace = "cdktn",
+      githubNamespace = "cdktn-io",
+      mavenEndpoint = "https://central.sonatype.com", // TODO
+      nugetOrg = "Io.Cdktn", // TODO
+      mavenOrg = "Io.Cdktn", // TODO
     } = options;
 
     const [fqproviderName, providerVersion] = terraformProvider.split("@");
@@ -145,17 +146,13 @@ export class CdktfProviderProject extends cdk.JsiiProject {
 
     const packageInfo: PackageInfo = {
       npm: {
-        name: `@${githubNamespace}/provider-${providerName}`,
+        name: `@${namespace}/provider-${providerName}`,
       },
       python: {
-        distName: `${githubNamespace}-${namespace}-provider-${providerName.replace(
-          /-/gi,
-          "_"
-        )}`,
-        module: `${githubNamespace}_${namespace}_provider_${providerName.replace(
-          /-/gi,
-          "_"
-        )}`,
+        // distName: `${githubNamespace}-${namespace}-provider-${providerName.replace(
+        distName: `${namespace}-provider-${providerName.replace(/-/gi, "_")}`,
+        // module: `${githubNamespace}_${namespace}_provider_${providerName.replace(
+        module: `${namespace}_provider_${providerName.replace(/-/gi, "_")}`,
       },
       publishToNuget: {
         dotNetNamespace: nugetName,
@@ -169,8 +166,8 @@ export class CdktfProviderProject extends cdk.JsiiProject {
       },
       publishToGo: {
         moduleName: `${repositoryUrl}-go`,
-        gitUserEmail: "github-team-tf-cdk@hashicorp.com",
-        gitUserName: "CDK for Terraform Team",
+        gitUserEmail: "github-team-cdk-terrain@cdktn.io",
+        gitUserName: "team-cdk-terrain",
         packageName: providerName.replace(/-/g, ""),
         // In order to use the copywrite action, we need to rebuild the full pre-publish steps workflow unfortunately
         // If someone knows a better way to do this mutation with minimal custom code, please do so
@@ -276,16 +273,17 @@ export class CdktfProviderProject extends cdk.JsiiProject {
         },
       },
       python: packageInfo.python,
-      publishToNuget: packageInfo.publishToNuget,
-      publishToMaven: packageInfo.publishToMaven,
+      // TODO: Re-enable if requested and when available
+      // publishToNuget: packageInfo.publishToNuget,
+      // publishToMaven: packageInfo.publishToMaven,
       publishToGo: packageInfo.publishToGo,
       releaseFailureIssue: true,
       peerDependencyOptions: {
         pinnedDevDependency: false,
       },
       workflowGitIdentity: {
-        name: "team-tf-cdk",
-        email: "github-team-tf-cdk@hashicorp.com",
+        name: "team-cdk-terrain",
+        email: "github-team-cdk-terrain@cdktn.io",
       },
       minMajorVersion: MIN_MAJOR_VERSION,
       stale: true,
@@ -381,14 +379,15 @@ export class CdktfProviderProject extends cdk.JsiiProject {
       pr.steps.splice(1, 0, setSafeDirectory);
     }
 
-    // Fix maven issue (https://github.com/cdklabs/publib/pull/777)
-    github.GitHub.of(this)?.tryFindWorkflow("release")?.file?.patch(
-      JsonPatch.add(
-        "/jobs/release_maven/steps/10/env/MAVEN_OPTS",
-        // See https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco
-        "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
-      )
-    );
+    // // TODO: Re-enable when Maven requested and infra available
+    // // Fix maven issue (https://github.com/cdklabs/publib/pull/777)
+    // github.GitHub.of(this)?.tryFindWorkflow("release")?.file?.patch(
+    //   JsonPatch.add(
+    //     "/jobs/release_maven/steps/10/env/MAVEN_OPTS",
+    //     // See https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco
+    //     "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
+    //   )
+    // );
 
     this.pinGithubActionVersions(githubActionPinnedVersions);
 
@@ -436,7 +435,7 @@ export class CdktfProviderProject extends cdk.JsiiProject {
         "# the repo. Unless a later match takes precedence, ",
         "# they will be requested for review when someone opens a ",
         "# pull request.",
-        "*       @cdktf/tf-cdk-team",
+        "*       @cdktn-io/team-cdk-terrain",
       ],
     });
 
@@ -515,7 +514,9 @@ export class CdktfProviderProject extends cdk.JsiiProject {
             "rm -rf docs",
             "rm -f API.md",
             "mkdir docs",
-            "jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go",
+            // TODO: Re-enable java / csharp
+            // "jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go",
+            "jsii-docgen --split-by-submodule -l typescript -l python -l go",
             // There is no nice way to tell jsii-docgen to generate docs into a folder so I went this route
             "mv *.*.md docs",
             // Some part of the documentation are too long, we need to truncate them to ~10MB

@@ -37,14 +37,14 @@ export class LockIssues {
               `I'm going to lock this issue because it has been closed for at least 7 days.
               This helps our maintainers find and focus on the active issues.
               If you've found a problem that seems similar to this, please 
-              [open a new issue](https://github.com/cdktf/cdktf-provider-project/issues/new) 
+              [open a new issue](https://github.com/cdktn-io/cdktn-provider-project/issues/new) 
               so we can investigate further.`.replace(/\s+/g, " "),
             "issue-inactive-days": 7,
             "pr-comment":
               `I'm going to lock this pull request because it has been closed for at least 7 days.
               This helps our maintainers find and focus on the active issues.
               If you've found a problem that seems related to this change, please 
-              [open a new issue](https://github.com/cdktf/cdktf-provider-project/issues/new) 
+              [open a new issue](https://github.com/cdktn-io/cdktn-provider-project/issues/new) 
               so we can investigate further.`.replace(/\s+/g, " "),
             "pr-inactive-days": 7,
           },
