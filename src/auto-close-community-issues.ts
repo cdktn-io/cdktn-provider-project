@@ -41,8 +41,8 @@ export class AutoCloseCommunityIssues {
     const comment =
       `Hi there! 👋 We appreciate your interest, but this is probably not the right place. 
       All the code in this repository is auto-generated using 
-      [cdktf-provider-project](https://github.com/cdktf/cdktf-provider-project) and 
-      [cdktf-repository-manager](https://github.com/cdktf/cdktf-repository-manager) from the source 
+      [cdktn-provider-project](https://github.com/cdktn-io/cdktn-provider-project) and 
+      [cdktn-repository-manager](https://github.com/cdktn-io/cdktn-repository-manager) from the source 
       [Terraform provider](https://github.com/terraform-providers/terraform-provider-${providerName}). 
       If there are problems, they should be addressed in one of those 3 repositories, not here, 
       as any changes here will just get overwritten the next time there is an update upstream. 
@@ -55,7 +55,7 @@ export class AutoCloseCommunityIssues {
         contents: JobPermission.READ,
         issues: JobPermission.WRITE,
       },
-      if: `github.event.issue.user.login != 'team-tf-cdk' && !contains(${maintainerStatuses}, github.event.issue.author_association)`,
+      if: `github.event.issue.user.login != 'team-cdk-terrain' && !contains(${maintainerStatuses}, github.event.issue.author_association)`,
       steps: [
         {
           name: "Checkout",
@@ -87,7 +87,7 @@ export class AutoCloseCommunityIssues {
         contents: JobPermission.READ,
         pullRequests: JobPermission.WRITE,
       },
-      if: `github.event.pull_request.user.login != 'team-tf-cdk' && github.actor != 'dependabot[bot]' && !contains(${maintainerStatuses}, github.event.pull_request.author_association)`,
+      if: `github.event.pull_request.user.login != 'team-cdk-terrain' && github.actor != 'dependabot[bot]' && !contains(${maintainerStatuses}, github.event.pull_request.author_association)`,
       steps: [
         {
           name: "Checkout",

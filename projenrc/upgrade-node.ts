@@ -11,7 +11,7 @@ import { generateRandomCron } from "../src/util/random-cron";
  * Auto-updates Node to the next LTS version a month before the previous one goes EOL
  * Can also be triggered manually with a hard-coded version of Node.js as input
  *
- * NOTE: This script is only used by cdktf-provider-project itself, not by the individual providers
+ * NOTE: This script is only used by cdktn-provider-project itself, not by the individual providers
  */
 export class UpgradeNode {
   constructor(project: javascript.NodeProject) {
@@ -189,8 +189,8 @@ export class UpgradeNode {
               ].join(" "),
               labels: "automerge,automated,security",
               token: "${{ secrets.PROJEN_GITHUB_TOKEN }}",
-              author: "team-tf-cdk <github-team-tf-cdk@hashicorp.com>",
-              committer: "team-tf-cdk <github-team-tf-cdk@hashicorp.com>",
+              author: "team-cdk-terrain <github-team-cdk-terrain@cdktn.io",
+              committer: "team-cdk-terrain <github-team-cdk-terrain@cdktn.io",
               signoff: true,
               "delete-branch": true,
             },

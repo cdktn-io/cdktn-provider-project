@@ -13,7 +13,7 @@ import { CustomizedLicense } from "./src/customized-license";
 import { LockIssues } from "./src/lock-issues";
 import { generateRandomCron, Schedule } from "./src/util/random-cron";
 
-// Remember that this is the list used by this repo (cdktf-provider-project) ONLY.
+// Remember that this is the list used by this repo (cdktn-provider-project) ONLY.
 // If you want to update actions versions for the individual prebuilt providers,
 // you will need to update the map in src/index.ts
 const githubActionPinnedVersions = {
@@ -33,10 +33,10 @@ const githubActionPinnedVersions = {
 /** JSII and TS should always use the same major/minor version range */
 const typescriptVersion = "~5.8.0";
 const project = new cdk.JsiiProject({
-  name: "@cdktf/provider-project",
-  author: "HashiCorp",
-  authorAddress: "https://hashicorp.com",
-  repositoryUrl: "https://github.com/cdktf/cdktf-provider-project.git",
+  name: "@cdktn/provider-project",
+  author: "CDK Terrain Maintainers",
+  authorAddress: "https://cdktn.io",
+  repositoryUrl: "https://github.com/cdktn-io/cdktn-provider-project.git",
   authorOrganization: true,
   licensed: false, // we do supply our own license file with a custom header
   pullRequestTemplate: false,
@@ -85,8 +85,9 @@ const project = new cdk.JsiiProject({
     },
   },
   workflowGitIdentity: {
-    name: "team-tf-cdk",
-    email: "github-team-tf-cdk@hashicorp.com",
+    // TODO: Set up email for team-cdk-terrain
+    name: "team-cdk-terrain",
+    email: "github-team-cdk-terrain@cdktn.io",
   },
   projenrcTs: true,
 });
@@ -101,6 +102,7 @@ project.addDevDeps(
 
 project.addFields({ publishConfig: { access: "public" } });
 
+// TODO: Keep original License and add new headers for Fork
 new CustomizedLicense(project, 2020);
 new LockIssues(project);
 new AutoApprove(project);

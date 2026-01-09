@@ -13,7 +13,7 @@ import { generateRandomCron } from "../src/util/random-cron";
  * Can also be triggered manually with a hard-coded version of JSII/TypeScript as input
  * https://github.com/aws/jsii-compiler/blob/main/README.md#gear-maintenance--support
  *
- * NOTE: This script is only used by cdktf-provider-project itself, not by the individual providers
+ * NOTE: This script is only used by cdktn-provider-project itself, not by the individual providers
  */
 export class UpgradeJSIIAndTypeScript {
   constructor(project: javascript.NodeProject, typescriptVersion: string) {
@@ -183,8 +183,8 @@ export class UpgradeJSIIAndTypeScript {
               ].join(" "),
               labels: "auto-approve,automerge,automated",
               token: "${{ secrets.PROJEN_GITHUB_TOKEN }}",
-              author: "team-tf-cdk <github-team-tf-cdk@hashicorp.com>",
-              committer: "team-tf-cdk <github-team-tf-cdk@hashicorp.com>",
+              author: "team-cdk-terrain <github-team-cdk-terrain@cdktn.io",
+              committer: "team-cdk-terrain <github-team-cdk-terrain@cdktn.io",
               signoff: true,
               "delete-branch": true,
             },

@@ -42,7 +42,7 @@ class IssueConfigFile extends FileBase {
     return `blank_issues_enabled: false
 contact_links:
   - name: File an issue
-    url: "https://github.com/hashicorp/terraform-cdk/issues/new?labels=bug%2C+new%2C+pre-built+providers&template=bug-report-prebuilt-providers.md&title=\`${providerName}\`+provider:+"
+    url: "https://github.com/open-constructs/cdk-terrain/issues/new?labels=bug%2C+new%2C+pre-built+providers&template=bug-report-prebuilt-providers.md&title=\`${providerName}\`+provider:+"
     about: Please file issues with pre-built providers in our main repository.
 `;
   }
