@@ -246,7 +246,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     };
 
     const workflowRunsOn = options.useCustomGithubRunner
-      ? ["custom-linux-medium"] // 8 core, 32 GB
+      ? ["depot-ubuntu-24.04-8"] // 8 core, 32 GB
       : ["ubuntu-latest"]; // 7 GB
 
     super({
