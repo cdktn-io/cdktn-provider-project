@@ -170,6 +170,23 @@ export class UpgradeNode {
             },
           },
           {
+            name: "Generate token",
+            id: "generate_token",
+            uses: "actions/create-github-app-token",
+            with: {
+              "app-id": "${{ env.PROJEN_APP_ID }}",
+              "private-key": "${{ env.PROJEN_APP_PRIVATE_KEY }}",
+            },
+          },
+          {
+            name: "Get GitHub App User ID",
+            id: "get_user_id",
+            run: 'echo "id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"',
+            env: {
+              GH_TOKEN: "${{ steps.app-token.outputs.token }}",
+            },
+          },
+          {
             name: "Create Pull Request",
             uses: "peter-evans/create-pull-request",
             with: {
@@ -188,9 +205,11 @@ export class UpgradeNode {
                 "\n```// The following line can be removed when upgrading to Node ${{ needs.version.outputs.major }}```",
               ].join(" "),
               labels: "automerge,automated,security",
-              token: "${{ secrets.PROJEN_GITHUB_TOKEN }}",
-              author: "team-cdk-terrain <github-team-cdk-terrain@cdktn.io",
-              committer: "team-cdk-terrain <github-team-cdk-terrain@cdktn.io",
+              token: "${{ steps.generate_token.outputs.token }}",
+              author:
+                "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>",
+              committer:
+                "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>",
               signoff: true,
               "delete-branch": true,
             },

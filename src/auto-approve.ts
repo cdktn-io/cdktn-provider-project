@@ -32,6 +32,15 @@ export class AutoApprove {
         if: "contains(github.event.pull_request.labels.*.name, 'auto-approve') && github.event.pull_request.draft == false",
         steps: [
           {
+            name: "Generate token",
+            id: "generate_token",
+            uses: "actions/create-github-app-token",
+            with: {
+              "app-id": "${{ env.PROJEN_APP_ID }}",
+              "private-key": "${{ env.PROJEN_APP_PRIVATE_KEY }}",
+            },
+          },
+          {
             name: "Checkout PR",
             uses: "actions/checkout",
             with: {
@@ -44,7 +53,7 @@ export class AutoApprove {
             if: `github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && (contains(${maintainerStatuses}, github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')`,
             run: "gh pr review $PR_ID --approve",
             env: {
-              GH_TOKEN: "${{ secrets.PROJEN_GITHUB_TOKEN }}",
+              GH_TOKEN: "${{ steps.generate_token.outputs.token }}",
             },
           },
           {
