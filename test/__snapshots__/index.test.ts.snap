@@ -5054,7 +5054,7 @@ on:
   workflow_dispatch: {}
 jobs:
   build:
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: write
     outputs:
@@ -5110,7 +5110,7 @@ jobs:
           overwrite: true
   self-mutation:
     needs: build
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: write
     if: always() && needs.build.outputs.self_mutation_happened && !(github.event.pull_request.head.repo.full_name != github.repository)
@@ -5147,7 +5147,7 @@ jobs:
           git push origin HEAD:$PULL_REQUEST_REF
   package-js:
     needs: build
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
     if: \${{ !needs.build.outputs.self_mutation_happened }}
@@ -5181,7 +5181,7 @@ jobs:
         run: mv .repo/dist dist
   package-python:
     needs: build
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
     if: \${{ !needs.build.outputs.self_mutation_happened }}
@@ -5218,7 +5218,7 @@ jobs:
         run: mv .repo/dist dist
   package-go:
     needs: build
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
     if: \${{ !needs.build.outputs.self_mutation_happened }}
@@ -5286,7 +5286,7 @@ on:
         description: Whether or not to publish to Go
 jobs:
   release:
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: write
     outputs:
@@ -5328,7 +5328,7 @@ jobs:
   release_github:
     name: Publish to GitHub Releases
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: write
       issues: write
@@ -5355,7 +5355,7 @@ jobs:
   release_npm:
     name: Publish to npm
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
       issues: write
@@ -5395,7 +5395,7 @@ jobs:
   release_pypi:
     name: Publish to PyPI
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
       issues: write
@@ -5437,7 +5437,7 @@ jobs:
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
       issues: write
@@ -5526,7 +5526,7 @@ on:
   workflow_dispatch: {}
 jobs:
   upgrade:
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       pull-requests: write
       issues: write
@@ -5646,7 +5646,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   release:
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: write
     outputs:
@@ -5723,7 +5723,7 @@ jobs:
   release_github:
     name: Publish to GitHub Releases
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: write
       issues: write
@@ -5762,7 +5762,7 @@ jobs:
   release_npm:
     name: Publish to npm
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
       issues: write
@@ -5815,7 +5815,7 @@ jobs:
   release_pypi:
     name: Publish to PyPI
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
       issues: write
@@ -5870,7 +5870,7 @@ jobs:
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
-    runs-on: custom-linux-medium
+    runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
       issues: write
