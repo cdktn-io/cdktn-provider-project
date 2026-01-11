@@ -55,7 +55,7 @@ export class AutoCloseCommunityIssues {
         contents: JobPermission.READ,
         issues: JobPermission.WRITE,
       },
-      if: `github.event.issue.user.login != 'team-cdk-terrain' && !contains(${maintainerStatuses}, github.event.issue.author_association)`,
+      if: `github.event.issue.user.login != 'team-cdk-terrain[bot]' && !contains(${maintainerStatuses}, github.event.issue.author_association)`,
       steps: [
         {
           name: "Checkout",
@@ -87,7 +87,7 @@ export class AutoCloseCommunityIssues {
         contents: JobPermission.READ,
         pullRequests: JobPermission.WRITE,
       },
-      if: `github.event.pull_request.user.login != 'team-cdk-terrain' && github.actor != 'dependabot[bot]' && !contains(${maintainerStatuses}, github.event.pull_request.author_association)`,
+      if: `github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && github.actor != 'dependabot[bot]' && !contains(${maintainerStatuses}, github.event.pull_request.author_association)`,
       steps: [
         {
           name: "Checkout",

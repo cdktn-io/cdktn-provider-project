@@ -97,12 +97,12 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Auto-approve PRs by other users as team-cdk-terrain
-        if: github.event.pull_request.user.login != 'team-cdk-terrain' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
+        if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
-      - name: Auto-approve PRs by team-cdk-terrain as github-actions[bot]
-        if: github.event.pull_request.user.login == 'team-cdk-terrain'
+      - name: Auto-approve PRs by team-cdk-terrain[bot] as github-actions[bot]
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]'
         env:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
@@ -120,7 +120,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-    if: github.event.issue.user.login != 'team-cdk-terrain' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
+    if: github.event.issue.user.login != 'team-cdk-terrain[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -146,7 +146,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    if: github.event.pull_request.user.login != 'team-cdk-terrain' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
+    if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -189,7 +189,7 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Turn on automerge for this PR by a trusted user or bot
-        if: github.event.pull_request.user.login == 'team-cdk-terrain' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr merge --auto --squash $PR_ID
@@ -2108,12 +2108,12 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Auto-approve PRs by other users as team-cdk-terrain
-        if: github.event.pull_request.user.login != 'team-cdk-terrain' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
+        if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
-      - name: Auto-approve PRs by team-cdk-terrain as github-actions[bot]
-        if: github.event.pull_request.user.login == 'team-cdk-terrain'
+      - name: Auto-approve PRs by team-cdk-terrain[bot] as github-actions[bot]
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]'
         env:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
@@ -2131,7 +2131,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-    if: github.event.issue.user.login != 'team-cdk-terrain' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
+    if: github.event.issue.user.login != 'team-cdk-terrain[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -2157,7 +2157,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    if: github.event.pull_request.user.login != 'team-cdk-terrain' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
+    if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -2200,7 +2200,7 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Turn on automerge for this PR by a trusted user or bot
-        if: github.event.pull_request.user.login == 'team-cdk-terrain' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr merge --auto --squash $PR_ID
@@ -4884,12 +4884,12 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Auto-approve PRs by other users as team-cdk-terrain
-        if: github.event.pull_request.user.login != 'team-cdk-terrain' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
+        if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
-      - name: Auto-approve PRs by team-cdk-terrain as github-actions[bot]
-        if: github.event.pull_request.user.login == 'team-cdk-terrain'
+      - name: Auto-approve PRs by team-cdk-terrain[bot] as github-actions[bot]
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]'
         env:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
@@ -4907,7 +4907,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-    if: github.event.issue.user.login != 'team-cdk-terrain' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
+    if: github.event.issue.user.login != 'team-cdk-terrain[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -4933,7 +4933,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    if: github.event.pull_request.user.login != 'team-cdk-terrain' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
+    if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -4976,7 +4976,7 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Turn on automerge for this PR by a trusted user or bot
-        if: github.event.pull_request.user.login == 'team-cdk-terrain' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr merge --auto --squash $PR_ID
@@ -7660,12 +7660,12 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Auto-approve PRs by other users as team-cdk-terrain
-        if: github.event.pull_request.user.login != 'team-cdk-terrain' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
+        if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
-      - name: Auto-approve PRs by team-cdk-terrain as github-actions[bot]
-        if: github.event.pull_request.user.login == 'team-cdk-terrain'
+      - name: Auto-approve PRs by team-cdk-terrain[bot] as github-actions[bot]
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]'
         env:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
@@ -7683,7 +7683,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-    if: github.event.issue.user.login != 'team-cdk-terrain' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
+    if: github.event.issue.user.login != 'team-cdk-terrain[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -7709,7 +7709,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    if: github.event.pull_request.user.login != 'team-cdk-terrain' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
+    if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -7752,7 +7752,7 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Turn on automerge for this PR by a trusted user or bot
-        if: github.event.pull_request.user.login == 'team-cdk-terrain' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr merge --auto --squash $PR_ID
@@ -10436,12 +10436,12 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Auto-approve PRs by other users as team-cdk-terrain
-        if: github.event.pull_request.user.login != 'team-cdk-terrain' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
+        if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && (contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
-      - name: Auto-approve PRs by team-cdk-terrain as github-actions[bot]
-        if: github.event.pull_request.user.login == 'team-cdk-terrain'
+      - name: Auto-approve PRs by team-cdk-terrain[bot] as github-actions[bot]
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]'
         env:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
         run: gh pr review $PR_ID --approve
@@ -10459,7 +10459,7 @@ jobs:
     permissions:
       contents: read
       issues: write
-    if: github.event.issue.user.login != 'team-cdk-terrain' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
+    if: github.event.issue.user.login != 'team-cdk-terrain[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.issue.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -10485,7 +10485,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    if: github.event.pull_request.user.login != 'team-cdk-terrain' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
+    if: github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && github.actor != 'dependabot[bot]' && !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR", "CONTRIBUTOR"]'), github.event.pull_request.author_association)
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -10528,7 +10528,7 @@ jobs:
           ref: \${{ env.GIT_REF }}
           repository: \${{ env.GIT_REPO }}
       - name: Turn on automerge for this PR by a trusted user or bot
-        if: github.event.pull_request.user.login == 'team-cdk-terrain' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
+        if: github.event.pull_request.user.login == 'team-cdk-terrain[bot]' || contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'
         env:
           GH_TOKEN: \${{ secrets.PROJEN_GITHUB_TOKEN }}
         run: gh pr merge --auto --squash $PR_ID

@@ -41,15 +41,15 @@ export class AutoApprove {
           },
           {
             name: "Auto-approve PRs by other users as team-cdk-terrain",
-            if: `github.event.pull_request.user.login != 'team-cdk-terrain' && (contains(${maintainerStatuses}, github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')`,
+            if: `github.event.pull_request.user.login != 'team-cdk-terrain[bot]' && (contains(${maintainerStatuses}, github.event.pull_request.author_association) || github.actor == 'dependabot[bot]')`,
             run: "gh pr review $PR_ID --approve",
             env: {
               GH_TOKEN: "${{ secrets.PROJEN_GITHUB_TOKEN }}",
             },
           },
           {
-            name: "Auto-approve PRs by team-cdk-terrain as github-actions[bot]",
-            if: "github.event.pull_request.user.login == 'team-cdk-terrain'",
+            name: "Auto-approve PRs by team-cdk-terrain[bot] as github-actions[bot]",
+            if: "github.event.pull_request.user.login == 'team-cdk-terrain[bot]'",
             run: "gh pr review $PR_ID --approve",
             env: {
               GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
