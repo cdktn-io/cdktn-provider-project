@@ -120,6 +120,23 @@ export class ProviderUpgrade {
       },
       // submit a PR
       {
+        name: "Generate token",
+        id: "generate_token",
+        uses: "actions/create-github-app-token",
+        with: {
+          "app-id": "${{ env.PROJEN_APP_ID }}",
+          "private-key": "${{ env.PROJEN_APP_PRIVATE_KEY }}",
+        },
+      },
+      {
+        name: "Get GitHub App User ID",
+        id: "get_user_id",
+        run: 'echo "id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"',
+        env: {
+          GH_TOKEN: "${{ steps.app-token.outputs.token }}",
+        },
+      },
+      {
         name: "Create Pull Request",
         if: newerVersionAvailable,
         uses: "peter-evans/create-pull-request",
@@ -129,10 +146,12 @@ export class ProviderUpgrade {
           title: `${semanticType}: upgrade provider from \`${currentVersion}\` to version \`${newVersion}\``,
           body: `This PR upgrades the underlying Terraform provider to version ${newVersion}`,
           labels: "automerge,auto-approve",
-          token: "${{ secrets.GH_TOKEN }}",
           "delete-branch": true,
-          committer: "team-cdk-terrain <github-team-cdk-terrain@cdktn.io",
-          author: "Team CDK Terrain <github-team-cdk-terrain@cdktn.io",
+          token: "${{ steps.generate_token.outputs.token }}",
+          author:
+            "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>",
+          committer:
+            "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>",
           signoff: true,
         },
       },

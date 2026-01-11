@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { cdk } from "projen";
+import { cdk, github } from "projen";
 import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { UpgradeJSIIAndTypeScript } from "./projenrc/upgrade-jsii-typescript";
 import { UpgradeNode } from "./projenrc/upgrade-node";
@@ -28,6 +28,9 @@ const githubActionPinnedVersions = {
   "dessant/lock-threads": "1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771", // v5.0.1
   "hashicorp/setup-copywrite": "32638da2d4e81d56a0764aa1547882fc4d209636", // v1.1.3
   "peter-evans/create-pull-request": "271a8d0340265f705b14b6d32b9829c1cb33d45e", // v7.0.8
+  // TODO: Bump to projen >0.91.24, tibdex/github-app-token is deprecated!
+  "tibdex/github-app-token": "3beb63f4bd073e61482598c45c71c1019b59b73a", // v2.1.0
+  "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
 };
 
 /** JSII and TS should always use the same major/minor version range */
@@ -90,6 +93,9 @@ const project = new cdk.JsiiProject({
     email: "github-team-cdk-terrain@cdktn.io",
   },
   projenrcTs: true,
+  githubOptions: {
+    projenCredentials: github.GithubCredentials.fromApp(),
+  },
 });
 
 project.addDevDeps(

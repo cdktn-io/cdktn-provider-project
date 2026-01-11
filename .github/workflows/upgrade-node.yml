@@ -94,6 +94,17 @@ jobs:
         env:
           CI: "false"
         run: yarn projen
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
+        with:
+          app-id: ${{ env.PROJEN_APP_ID }}
+          private-key: ${{ env.PROJEN_APP_PRIVATE_KEY }}
+      - name: Get GitHub App User ID
+        id: get_user_id
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: echo "id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e
         with:
@@ -107,8 +118,8 @@ jobs:
             While this PR could be merged as-is, it is recommended that you scan the code (especially `.projenrc.ts`) to see if there are any comments indicating changes that can/should be made when upgrading Node, such as: 
             ```// The following line can be removed when upgrading to Node ${{ needs.version.outputs.major }}```
           labels: automerge,automated,security
-          token: ${{ secrets.PROJEN_GITHUB_TOKEN }}
-          author: team-cdk-terrain <github-team-cdk-terrain@cdktn.io
-          committer: team-cdk-terrain <github-team-cdk-terrain@cdktn.io
+          token: ${{ steps.generate_token.outputs.token }}
+          author: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
+          committer: ${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>
           signoff: true
           delete-branch: true

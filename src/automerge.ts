@@ -46,11 +46,20 @@ export class Automerge {
             },
           },
           {
+            name: "Generate token",
+            id: "generate_token",
+            uses: "actions/create-github-app-token",
+            with: {
+              "app-id": "${{ env.PROJEN_APP_ID }}",
+              "private-key": "${{ env.PROJEN_APP_PRIVATE_KEY }}",
+            },
+          },
+          {
             name: "Turn on automerge for this PR by a trusted user or bot",
             if: `github.event.pull_request.user.login == 'team-cdk-terrain[bot]' || contains(${maintainerStatuses}, github.event.pull_request.author_association) || github.actor == 'dependabot[bot]'`,
             run: "gh pr merge --auto --squash $PR_ID",
             env: {
-              GH_TOKEN: "${{ secrets.PROJEN_GITHUB_TOKEN }}",
+              GH_TOKEN: "${{ steps.generate_token.outputs.token }}",
             },
           },
         ],
