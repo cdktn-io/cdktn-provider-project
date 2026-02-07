@@ -76,7 +76,5 @@ For local development, [yarn link](https://classic.yarnpkg.com/en/docs/cli/link/
 
 ## CAVEATS
 
-1. Maven is disabled
-1. Java package: com.Io.Cdktn - unusual capitalization, typically should be io.cdktn or com.cdktn
-1. Nuget is disabled
-1. .NET namespace: Io.Cdktn.Cdktn.Providers.Random - has "Cdktn" duplicated
+1. Maven publishing is disabled (TODO: re-enable when requested and infra available)
+1. NuGet publishing is disabled (TODO: re-enable when requested and infra available)

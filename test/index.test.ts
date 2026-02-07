@@ -151,11 +151,11 @@ test.skip("override maven org", () => {
 
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
     "jsii.targets.java.maven.groupId",
-    "com.gofer"
+    "io.gofer"
   );
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
     "jsii.targets.java.package",
-    "com.gofer.cdktn.providers.random_provider"
+    "io.gofer.providers.random_provider"
   );
 });
 
@@ -169,7 +169,7 @@ test.skip("override maven group id", () => {
   );
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
     "jsii.targets.java.package",
-    "dev.gofer.cdktn.providers.random_provider"
+    "dev.gofer.providers.random_provider"
   );
 });
 

@@ -123,7 +123,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       githubNamespace = "cdktn-io",
       mavenEndpoint = "https://central.sonatype.com", // TODO
       nugetOrg = "Io.Cdktn", // TODO
-      mavenOrg = "Io.Cdktn", // TODO
+      mavenOrg = "cdktn", // TODO
     } = options;
 
     const [fqproviderName, providerVersion] = terraformProvider.split("@");
@@ -134,13 +134,9 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       "providerName may not end with '-go' as this can conflict with repos for go packages"
     );
 
-    const nugetName = `${nugetOrg}.${pascalCase(
-      namespace
-    )}.Providers.${pascalCase(providerName)}`;
-    const mavenGroupId = options.mavenGroupId ?? `com.${mavenOrg}`;
-    const mavenName = `${mavenGroupId}.${namespace}.providers.${getMavenName(
-      providerName
-    )}`;
+    const nugetName = `${nugetOrg}.Providers.${pascalCase(providerName)}`;
+    const mavenGroupId = options.mavenGroupId ?? `io.${mavenOrg}`;
+    const mavenName = `${mavenGroupId}.providers.${getMavenName(providerName)}`;
     const repository = `${githubNamespace}/${namespace}-provider-${providerName.replace(
       /-/g,
       ""
