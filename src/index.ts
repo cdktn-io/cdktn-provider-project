@@ -136,9 +136,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
 
     const nugetName = `${nugetOrg}.Providers.${pascalCase(providerName)}`;
     const mavenGroupId = options.mavenGroupId ?? `io.${mavenOrg}`;
-    const mavenName = `${mavenGroupId}.providers.${getMavenName(
-      providerName
-    )}`;
+    const mavenName = `${mavenGroupId}.providers.${getMavenName(providerName)}`;
     const repository = `${githubNamespace}/${namespace}-provider-${providerName.replace(
       /-/g,
       ""
