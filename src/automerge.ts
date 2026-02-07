@@ -67,6 +67,8 @@ export class Automerge {
           contents: JobPermission.READ,
         },
         env: {
+          PROJEN_APP_ID: "${{ secrets.PROJEN_APP_ID }}",
+          PROJEN_APP_PRIVATE_KEY: "${{ secrets.PROJEN_APP_PRIVATE_KEY }}",
           GIT_REF: "${{ github.event.pull_request.head.ref }}",
           GIT_REPO: "${{ github.event.pull_request.head.repo.full_name }}",
           PR_ID: "${{ github.event.pull_request.number }}",

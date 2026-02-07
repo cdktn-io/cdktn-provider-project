@@ -131,9 +131,9 @@ export class ProviderUpgrade {
       {
         name: "Get GitHub App User ID",
         id: "get_user_id",
-        run: 'echo "id=$(gh api "/users/${{ steps.app-token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"',
+        run: 'echo "id=$(gh api "/users/${{ steps.generate_token.outputs.app-slug }}[bot]" --jq .id)" >> "$GITHUB_OUTPUT"',
         env: {
-          GH_TOKEN: "${{ steps.app-token.outputs.token }}",
+          GH_TOKEN: "${{ steps.generate_token.outputs.token }}",
         },
       },
       {
@@ -149,9 +149,9 @@ export class ProviderUpgrade {
           "delete-branch": true,
           token: "${{ steps.generate_token.outputs.token }}",
           author:
-            "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>",
+            "${{ steps.generate_token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.generate_token.outputs.app-slug }}[bot]@users.noreply.github.com>",
           committer:
-            "${{ steps.app-token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.app-token.outputs.app-slug }}[bot]@users.noreply.github.com>",
+            "${{ steps.generate_token.outputs.app-slug }}[bot] <${{ steps.get_user_id.outputs.id }}+${{ steps.generate_token.outputs.app-slug }}[bot]@users.noreply.github.com>",
           signoff: true,
         },
       },
@@ -161,6 +161,8 @@ export class ProviderUpgrade {
       upgrade: {
         runsOn: options.workflowRunsOn,
         env: {
+          PROJEN_APP_ID: "${{ secrets.PROJEN_APP_ID }}",
+          PROJEN_APP_PRIVATE_KEY: "${{ secrets.PROJEN_APP_PRIVATE_KEY }}",
           NODE_OPTIONS: `--max-old-space-size=${options.nodeHeapSize}`,
         },
         steps,
