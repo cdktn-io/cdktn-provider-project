@@ -700,11 +700,12 @@ When given a project, this it the project itself.
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.packageManager">packageManager</a></code> | <code>projen.javascript.NodePackageManager</code> | The package manager to use. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.runScriptCommand">runScriptCommand</a></code> | <code>string</code> | The command to use to run scripts (e.g. `yarn run` or `npm run` depends on the package manager). |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.autoMerge">autoMerge</a></code> | <code>projen.github.AutoMerge</code> | Component that sets up mergify for merging approved pull requests. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.biome">biome</a></code> | <code>projen.javascript.Biome</code> | *No description.* |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.buildWorkflow">buildWorkflow</a></code> | <code>projen.build.BuildWorkflow</code> | The PR build GitHub workflow. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.buildWorkflowJobId">buildWorkflowJobId</a></code> | <code>string</code> | The job ID of the build workflow. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.jest">jest</a></code> | <code>projen.javascript.Jest</code> | The Jest configuration (if enabled). |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | Maximum node version required by this package. |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | Minimum node.js version required by this package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | Maximum node version supported by this package. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | The minimum node version required by this package to function. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.npmignore">npmignore</a></code> | <code>projen.IgnoreFile</code> | The .npmignore file. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.prettier">prettier</a></code> | <code>projen.javascript.Prettier</code> | *No description.* |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProject.property.publisher">publisher</a></code> | <code>projen.release.Publisher</code> | Package publisher. |
@@ -1234,6 +1235,16 @@ Component that sets up mergify for merging approved pull requests.
 
 ---
 
+##### `biome`<sup>Optional</sup> <a name="biome" id="@cdktn/provider-project.CdktnProviderProject.property.biome"></a>
+
+```typescript
+public readonly biome: Biome;
+```
+
+- *Type:* projen.javascript.Biome
+
+---
+
 ##### `buildWorkflow`<sup>Optional</sup> <a name="buildWorkflow" id="@cdktn/provider-project.CdktnProviderProject.property.buildWorkflow"></a>
 
 ```typescript
@@ -1280,7 +1291,9 @@ public readonly maxNodeVersion: string;
 
 - *Type:* string
 
-Maximum node version required by this package.
+Maximum node version supported by this package.
+
+The value indicates the package is incompatible with newer versions.
 
 ---
 
@@ -1292,7 +1305,9 @@ public readonly minNodeVersion: string;
 
 - *Type:* string
 
-Minimum node.js version required by this package.
+The minimum node version required by this package to function.
+
+This value indicates the package is incompatible with older versions.
 
 ---
 
@@ -1558,6 +1573,7 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bugsEmail">bugsEmail</a></code> | <code>string</code> | The email address to which issues should be reported. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bugsUrl">bugsUrl</a></code> | <code>string</code> | The url to your project's issue tracker. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bundledDeps">bundledDeps</a></code> | <code>string[]</code> | List of dependencies to bundle into this module. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bunVersion">bunVersion</a></code> | <code>string</code> | The version of Bun to use if using Bun as a package manager. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeArtifactOptions">codeArtifactOptions</a></code> | <code>projen.javascript.CodeArtifactOptions</code> | Options for npm packages using AWS CodeArtifact. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.deps">deps</a></code> | <code>string[]</code> | Runtime dependencies of this module. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.description">description</a></code> | <code>string</code> | The description is just a string that helps people understand the purpose of the package. |
@@ -1567,13 +1583,14 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.keywords">keywords</a></code> | <code>string[]</code> | Keywords to include in `package.json`. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.license">license</a></code> | <code>string</code> | License's SPDX identifier. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Indicates if a license should be added. |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | Minimum node.js version to require via `engines` (inclusive). |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | Minimum Node.js version to require via package.json `engines` (inclusive). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.maxNodeVersion">maxNodeVersion</a></code> | <code>string</code> | The maximum node version supported by this package. Most projects should not use this option. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.minNodeVersion">minNodeVersion</a></code> | <code>string</code> | The minimum node version required by this package to function. Most projects should not use this option. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmAccess">npmAccess</a></code> | <code>projen.javascript.NpmAccess</code> | Access level of the npm package. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmProvenance">npmProvenance</a></code> | <code>boolean</code> | Should provenance statements be generated when the package is published. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmRegistry">npmRegistry</a></code> | <code>string</code> | The host name of the npm registry to publish to. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmRegistryUrl">npmRegistryUrl</a></code> | <code>string</code> | The base URL of the npm package registry. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmTokenSecret">npmTokenSecret</a></code> | <code>string</code> | GitHub secret which contains the NPM token to use when publishing packages. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmTrustedPublishing">npmTrustedPublishing</a></code> | <code>boolean</code> | Use trusted publishing for publishing to npmjs.com Needs to be pre-configured on npm.js to work. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.packageManager">packageManager</a></code> | <code>projen.javascript.NodePackageManager</code> | The Node Package Manager used to execute scripts. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.packageName">packageName</a></code> | <code>string</code> | The "name" in package.json. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.peerDependencyOptions">peerDependencyOptions</a></code> | <code>projen.javascript.PeerDependencyOptions</code> | Options for `peerDeps`. |
@@ -1585,9 +1602,11 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.scripts">scripts</a></code> | <code>{[ key: string ]: string}</code> | npm scripts to include. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.stability">stability</a></code> | <code>string</code> | Package's Stability. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.yarnBerryOptions">yarnBerryOptions</a></code> | <code>projen.javascript.YarnBerryOptions</code> | Options for Yarn Berry. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bumpPackage">bumpPackage</a></code> | <code>string</code> | The `commit-and-tag-version` compatible package used to bump the package version, as a dependency string. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.jsiiReleaseVersion">jsiiReleaseVersion</a></code> | <code>string</code> | Version requirement of `publib` which is used to publish modules to npm. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.majorVersion">majorVersion</a></code> | <code>number</code> | Major version to release from the default branch. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.minMajorVersion">minMajorVersion</a></code> | <code>number</code> | Minimal Major version to release. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.nextVersionCommand">nextVersionCommand</a></code> | <code>string</code> | A shell command to control the next version to release. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.npmDistTag">npmDistTag</a></code> | <code>string</code> | The npmDistTag to use when publishing from the default branch. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.postBuildSteps">postBuildSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps to execute after build as part of the release workflow. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.prerelease">prerelease</a></code> | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre"). |
@@ -1595,12 +1614,14 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishTasks">publishTasks</a></code> | <code>boolean</code> | Define publishing tasks that can be executed manually as well as workflows. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releasableCommits">releasableCommits</a></code> | <code>projen.ReleasableCommits</code> | Find commits that should be considered releasable Used to decide if a release is required. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseBranches">releaseBranches</a></code> | <code>{[ key: string ]: projen.release.BranchOptions}</code> | Defines additional release branches. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseEnvironment">releaseEnvironment</a></code> | <code>string</code> | The GitHub Actions environment used for the release. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseEveryCommit">releaseEveryCommit</a></code> | <code>boolean</code> | Automatically release new versions every commit to one of branches in `releaseBranches`. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseFailureIssue">releaseFailureIssue</a></code> | <code>boolean</code> | Create a github issue on every failed publishing task. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseFailureIssueLabel">releaseFailureIssueLabel</a></code> | <code>string</code> | The label to apply to issues indicating publish failures. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseSchedule">releaseSchedule</a></code> | <code>string</code> | CRON schedule to trigger new releases. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseTagPrefix">releaseTagPrefix</a></code> | <code>string</code> | Automatically add the given prefix to release tags. Useful if you are releasing on multiple branches with overlapping version numbers. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseTrigger">releaseTrigger</a></code> | <code>projen.release.ReleaseTrigger</code> | The release trigger to use. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowEnv">releaseWorkflowEnv</a></code> | <code>{[ key: string ]: string}</code> | Build environment variables for release workflows. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowName">releaseWorkflowName</a></code> | <code>string</code> | The name of the default release workflow. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowSetupSteps">releaseWorkflowSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | A set of workflow steps to execute in order to setup the workflow container. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.versionrcOptions">versionrcOptions</a></code> | <code>{[ key: string ]: any}</code> | Custom configuration used when creating changelog with commit-and-tag-version package. |
@@ -1609,14 +1630,18 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowRunsOnGroup">workflowRunsOnGroup</a></code> | <code>projen.GroupRunnerOptions</code> | Github Runner Group selection options. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.defaultReleaseBranch">defaultReleaseBranch</a></code> | <code>string</code> | The name of the main release branch. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.artifactsDirectory">artifactsDirectory</a></code> | <code>string</code> | A directory which will contain build artifacts. |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.autoApproveUpgrades">autoApproveUpgrades</a></code> | <code>boolean</code> | Automatically approve deps upgrade PRs, allowing them to be merged by mergify (if configued). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.auditDeps">auditDeps</a></code> | <code>boolean</code> | Run security audit on dependencies. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.auditDepsOptions">auditDepsOptions</a></code> | <code>projen.javascript.AuditOptions</code> | Security audit options. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.autoApproveUpgrades">autoApproveUpgrades</a></code> | <code>boolean</code> | Automatically approve deps upgrade PRs, allowing them to be merged by mergify (if configured). |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.biome">biome</a></code> | <code>boolean</code> | Setup Biome. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.biomeOptions">biomeOptions</a></code> | <code>projen.javascript.BiomeOptions</code> | Biome options. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflow">buildWorkflow</a></code> | <code>boolean</code> | Define a GitHub workflow for building PRs. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflowOptions">buildWorkflowOptions</a></code> | <code>projen.javascript.BuildWorkflowOptions</code> | Options for PR build workflow. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.buildWorkflowTriggers">buildWorkflowTriggers</a></code> | <code>projen.github.workflows.Triggers</code> | Build workflow triggers. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.bundlerOptions">bundlerOptions</a></code> | <code>projen.javascript.BundlerOptions</code> | Options for `Bundler`. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.checkLicenses">checkLicenses</a></code> | <code>projen.javascript.LicenseCheckerOptions</code> | Configure which licenses should be deemed acceptable for use by dependencies. |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCov">codeCov</a></code> | <code>boolean</code> | Define a GitHub workflow step for sending code coverage metrics to https://codecov.io/ Uses codecov/codecov-action@v4 A secret is required for private repos. Configured with `@codeCovTokenSecret`. |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCovTokenSecret">codeCovTokenSecret</a></code> | <code>string</code> | Define the secret name for a specified https://codecov.io/ token A secret is required to send coverage for private repositories. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCov">codeCov</a></code> | <code>boolean</code> | Define a GitHub workflow step for sending code coverage metrics to https://codecov.io/ Uses codecov/codecov-action@v5 By default, OIDC auth is used. Alternatively a token can be provided via `codeCovTokenSecret`. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.codeCovTokenSecret">codeCovTokenSecret</a></code> | <code>string</code> | Define the secret name for a specified https://codecov.io/ token. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | License copyright owner. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | The copyright years to put in the LICENSE file. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.dependabot">dependabot</a></code> | <code>boolean</code> | Use dependabot to handle dependency upgrades. |
@@ -1644,7 +1669,7 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflow">releaseWorkflow</a></code> | <code>boolean</code> | DEPRECATED: renamed to `release`. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowBootstrapSteps">workflowBootstrapSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Workflow steps to use in order to bootstrap this repo. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowGitIdentity">workflowGitIdentity</a></code> | <code>projen.github.GitIdentity</code> | The git identity to use in workflows. |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowNodeVersion">workflowNodeVersion</a></code> | <code>string</code> | The node version to use in GitHub workflows. |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowNodeVersion">workflowNodeVersion</a></code> | <code>string</code> | The node version used in GitHub Actions workflows. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.workflowPackageCache">workflowPackageCache</a></code> | <code>boolean</code> | Enable Node.js package cache in GitHub workflows. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.disableTsconfig">disableTsconfig</a></code> | <code>boolean</code> | Do not generate a `tsconfig.json` file (used by jsii projects since tsconfig.json is generated by the jsii compiler). |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.disableTsconfigDev">disableTsconfigDev</a></code> | <code>boolean</code> | Do not generate a `tsconfig.dev.json` file. |
@@ -2252,6 +2277,19 @@ this will be what you `package.json` will eventually include.
 
 ---
 
+##### `bunVersion`<sup>Optional</sup> <a name="bunVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.bunVersion"></a>
+
+```typescript
+public readonly bunVersion: string;
+```
+
+- *Type:* string
+- *Default:* "latest"
+
+The version of Bun to use if using Bun as a package manager.
+
+---
+
 ##### `codeArtifactOptions`<sup>Optional</sup> <a name="codeArtifactOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.codeArtifactOptions"></a>
 
 ```typescript
@@ -2415,9 +2453,15 @@ public readonly maxNodeVersion: string;
 ```
 
 - *Type:* string
-- *Default:* no max
+- *Default:* no maximum version is enforced
 
-Minimum node.js version to require via `engines` (inclusive).
+The maximum node version supported by this package. Most projects should not use this option.
+
+The value indicates that the package is incompatible with any newer versions of node.
+This requirement is enforced via the engines field.
+
+You will normally not need to set this option.
+Consider this option only if your package is known to not function with newer versions of node.
 
 ---
 
@@ -2428,9 +2472,19 @@ public readonly minNodeVersion: string;
 ```
 
 - *Type:* string
-- *Default:* no "engines" specified
+- *Default:* no minimum version is enforced
 
-Minimum Node.js version to require via package.json `engines` (inclusive).
+The minimum node version required by this package to function. Most projects should not use this option.
+
+The value indicates that the package is incompatible with any older versions of node.
+This requirement is enforced via the engines field.
+
+You will normally not need to set this option, even if your package is incompatible with EOL versions of node.
+Consider this option only if your package depends on a specific feature, that is not available in other LTS versions.
+Setting this option has very high impact on the consumers of your package,
+as package managers will actively prevent usage with node versions you have marked as incompatible.
+
+To change the node version of your CI/CD workflows, use `workflowNodeVersion`.
 
 ---
 
@@ -2512,6 +2566,19 @@ GitHub secret which contains the NPM token to use when publishing packages.
 
 ---
 
+##### `npmTrustedPublishing`<sup>Optional</sup> <a name="npmTrustedPublishing" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.npmTrustedPublishing"></a>
+
+```typescript
+public readonly npmTrustedPublishing: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Use trusted publishing for publishing to npmjs.com Needs to be pre-configured on npm.js to work.
+
+---
+
 ##### `packageManager`<sup>Optional</sup> <a name="packageManager" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.packageManager"></a>
 
 ```typescript
@@ -2584,7 +2651,7 @@ public readonly pnpmVersion: string;
 ```
 
 - *Type:* string
-- *Default:* "7"
+- *Default:* "9"
 
 The version of PNPM to use if using PNPM as a package manager.
 
@@ -2673,6 +2740,21 @@ Options for Yarn Berry.
 
 ---
 
+##### `bumpPackage`<sup>Optional</sup> <a name="bumpPackage" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.bumpPackage"></a>
+
+```typescript
+public readonly bumpPackage: string;
+```
+
+- *Type:* string
+- *Default:* A recent version of "commit-and-tag-version"
+
+The `commit-and-tag-version` compatible package used to bump the package version, as a dependency string.
+
+This can be any compatible package version, including the deprecated `standard-version@9`.
+
+---
+
 ##### `jsiiReleaseVersion`<sup>Optional</sup> <a name="jsiiReleaseVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.jsiiReleaseVersion"></a>
 
 ```typescript
@@ -2717,6 +2799,38 @@ This can be useful to set to 1, as breaking changes before the 1.x major
 release are not incrementing the major version number.
 
 Can not be set together with `majorVersion`.
+
+---
+
+##### `nextVersionCommand`<sup>Optional</sup> <a name="nextVersionCommand" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.nextVersionCommand"></a>
+
+```typescript
+public readonly nextVersionCommand: string;
+```
+
+- *Type:* string
+- *Default:* The next version will be determined based on the commit history and project settings.
+
+A shell command to control the next version to release.
+
+If present, this shell command will be run before the bump is executed, and
+it determines what version to release. It will be executed in the following
+environment:
+
+- Working directory: the project directory.
+- `$VERSION`: the current version. Looks like `1.2.3`.
+- `$LATEST_TAG`: the most recent tag. Looks like `prefix-v1.2.3`, or may be unset.
+- `$SUGGESTED_BUMP`: the suggested bump action based on commits. One of `major|minor|patch|none`.
+
+The command should print one of the following to `stdout`:
+
+- Nothing: the next version number will be determined based on commit history.
+- `x.y.z`: the next version number will be `x.y.z`.
+- `major|minor|patch`: the next version number will be the current version number
+  with the indicated component bumped.
+
+This setting cannot be specified together with `minMajorVersion`; the invoked
+script can be used to achieve the effects of `minMajorVersion`.
 
 ---
 
@@ -2824,6 +2938,25 @@ be provided for the default branch.
 
 ---
 
+##### `releaseEnvironment`<sup>Optional</sup> <a name="releaseEnvironment" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseEnvironment"></a>
+
+```typescript
+public readonly releaseEnvironment: string;
+```
+
+- *Type:* string
+- *Default:* no environment used, unless set at the artifact level
+
+The GitHub Actions environment used for the release.
+
+This can be used to add an explicit approval step to the release
+or limit who can initiate a release through environment protection rules.
+
+When multiple artifacts are released, the environment can be overwritten
+on a per artifact basis.
+
+---
+
 ##### ~~`releaseEveryCommit`~~<sup>Optional</sup> <a name="releaseEveryCommit" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseEveryCommit"></a>
 
 - *Deprecated:* Use `releaseTrigger: ReleaseTrigger.continuous()` instead
@@ -2910,6 +3043,19 @@ public readonly releaseTrigger: ReleaseTrigger;
 - *Default:* Continuous releases (`ReleaseTrigger.continuous()`)
 
 The release trigger to use.
+
+---
+
+##### `releaseWorkflowEnv`<sup>Optional</sup> <a name="releaseWorkflowEnv" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.releaseWorkflowEnv"></a>
+
+```typescript
+public readonly releaseWorkflowEnv: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* {}
+
+Build environment variables for release workflows.
 
 ---
 
@@ -3017,6 +3163,36 @@ A directory which will contain build artifacts.
 
 ---
 
+##### `auditDeps`<sup>Optional</sup> <a name="auditDeps" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.auditDeps"></a>
+
+```typescript
+public readonly auditDeps: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Run security audit on dependencies.
+
+When enabled, creates an "audit" task that checks for known security vulnerabilities
+in dependencies. By default, runs during every build and checks for "high" severity
+vulnerabilities or above in all dependencies (including dev dependencies).
+
+---
+
+##### `auditDepsOptions`<sup>Optional</sup> <a name="auditDepsOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.auditDepsOptions"></a>
+
+```typescript
+public readonly auditDepsOptions: AuditOptions;
+```
+
+- *Type:* projen.javascript.AuditOptions
+- *Default:* default options
+
+Security audit options.
+
+---
+
 ##### `autoApproveUpgrades`<sup>Optional</sup> <a name="autoApproveUpgrades" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.autoApproveUpgrades"></a>
 
 ```typescript
@@ -3026,9 +3202,35 @@ public readonly autoApproveUpgrades: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Automatically approve deps upgrade PRs, allowing them to be merged by mergify (if configued).
+Automatically approve deps upgrade PRs, allowing them to be merged by mergify (if configured).
 
 Throw if set to true but `autoApproveOptions` are not defined.
+
+---
+
+##### `biome`<sup>Optional</sup> <a name="biome" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.biome"></a>
+
+```typescript
+public readonly biome: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Setup Biome.
+
+---
+
+##### `biomeOptions`<sup>Optional</sup> <a name="biomeOptions" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.biomeOptions"></a>
+
+```typescript
+public readonly biomeOptions: BiomeOptions;
+```
+
+- *Type:* projen.javascript.BiomeOptions
+- *Default:* default options
+
+Biome options.
 
 ---
 
@@ -3108,7 +3310,7 @@ public readonly codeCov: boolean;
 - *Type:* boolean
 - *Default:* false
 
-Define a GitHub workflow step for sending code coverage metrics to https://codecov.io/ Uses codecov/codecov-action@v4 A secret is required for private repos. Configured with `@codeCovTokenSecret`.
+Define a GitHub workflow step for sending code coverage metrics to https://codecov.io/ Uses codecov/codecov-action@v5 By default, OIDC auth is used. Alternatively a token can be provided via `codeCovTokenSecret`.
 
 ---
 
@@ -3119,9 +3321,9 @@ public readonly codeCovTokenSecret: string;
 ```
 
 - *Type:* string
-- *Default:* if this option is not specified, only public repositories are supported
+- *Default:* OIDC auth is used
 
-Define the secret name for a specified https://codecov.io/ token A secret is required to send coverage for private repositories.
+Define the secret name for a specified https://codecov.io/ token.
 
 ---
 
@@ -3186,7 +3388,7 @@ public readonly depsUpgrade: boolean;
 ```
 
 - *Type:* boolean
-- *Default:* true
+- *Default:* `true` for root projects, `false` for subprojects
 
 Use tasks and github workflows to handle dependency upgrades.
 
@@ -3483,7 +3685,7 @@ public readonly workflowGitIdentity: GitIdentity;
 ```
 
 - *Type:* projen.github.GitIdentity
-- *Default:* GitHub Actions
+- *Default:* default GitHub Actions user
 
 The git identity to use in workflows.
 
@@ -3496,9 +3698,11 @@ public readonly workflowNodeVersion: string;
 ```
 
 - *Type:* string
-- *Default:* same as `minNodeVersion`
+- *Default:* `minNodeVersion` if set, otherwise `lts/*`.
 
-The node version to use in GitHub workflows.
+The node version used in GitHub Actions workflows.
+
+Always use this option if your GitHub Actions workflows require a specific to run.
 
 ---
 
@@ -3587,7 +3791,7 @@ public readonly eslint: boolean;
 ```
 
 - *Type:* boolean
-- *Default:* true
+- *Default:* true, unless biome is enabled
 
 Setup eslint.
 
@@ -3886,7 +4090,7 @@ public readonly jsiiVersion: string;
 ```
 
 - *Type:* string
-- *Default:* "1.x"
+- *Default:* "~5.8.0"
 
 Version of the jsii compiler to use.
 
