@@ -125,6 +125,10 @@
     "eslint": {
       "name": "eslint",
       "description": "Runs eslint against the codebase",
+      "env": {
+        "ESLINT_USE_FLAT_CONFIG": "false",
+        "NODE_NO_WARNINGS": "1"
+      },
       "steps": [
         {
           "exec": "eslint --ext .ts,.tsx --fix --no-error-on-unmatched-pattern $@ src test build-tools projenrc .projenrc.ts",
@@ -281,7 +285,7 @@
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@16 --upgrade --target=minor --peer --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,@types/fs-extra,@types/glob,@types/jest,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,glob,jest,jsii-diff,jsii-pacmak,prettier,projen,ts-jest,ts-node,change-case,fs-extra"
+          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,@types/fs-extra,@types/glob,@types/jest,eslint-config-prettier,eslint-import-resolver-typescript,eslint-plugin-import,eslint-plugin-prettier,glob,jest,jsii-diff,jsii-pacmak,prettier,projen,ts-jest,ts-node,change-case,fs-extra"
         },
         {
           "exec": "yarn install --check-files"

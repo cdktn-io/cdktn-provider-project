@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { cdk, github } from "projen";
+import { cdk, github, JsonPatch } from "projen";
 import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { UpgradeJSIIAndTypeScript } from "./projenrc/upgrade-jsii-typescript";
 import { UpgradeNode } from "./projenrc/upgrade-node";
@@ -28,13 +28,11 @@ const githubActionPinnedVersions = {
   "dessant/lock-threads": "1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771", // v5.0.1
   "hashicorp/setup-copywrite": "32638da2d4e81d56a0764aa1547882fc4d209636", // v1.1.3
   "peter-evans/create-pull-request": "271a8d0340265f705b14b6d32b9829c1cb33d45e", // v7.0.8
-  // TODO: Bump to projen >0.91.24, tibdex/github-app-token is deprecated!
-  "tibdex/github-app-token": "3beb63f4bd073e61482598c45c71c1019b59b73a", // v2.1.0
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
 };
 
 /** JSII and TS should always use the same major/minor version range */
-const typescriptVersion = "~5.8.0";
+const typescriptVersion = "~5.9.0";
 const project = new cdk.JsiiProject({
   name: "@cdktn/provider-project",
   author: "CDK Terrain Maintainers",
@@ -45,12 +43,13 @@ const project = new cdk.JsiiProject({
   pullRequestTemplate: false,
   typescriptVersion,
   jsiiVersion: typescriptVersion,
-  peerDeps: ["projen@^0.87.4", "constructs@^10.4.2"],
+  peerDeps: ["projen@^0.99.0", "constructs@^10.4.2"],
   deps: ["change-case", "fs-extra"],
   bundledDeps: ["change-case", "fs-extra"],
   defaultReleaseBranch: "main",
   releaseToNpm: true,
-  minNodeVersion: "20.9.0",
+  npmTrustedPublishing: true,
+  minNodeVersion: "20.16.0",
   mergify: false,
   prettier: true,
   scripts: {
@@ -197,6 +196,13 @@ releaseWorkflow?.addOverride("on.push", {
     ".github/**/*.md",
   ],
 });
+
+// Trusted publishing requires npm >=11.5.1 which ships with Node 24
+project.github
+  ?.tryFindWorkflow("release")
+  ?.file?.patch(
+    JsonPatch.replace("/jobs/release_npm/steps/0/with/node-version", "24.x")
+  );
 
 const staleWorkflow = project.tryFindObjectFile(".github/workflows/stale.yml");
 staleWorkflow?.addOverride("on.schedule", [

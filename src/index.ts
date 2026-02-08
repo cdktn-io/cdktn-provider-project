@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import assert = require("assert");
 import { pascalCase } from "change-case";
-import { TextFile, cdk, github } from "projen";
+import { TextFile, cdk, github, JsonPatch } from "projen";
 import { JobStep } from "projen/lib/github/workflows-model";
 import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { AlertOpenPrs } from "./alert-open-prs";
@@ -99,8 +99,6 @@ const githubActionPinnedVersions = {
   "imjohnbo/issue-bot": "572eed14422c4d6ca37e870f97e7da209422f5bd", // v3.4.4
   "peter-evans/create-pull-request": "271a8d0340265f705b14b6d32b9829c1cb33d45e", // v7.0.8
   "slackapi/slack-github-action": "485a9d42d3a73031f12ec201c457e2162c45d02d", // v2.0.0
-  // TODO: Bump to projen >0.91.24, tibdex/github-app-token is deprecated!
-  "tibdex/github-app-token": "3beb63f4bd073e61482598c45c71c1019b59b73a", // v2.1.0
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
 };
 
@@ -124,6 +122,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       mavenEndpoint = "https://central.sonatype.com", // TODO
       nugetOrg = "Io.Cdktn", // TODO
       mavenOrg = "cdktn", // TODO
+      npmTrustedPublishing,
     } = options;
 
     const [fqproviderName, providerVersion] = terraformProvider.split("@");
@@ -254,6 +253,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       workflowRunsOn,
       licensed: false, // we do supply our own license file with a custom header
       releaseToNpm: true,
+      npmTrustedPublishing: npmTrustedPublishing ?? false,
       name: packageInfo.npm.name,
       description: `Prebuilt ${providerName} Provider for Terraform CDK (cdktf)`,
       keywords: ["cdktf", "terraform", "cdk", "provider", providerName],
@@ -360,6 +360,18 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       ".github/workflows/release.yml"
     );
     releaseWorkflow?.addOverride("jobs.release_github.needs", "release");
+
+    // Trusted publishing requires npm >=11.5.1 which ships with Node 24
+    if (npmTrustedPublishing) {
+      this.github
+        ?.tryFindWorkflow("release")
+        ?.file?.patch(
+          JsonPatch.replace(
+            "/jobs/release_npm/steps/0/with/node-version",
+            "24.x"
+          )
+        );
+    }
 
     // ensure we don't fail if the release file is not present
     const checkExistingTagStep = (

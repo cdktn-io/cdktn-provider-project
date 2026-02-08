@@ -173,6 +173,57 @@ test.skip("override maven group id", () => {
   );
 });
 
+test("synths with npm trusted publishing enabled", () => {
+  const snapshot = synthSnapshot(getProject({ npmTrustedPublishing: true }));
+
+  expect(snapshot).toMatchSnapshot();
+
+  const release = snapshot[".github/workflows/release.yml"];
+  // Trusted publishing should set id-token: write permission
+  expect(release).toEqual(expect.stringContaining("id-token: write"));
+  // Should not reference NPM_TOKEN in the release_npm job
+  const releaseLines = release.split("\n");
+  const npmJobStart = releaseLines.findIndex((line: string) =>
+    line.includes("release_npm:")
+  );
+  const npmJobEnd = releaseLines.findIndex(
+    (line: string, idx: number) => idx > npmJobStart && /^\s{2}\w/.test(line)
+  );
+  const npmJobSection = releaseLines
+    .slice(npmJobStart, npmJobEnd > 0 ? npmJobEnd : undefined)
+    .join("\n");
+  expect(npmJobSection).not.toEqual(expect.stringContaining("NPM_TOKEN"));
+  // Should use Node 24.x for trusted publishing
+  expect(npmJobSection).toEqual(expect.stringContaining("24.x"));
+});
+
+test("npm trusted publishing is disabled by default", () => {
+  const snapshot = synthSnapshot(getProject());
+
+  const release = snapshot[".github/workflows/release.yml"];
+  // Default should use NPM_TOKEN
+  expect(release).toEqual(expect.stringContaining("NPM_TOKEN"));
+});
+
+test("deprecated project with trusted publishing uses NPM_TOKEN fallback for deprecation", () => {
+  const snapshot = synthSnapshot(
+    getProject({
+      isDeprecated: true,
+      deprecationDate: "December 11, 2023",
+      npmTrustedPublishing: true,
+    })
+  );
+
+  const release = snapshot[".github/workflows/release.yml"];
+  // Deprecation step should still reference NPM_TOKEN (fallback)
+  const releaseLines = release.split("\n");
+  const deprecateJobStart = releaseLines.findIndex((line: string) =>
+    line.includes("deprecate:")
+  );
+  const deprecateSection = releaseLines.slice(deprecateJobStart).join("\n");
+  expect(deprecateSection).toEqual(expect.stringContaining("NPM_TOKEN"));
+});
+
 test("with minNodeVersion", () => {
   const snapshot = synthSnapshot(
     getProject({

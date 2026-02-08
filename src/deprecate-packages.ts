@@ -84,7 +84,8 @@ export class DeprecatePackages {
             env: {
               NPM_REGISTRY: project.package.npmRegistry,
               NPM_TOKEN:
-                "${{ secrets." + `${project.package.npmTokenSecret} }}`,
+                "${{ secrets." +
+                `${project.package.npmTokenSecret ?? "NPM_TOKEN"} }}`,
             },
           },
           // Unfortunately, PyPi has no mechanism to mark a package as deprecated: https://github.com/pypi/warehouse/issues/345

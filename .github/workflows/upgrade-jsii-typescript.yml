@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: New JSII/TypeScript version (e.g. "5.8.0"), without carets or tildes
+        description: New JSII/TypeScript version (e.g. "5.9.0"), without carets or tildes
         required: false
         type: string
 concurrency:
@@ -29,7 +29,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with:
-          node-version: 20.9.0
+          node-version: 20.16.0
       - name: Install
         run: yarn install
       - name: Get current JSII version
@@ -86,7 +86,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with:
-          node-version: 20.9.0
+          node-version: 20.16.0
       - name: Install
         run: yarn install
       - name: Run upgrade script
