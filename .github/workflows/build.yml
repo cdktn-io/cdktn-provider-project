@@ -29,6 +29,8 @@ jobs:
         run: npx projen build
       - name: Setup Copywrite tool
         uses: hashicorp/setup-copywrite@32638da2d4e81d56a0764aa1547882fc4d209636
+        with:
+          version: v0.22.0
       - name: Add headers using Copywrite tool
         run: copywrite headers
       - name: Find mutations
