@@ -174,6 +174,7 @@ project.buildWorkflow?.addPostBuildSteps(
   {
     name: "Setup Copywrite tool",
     uses: "hashicorp/setup-copywrite",
+    with: { version: "v0.22.0" },
   },
   { name: "Add headers using Copywrite tool", run: "copywrite headers" }
 );
