@@ -130,7 +130,7 @@ test("has a custom workflow and README if the project is deprecated", () => {
   );
   expect(releaseLines.slice(releaseGoLineIndex + 1).join("\n")).toEqual(
     expect.stringContaining(
-      "// Deprecated: HashiCorp is no longer publishing new versions of the prebuilt provider for random."
+      "// Deprecated: The CDK Terrain Team is no longer publishing new versions of the prebuilt provider for random."
     )
   );
 });

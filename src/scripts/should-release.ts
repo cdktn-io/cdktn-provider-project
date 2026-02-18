@@ -65,9 +65,9 @@ const execSync = require("child_process").execSync;
         current: currPackageJson.cdktf.provider.version,
       },
       {
-        name: "cdktf peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktf,
-        current: currPackageJson.peerDependencies.cdktf,
+        name: "cdktn peer dependency",
+        previous: prevPackageJson.peerDependencies.cdktn,
+        current: currPackageJson.peerDependencies.cdktn,
       },
     ];
 

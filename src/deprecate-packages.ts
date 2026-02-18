@@ -18,16 +18,16 @@ export class DeprecatePackages {
     const { providerName, packageInfo, isDeprecated } = options;
 
     const deprecationMessageForNPM = [
-      `See https://cdk.tf/imports for details on how to continue to use the ${providerName} provider`,
-      `in your CDK for Terraform (CDKTF) projects by generating the bindings locally.`,
+      `See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the ${providerName} provider`,
+      `in your CDK Terrain (CDKTN) projects by generating the bindings locally.`,
     ].join(" ");
     // @see https://github.com/golang/go/issues/40357
     const deprecationMessageForGo = [
-      `// Deprecated: HashiCorp is no longer publishing new versions of the prebuilt provider for ${providerName}.`,
+      `// Deprecated: The CDK Terrain Team is no longer publishing new versions of the prebuilt provider for ${providerName}.`,
       `// Previously-published versions of this prebuilt provider will still continue to be available as installable Go modules,`,
-      `// but these will not be compatible with newer versions of CDK for Terraform and are not eligible for support.`,
-      `// You can continue to use the ${providerName} provider in your CDK for Terraform projects with newer versions of CDKTF,`,
-      `// but you will need to generate the bindings locally. See https://cdk.tf/imports for details.`,
+      `// but these will not be compatible with newer versions of CDK Terrain and are not eligible for support.`,
+      `// You can continue to use the ${providerName} provider in your CDK Terrain projects with newer versions of CDKTN,`,
+      `// but you will need to generate the bindings locally. See https://cdktn.io/docs/concepts/providers#import-providers for details.`,
       ``,
     ].join("\\n");
 

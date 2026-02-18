@@ -57,17 +57,17 @@ export class ReadmeFile extends FileBase {
         day: "numeric",
       });
     const deprecationMessage = `
-The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform ${providerName} provider](${registryUrl}) bindings for [CDK for Terraform](https://cdk.tf) on ${date}. As such, this repository has been archived and is no longer supported in any way by HashiCorp. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktf\` past \`${cdktfVersion}\` and are no longer eligible for support.
+The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform ${providerName} provider](${registryUrl}) bindings for [CDK Terrain](https://cdktn.io) on ${date}. As such, this repository has been archived and is no longer supported in any way by the CDK Terrain Team. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktn\` past \`${cdktfVersion}\` and are no longer eligible for support.
 
-As a reminder, you can continue to use the \`${fqpnURL}\` provider in your CDK for Terraform (CDKTF) projects, even with newer versions of CDKTF, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
+As a reminder, you can continue to use the \`${fqpnURL}\` provider in your CDK Terrain (CDKTN) projects, even with newer versions of CDKTN, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://cdktn.io/docs/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
 
-\`cdktf provider add ${fqpnURL} --force-local\`
+\`cdktn provider add ${fqpnURL} --force-local\`
 
-For more information and additional examples, check out our documentation on [generating provider bindings manually](https://cdk.tf/imports).
+For more information and additional examples, check out our documentation on [generating provider bindings manually](https://cdktn.io/docs/concepts/providers#import-providers).
     `.trim();
 
     const readme = `
-# CDKTF prebuilt bindings for ${fqpnURL} provider version ${
+# CDKTN prebuilt bindings for ${fqpnURL} provider version ${
       underlyingTerraformVersion !== "<unknown>"
         ? `${underlyingTerraformVersion}`
         : `${providerVersion}`
@@ -76,7 +76,7 @@ For more information and additional examples, check out our documentation on [ge
 ${
   isDeprecated
     ? deprecationMessage
-    : `This repo builds and publishes the [Terraform ${providerName} provider](${registryUrl}/docs) bindings for [CDK for Terraform](https://cdk.tf).`
+    : `This repo builds and publishes the [Terraform ${providerName} provider](${registryUrl}/docs) bindings for [CDK Terrain](https://cdktn.io).`
 }
 
 ## ${isDeprecated ? "Deprecated" : "Available"} Packages
@@ -157,11 +157,11 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
           `
 ## Versioning
 
-This project is explicitly not tracking the Terraform ${providerName} provider version 1:1. In fact, it always tracks \`latest\` of \`${providerVersion}\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdk.tf/imports).
+This project is explicitly not tracking the Terraform ${providerName} provider version 1:1. In fact, it always tracks \`latest\` of \`${providerVersion}\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdktn.io/docs/concepts/providers#import-providers).
 
 These are the upstream dependencies:
 
-- [CDK for Terraform](https://cdk.tf) - Last official release
+- [CDK Terrain](https://cdktn.io) - Last official release
 - [Terraform ${providerName} provider](${registryUrl})
 - [Terraform Engine](https://terraform.io)
 
@@ -169,10 +169,10 @@ If there are breaking changes (backward incompatible) in any of the above, the m
 
 ## Features / Issues / Bugs
 
-Please report bugs and issues to the [CDK for Terraform](https://cdk.tf) project:
+Please report bugs and issues to the [CDK Terrain](https://cdktn.io) project:
 
-- [Create bug report](https://cdk.tf/bug)
-- [Create feature request](https://cdk.tf/feature)
+- [Create bug report](https://github.com/open-constructs/cdk-terrain/issues)
+- [Create feature request](https://github.com/open-constructs/cdk-terrain/issues)
 
 ## Contributing
 
@@ -182,7 +182,7 @@ This is mostly based on [Projen](https://projen.io), which takes care of generat
 
 ### cdktn-provider-project based on Projen
 
-There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktf\` prebuilt providers.
+There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktn\` prebuilt providers.
 
 ### Provider Version
 

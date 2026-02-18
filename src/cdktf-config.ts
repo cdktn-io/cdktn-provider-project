@@ -48,11 +48,11 @@ export class CdktfConfig {
     const cdktfVersion = options.cdktfVersion;
     const constructsVersion = options.constructsVersion;
 
-    project.addPeerDeps(`cdktf@${cdktfVersion}`);
+    project.addPeerDeps(`cdktn@${cdktfVersion}`);
     project.addPeerDeps(`constructs@${constructsVersion}`);
 
-    project.addDevDeps(`cdktf@${cdktfVersion}`);
-    project.addDevDeps(`cdktf-cli@${cdktfVersion}`);
+    project.addDevDeps(`cdktn@${cdktfVersion}`);
+    project.addDevDeps(`cdktn-cli@${cdktfVersion}`);
     project.addDevDeps(`constructs@${constructsVersion}`);
 
     if (jsiiVersion) {
@@ -63,7 +63,7 @@ export class CdktfConfig {
     }
 
     const fetchTask = project.addTask("fetch", {
-      exec: `mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/${providerName}/* ./src/ && cp .gen/versions.json ./src/version.json`,
+      exec: `mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/${providerName}/* ./src/ && cp .gen/versions.json ./src/version.json`,
       env: {
         CHECKPOINT_DISABLE: "1",
       },

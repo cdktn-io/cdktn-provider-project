@@ -8,11 +8,11 @@
 
 # Terraform CDK Provider Project
 
-A project template for [projen](https://projen.io) to create repositories for prebuilt provider packages for [Terraform CDK](https://cdk.tf).
+A project template for [projen](https://projen.io) to create repositories for prebuilt provider packages for [CDK Terrain](https://cdktn.io).
 
 ## Usage
 
-The provider repos are entirely auto generated from the configuration contained in this repo here. There's no manual interaction necessary, except for creating the initial repository - using this repo. The `cdktf get` command is executed as part of the build pipeline in Github Actions. These jobs are executed on a schedule. Hence, new provider changes will be picked up automatically.
+The provider repos are entirely auto generated from the configuration contained in this repo here. There's no manual interaction necessary, except for creating the initial repository - using this repo. The `cdktn get` command is executed as part of the build pipeline in Github Actions. These jobs are executed on a schedule. Hence, new provider changes will be picked up automatically.
 
 ### Creating a new provider
 

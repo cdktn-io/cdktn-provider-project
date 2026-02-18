@@ -212,7 +212,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
           {
             name: "Remove some text from the README that doesn't apply to Go",
             run: [
-              "sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md",
+              "sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md",
               // @see https://stackoverflow.com/a/49511949
               // eslint-disable-next-line prettier/prettier
               // prettier-ignore
@@ -255,8 +255,15 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       releaseToNpm: true,
       npmTrustedPublishing: npmTrustedPublishing ?? false,
       name: packageInfo.npm.name,
-      description: `Prebuilt ${providerName} Provider for Terraform CDK (cdktf)`,
-      keywords: ["cdktf", "terraform", "cdk", "provider", providerName],
+      description: `Prebuilt ${providerName} Provider for CDK Terrain (cdktn)`,
+      keywords: [
+        "cdktn",
+        "cdktf",
+        "terraform",
+        "cdk",
+        "provider",
+        providerName,
+      ],
       sampleCode: false,
       jest: false,
       authorOrganization: true,
@@ -300,7 +307,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         pullRequest: {
           staleLabel: "stale",
           daysBeforeStale: 1,
-          staleMessage: `Closing this PR, if it has not merged there is most likely a CI or CDKTF issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.`,
+          staleMessage: `Closing this PR, if it has not merged there is most likely a CI or CDKTN issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.`,
           daysBeforeClose: 0,
           exemptLabels: ["no-auto-close"],
         },
