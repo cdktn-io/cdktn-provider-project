@@ -1705,9 +1705,10 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.publishToPypi">publishToPypi</a></code> | <code>projen.cdk.JsiiPythonTarget</code> | Publish to pypi. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.python">python</a></code> | <code>projen.cdk.JsiiPythonTarget</code> | *No description.* |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.rootdir">rootdir</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktfVersion">cdktfVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktnVersion">cdktnVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.constructsVersion">constructsVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.terraformProvider">terraformProvider</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktfVersion">cdktfVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.creationYear">creationYear</a></code> | <code>number</code> | The year of the creation of the repository, for copyright purposes. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.deprecationDate">deprecationDate</a></code> | <code>string</code> | An optional date when the project should be considered deprecated, to be used in the README text. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.forceMajorVersion">forceMajorVersion</a></code> | <code>number</code> | *No description.* |
@@ -4178,10 +4179,10 @@ public readonly rootdir: string;
 
 ---
 
-##### `cdktfVersion`<sup>Required</sup> <a name="cdktfVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktfVersion"></a>
+##### `cdktnVersion`<sup>Required</sup> <a name="cdktnVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktnVersion"></a>
 
 ```typescript
-public readonly cdktfVersion: string;
+public readonly cdktnVersion: string;
 ```
 
 - *Type:* string
@@ -4202,6 +4203,18 @@ public readonly constructsVersion: string;
 
 ```typescript
 public readonly terraformProvider: string;
+```
+
+- *Type:* string
+
+---
+
+##### ~~`cdktfVersion`~~<sup>Optional</sup> <a name="cdktfVersion" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.cdktfVersion"></a>
+
+- *Deprecated:* Use `cdktnVersion` instead. This alias is provided for backward compatibility.
+
+```typescript
+public readonly cdktfVersion: string;
 ```
 
 - *Type:* string
