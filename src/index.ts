@@ -28,7 +28,11 @@ const MIN_MAJOR_VERSION = 1;
 export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
   readonly useCustomGithubRunner?: boolean;
   readonly terraformProvider: string;
-  readonly cdktfVersion: string;
+  readonly cdktnVersion: string;
+  /**
+   * @deprecated Use `cdktnVersion` instead. This alias is provided for backward compatibility.
+   */
+  readonly cdktfVersion?: string;
   readonly constructsVersion: string;
   readonly forceMajorVersion?: number;
   /**
@@ -104,10 +108,15 @@ const githubActionPinnedVersions = {
 
 export class CdktnProviderProject extends cdk.JsiiProject {
   constructor(options: CdktnProviderProjectOptions) {
+    const cdktnVersion = options.cdktnVersion ?? options.cdktfVersion;
+    assert(
+      cdktnVersion,
+      "Either cdktnVersion or cdktfVersion must be provided"
+    );
+
     const {
       terraformProvider,
       workflowContainerImage,
-      cdktfVersion,
       constructsVersion,
       minNodeVersion,
       jsiiVersion,
@@ -258,8 +267,10 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       description: `Prebuilt ${providerName} Provider for CDK Terrain (cdktn)`,
       keywords: [
         "cdktn",
+        "cdk-terrain",
         "cdktf",
         "terraform",
+        "opentofu",
         "cdk",
         "provider",
         providerName,
@@ -417,7 +428,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       providerName,
       fqproviderName,
       providerVersion,
-      cdktfVersion,
+      cdktnVersion,
       constructsVersion,
       jsiiVersion,
       typescriptVersion,

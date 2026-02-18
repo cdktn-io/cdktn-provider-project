@@ -550,7 +550,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -560,7 +560,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (CDKTN) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -763,7 +763,7 @@ jobs:
       - name: Copy the README file to the parent directory
         run: cp .repo/dist/go/*/README.md .repo/dist/go/README.md
       - name: Mark the Go module as deprecated
-        run: "find '.repo/dist/go' -mindepth 2 -maxdepth 4 -type f -name 'go.mod' | xargs sed -i '1s|^|// Deprecated: The CDK Terrain Team is no longer publishing new versions of the prebuilt provider for random.\\\\n// Previously-published versions of this prebuilt provider will still continue to be available as installable Go modules,\\\\n// but these will not be compatible with newer versions of CDK Terrain and are not eligible for support.\\\\n// You can continue to use the random provider in your CDK Terrain projects with newer versions of CDKTN,\\\\n// but you will need to generate the bindings locally. See https://cdktn.io/docs/concepts/providers#import-providers for details.\\\\n|'"
+        run: "find '.repo/dist/go' -mindepth 2 -maxdepth 4 -type f -name 'go.mod' | xargs sed -i '1s|^|// Deprecated: The CDK Terrain Team is no longer publishing new versions of the prebuilt provider for random.\\\\n// Previously-published versions of this prebuilt provider will still continue to be available as installable Go modules,\\\\n// but these will not be compatible with newer versions of CDK Terrain and are not eligible for support.\\\\n// You can continue to use the random provider in your CDK Terrain projects with newer versions of cdktn,\\\\n// but you will need to generate the bindings locally. See https://cdktn.io/docs/concepts/providers#import-providers for details.\\\\n|'"
       - name: Collect go Artifact
         run: mv .repo/dist dist
       - name: Release
@@ -1722,9 +1722,9 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
   "README.md": "
 # CDKTN prebuilt bindings for hashicorp/random provider version ~>2.0
 
-The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0) bindings for [CDK Terrain](https://cdktn.io) on December 11, 2023. As such, this repository has been archived and is no longer supported in any way by the CDK Terrain Team. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktn\` past \`0.10.3\` and are no longer eligible for support.
+The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0) bindings for [CDK Terrain](https://cdktn.io) on December 11, 2023. As such, this repository has been archived and is no longer supported in any way by CDK Terrain. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktn\` past \`0.10.3\` and are no longer eligible for support.
 
-As a reminder, you can continue to use the \`hashicorp/random\` provider in your CDK Terrain (CDKTN) projects, even with newer versions of CDKTN, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://cdktn.io/docs/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
+As a reminder, you can continue to use the \`hashicorp/random\` provider in your CDK Terrain (cdktn) projects, even with newer versions of cdktn, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://cdktn.io/docs/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
 
 \`cdktn provider add hashicorp/random --force-local\`
 
@@ -1862,8 +1862,10 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
     "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -1929,7 +1931,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": true,
     "provider": {
       "name": "<unknown>",
@@ -2758,7 +2760,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -2918,7 +2920,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -2928,7 +2930,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (CDKTN) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -4446,8 +4448,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
     "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -4513,7 +4517,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -4726,16 +4730,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
         name: "cdktn peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktn,
-        current: currPackageJson.peerDependencies.cdktn,
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -5582,7 +5592,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -5742,7 +5752,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -5752,7 +5762,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (CDKTN) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -7270,8 +7280,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
     "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -7337,7 +7349,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -7550,16 +7562,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
         name: "cdktn peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktn,
-        current: currPackageJson.peerDependencies.cdktn,
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -8406,7 +8424,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -8566,7 +8584,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -8576,7 +8594,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (CDKTN) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -10094,8 +10112,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
     "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -10161,7 +10181,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -10374,16 +10394,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
         name: "cdktn peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktn,
-        current: currPackageJson.peerDependencies.cdktn,
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -11231,7 +11257,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -11391,7 +11417,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -11401,7 +11427,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (CDKTN) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -12920,8 +12946,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
     "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -12987,7 +13015,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -13200,16 +13228,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
         name: "cdktn peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktn,
-        current: currPackageJson.peerDependencies.cdktn,
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -14065,7 +14099,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -14230,7 +14264,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -14240,7 +14274,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-acme "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the acme provider in your CDK Terrain (CDKTN) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-acme "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the acme provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -15763,8 +15797,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   "keywords": [
     "acme",
     "cdk",
+    "cdk-terrain",
     "cdktf",
     "cdktn",
+    "opentofu",
     "provider",
     "terraform"
   ],
@@ -15832,7 +15868,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -16045,16 +16081,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
         name: "cdktn peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktn,
-        current: currPackageJson.peerDependencies.cdktn,
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 

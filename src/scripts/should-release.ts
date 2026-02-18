@@ -58,16 +58,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
         name: "cdktn peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktn,
-        current: currPackageJson.peerDependencies.cdktn,
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 

@@ -12,7 +12,7 @@ export interface ReadmeFileOptions extends FileBaseOptions {
   providerVersion: string;
   packageInfo: PackageInfo;
   underlyingTerraformVersion: string;
-  cdktfVersion: string;
+  cdktnVersion: string;
   isDeprecated: boolean;
   deprecationDate?: string;
 }
@@ -47,7 +47,7 @@ export class ReadmeFile extends FileBase {
         ? underlyingTerraformVersion
         : versionURL
     }`;
-    const cdktfVersion = this.options.cdktfVersion.replace("^", "");
+    const cdktnVersion = this.options.cdktnVersion.replace("^", "");
 
     const date =
       deprecationDate ??
@@ -57,9 +57,9 @@ export class ReadmeFile extends FileBase {
         day: "numeric",
       });
     const deprecationMessage = `
-The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform ${providerName} provider](${registryUrl}) bindings for [CDK Terrain](https://cdktn.io) on ${date}. As such, this repository has been archived and is no longer supported in any way by the CDK Terrain Team. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktn\` past \`${cdktfVersion}\` and are no longer eligible for support.
+The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform ${providerName} provider](${registryUrl}) bindings for [CDK Terrain](https://cdktn.io) on ${date}. As such, this repository has been archived and is no longer supported in any way by CDK Terrain. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktn\` past \`${cdktnVersion}\` and are no longer eligible for support.
 
-As a reminder, you can continue to use the \`${fqpnURL}\` provider in your CDK Terrain (CDKTN) projects, even with newer versions of CDKTN, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://cdktn.io/docs/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
+As a reminder, you can continue to use the \`${fqpnURL}\` provider in your CDK Terrain (cdktn) projects, even with newer versions of cdktn, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://cdktn.io/docs/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
 
 \`cdktn provider add ${fqpnURL} --force-local\`
 

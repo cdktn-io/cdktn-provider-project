@@ -10,7 +10,7 @@ export const getProject = (
 ): CdktnProviderProject =>
   new CdktnProviderProject({
     terraformProvider: "random@~>2.0",
-    cdktfVersion: "0.10.3",
+    cdktnVersion: "0.10.3",
     constructsVersion: "10.0.0",
     jsiiVersion: "~5.2.0",
     typescriptVersion: "~5.2.0", // NOTE: this should be the same major/minor version as JSII

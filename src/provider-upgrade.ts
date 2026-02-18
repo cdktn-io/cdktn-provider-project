@@ -79,7 +79,7 @@ export class ProviderUpgrade {
         name: "get provider current version",
         if: newerVersionAvailable,
         id: "current_version",
-        run: `echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT`,
+        run: `echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT`,
       },
       {
         run: "yarn fetch",

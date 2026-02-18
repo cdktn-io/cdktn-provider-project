@@ -19,14 +19,14 @@ export class DeprecatePackages {
 
     const deprecationMessageForNPM = [
       `See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the ${providerName} provider`,
-      `in your CDK Terrain (CDKTN) projects by generating the bindings locally.`,
+      `in your CDK Terrain (cdktn) projects by generating the bindings locally.`,
     ].join(" ");
     // @see https://github.com/golang/go/issues/40357
     const deprecationMessageForGo = [
       `// Deprecated: The CDK Terrain Team is no longer publishing new versions of the prebuilt provider for ${providerName}.`,
       `// Previously-published versions of this prebuilt provider will still continue to be available as installable Go modules,`,
       `// but these will not be compatible with newer versions of CDK Terrain and are not eligible for support.`,
-      `// You can continue to use the ${providerName} provider in your CDK Terrain projects with newer versions of CDKTN,`,
+      `// You can continue to use the ${providerName} provider in your CDK Terrain projects with newer versions of cdktn,`,
       `// but you will need to generate the bindings locally. See https://cdktn.io/docs/concepts/providers#import-providers for details.`,
       ``,
     ].join("\\n");
@@ -69,7 +69,7 @@ export class DeprecatePackages {
             name: "Check deprecation status",
             id: "check_status",
             run: [
-              `IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)`,
+              `IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)`,
               `echo "is_deprecated=$IS_DEPRECATED"`, // for easier debugging
               `echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT`,
             ].join("\n"),

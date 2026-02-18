@@ -16,7 +16,7 @@ interface CdktfConfigOptions {
   providerName: string;
   fqproviderName: string;
   providerVersion: string;
-  cdktfVersion: string;
+  cdktnVersion: string;
   constructsVersion: string;
   packageInfo: PackageInfo;
   githubNamespace: string;
@@ -45,14 +45,14 @@ export class CdktfConfig {
       isDeprecated,
     } = options;
 
-    const cdktfVersion = options.cdktfVersion;
+    const cdktnVersion = options.cdktnVersion;
     const constructsVersion = options.constructsVersion;
 
-    project.addPeerDeps(`cdktn@${cdktfVersion}`);
+    project.addPeerDeps(`cdktn@${cdktnVersion}`);
     project.addPeerDeps(`constructs@${constructsVersion}`);
 
-    project.addDevDeps(`cdktn@${cdktfVersion}`);
-    project.addDevDeps(`cdktn-cli@${cdktfVersion}`);
+    project.addDevDeps(`cdktn@${cdktnVersion}`);
+    project.addDevDeps(`cdktn-cli@${cdktnVersion}`);
     project.addDevDeps(`constructs@${constructsVersion}`);
 
     if (jsiiVersion) {
@@ -149,7 +149,7 @@ export class CdktfConfig {
     }
 
     project.addFields({
-      cdktf: {
+      cdktn: {
         isDeprecated,
         provider: {
           name: fullyQualifiedProviderName,

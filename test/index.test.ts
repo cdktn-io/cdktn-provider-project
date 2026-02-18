@@ -38,7 +38,7 @@ test("synths with custom Github runners", () => {
 
 test("synths with an advanced version range syntax", () => {
   const snapshot = synthSnapshot(
-    getProject({ cdktfVersion: ">=0.12.2 <0.14.0" })
+    getProject({ cdktnVersion: ">=0.12.2 <0.14.0" })
   );
 
   expect(snapshot).toMatchSnapshot();
@@ -107,7 +107,7 @@ test("has a custom workflow and README if the project is deprecated", () => {
   expect(snapshot).toMatchSnapshot();
 
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
-    "cdktf.isDeprecated",
+    "cdktn.isDeprecated",
     true
   );
 
@@ -229,7 +229,7 @@ test("with minNodeVersion", () => {
     getProject({
       useCustomGithubRunner: false,
       terraformProvider: "vancluever/acme@~> 2.10",
-      cdktfVersion: "^0.20.0",
+      cdktnVersion: "^0.20.0",
       constructsVersion: "^10.3.0",
       minNodeVersion: "18.12.0",
       jsiiVersion: "~5.3.0",
@@ -240,4 +240,19 @@ test("with minNodeVersion", () => {
   );
 
   expect(snapshot).toMatchSnapshot();
+});
+
+test("deprecated cdktfVersion option still works as alias for cdktnVersion", () => {
+  const snapshot = synthSnapshot(
+    getProject({ cdktfVersion: "0.21.0", cdktnVersion: undefined as any })
+  );
+
+  const packageJson = JSON.parse(snapshot["package.json"]);
+  // Should use cdktn as peer dep (not cdktf), even when configured via the old option name
+  expect(packageJson.peerDependencies).toHaveProperty("cdktn", "0.21.0");
+  expect(packageJson.peerDependencies).not.toHaveProperty("cdktf");
+  expect(packageJson.devDependencies).toHaveProperty("cdktn", "0.21.0");
+  expect(packageJson.devDependencies).toHaveProperty("cdktn-cli", "0.21.0");
+  expect(packageJson.devDependencies).not.toHaveProperty("cdktf");
+  expect(packageJson.devDependencies).not.toHaveProperty("cdktf-cli");
 });
