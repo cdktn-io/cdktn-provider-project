@@ -550,7 +550,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -560,7 +560,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdk.tf/imports for details on how to continue to use the random provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -754,7 +754,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Deprecated Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Deprecated Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -763,7 +763,7 @@ jobs:
       - name: Copy the README file to the parent directory
         run: cp .repo/dist/go/*/README.md .repo/dist/go/README.md
       - name: Mark the Go module as deprecated
-        run: "find '.repo/dist/go' -mindepth 2 -maxdepth 4 -type f -name 'go.mod' | xargs sed -i '1s|^|// Deprecated: HashiCorp is no longer publishing new versions of the prebuilt provider for random.\\\\n// Previously-published versions of this prebuilt provider will still continue to be available as installable Go modules,\\\\n// but these will not be compatible with newer versions of CDK for Terraform and are not eligible for support.\\\\n// You can continue to use the random provider in your CDK for Terraform projects with newer versions of CDKTF,\\\\n// but you will need to generate the bindings locally. See https://cdk.tf/imports for details.\\\\n|'"
+        run: "find '.repo/dist/go' -mindepth 2 -maxdepth 4 -type f -name 'go.mod' | xargs sed -i '1s|^|// Deprecated: The CDK Terrain Team is no longer publishing new versions of the prebuilt provider for random.\\\\n// Previously-published versions of this prebuilt provider will still continue to be available as installable Go modules,\\\\n// but these will not be compatible with newer versions of CDK Terrain and are not eligible for support.\\\\n// You can continue to use the random provider in your CDK Terrain projects with newer versions of cdktn,\\\\n// but you will need to generate the bindings locally. See https://cdktn.io/docs/concepts/providers#import-providers for details.\\\\n|'"
       - name: Collect go Artifact
         run: mv .repo/dist dist
       - name: Release
@@ -807,7 +807,7 @@ jobs:
           days-before-close: -1
           days-before-pr-stale: 1
           days-before-pr-close: 0
-          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTF issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
+          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTN issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
           close-pr-message: Closing this pull request as it hasn't seen activity for a while. Please add a comment @mentioning a maintainer to reopen. If you wish to exclude this issue from being marked as stale, add the "no-auto-close" label.
           stale-pr-label: stale
           exempt-pr-labels: no-auto-close
@@ -934,12 +934,12 @@ scripts
       "type": "build"
     },
     {
-      "name": "cdktf-cli",
+      "name": "cdktn-cli",
       "version": "0.10.3",
       "type": "build"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "build"
     },
@@ -996,7 +996,7 @@ scripts
       "type": "override"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "peer"
     },
@@ -1167,7 +1167,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -1720,15 +1720,15 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
       the Mozilla Public License, v. 2.0.
 ",
   "README.md": "
-# CDKTF prebuilt bindings for hashicorp/random provider version ~>2.0
+# CDKTN prebuilt bindings for hashicorp/random provider version ~>2.0
 
-The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0) bindings for [CDK for Terraform](https://cdk.tf) on December 11, 2023. As such, this repository has been archived and is no longer supported in any way by HashiCorp. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktf\` past \`0.10.3\` and are no longer eligible for support.
+The CDK Terrain Team made the decision to stop publishing new versions of prebuilt [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0) bindings for [CDK Terrain](https://cdktn.io) on December 11, 2023. As such, this repository has been archived and is no longer supported in any way by CDK Terrain. Previously-published versions of this prebuilt provider will still continue to be available on their respective package managers (e.g. npm, PyPi, Maven, NuGet), but these will not be compatible with new releases of \`cdktn\` past \`0.10.3\` and are no longer eligible for support.
 
-As a reminder, you can continue to use the \`hashicorp/random\` provider in your CDK for Terraform (CDKTF) projects, even with newer versions of CDKTF, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://developer.hashicorp.com/terraform/cdktf/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
+As a reminder, you can continue to use the \`hashicorp/random\` provider in your CDK Terrain (cdktn) projects, even with newer versions of cdktn, but you will need to generate the bindings locally. The easiest way to do so is to use the [\`provider add\` command](https://cdktn.io/docs/cli-reference/commands#provider-add), optionally with the \`--force-local\` flag enabled:
 
-\`cdktf provider add hashicorp/random --force-local\`
+\`cdktn provider add hashicorp/random --force-local\`
 
-For more information and additional examples, check out our documentation on [generating provider bindings manually](https://cdk.tf/imports).
+For more information and additional examples, check out our documentation on [generating provider bindings manually](https://cdktn.io/docs/concepts/providers#import-providers).
 
 ## Deprecated Packages
 
@@ -1795,7 +1795,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
 ",
   "package.json": "{
   "name": "@cdktn/provider-random",
-  "description": "Prebuilt random Provider for Terraform CDK (cdktf)",
+  "description": "Prebuilt random Provider for CDK Terrain (cdktn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
@@ -1840,8 +1840,8 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
     "@actions/core": "^1.1.0",
     "@cdktn/provider-project": "^0.0.0",
     "@types/node": "ts5.2",
-    "cdktf": "0.10.3",
-    "cdktf-cli": "0.10.3",
+    "cdktn": "0.10.3",
+    "cdktn-cli": "0.10.3",
     "commit-and-tag-version": "^12",
     "constructs": "10.0.0",
     "dot-prop": "^5.2.0",
@@ -1854,7 +1854,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
     "typescript": "~5.2.0"
   },
   "peerDependencies": {
-    "cdktf": "0.10.3",
+    "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
   "resolutions": {
@@ -1862,7 +1862,10 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
+    "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -1928,7 +1931,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": true,
     "provider": {
       "name": "<unknown>",
@@ -2682,7 +2685,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -2757,7 +2760,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -2917,7 +2920,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -2927,7 +2930,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdk.tf/imports for details on how to continue to use the random provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -3121,7 +3124,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -3172,7 +3175,7 @@ jobs:
           days-before-close: -1
           days-before-pr-stale: 1
           days-before-pr-close: 0
-          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTF issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
+          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTN issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
           close-pr-message: Closing this pull request as it hasn't seen activity for a while. Please add a comment @mentioning a maintainer to reopen. If you wish to exclude this issue from being marked as stale, add the "no-auto-close" label.
           stale-pr-label: stale
           exempt-pr-labels: no-auto-close
@@ -3407,12 +3410,12 @@ scripts
       "type": "build"
     },
     {
-      "name": "cdktf-cli",
+      "name": "cdktn-cli",
       "version": ">=0.12.2 <0.14.0",
       "type": "build"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": ">=0.12.2 <0.14.0",
       "type": "build"
     },
@@ -3474,7 +3477,7 @@ scripts
       "type": "override"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": ">=0.12.2 <0.14.0",
       "type": "peer"
     },
@@ -3660,7 +3663,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -3873,7 +3876,7 @@ scripts
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktf-cli cdktf commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
         },
         {
           "exec": "npx projen"
@@ -4267,9 +4270,9 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
       the Mozilla Public License, v. 2.0.
 ",
   "README.md": "
-# CDKTF prebuilt bindings for hashicorp/random provider version ~>2.0
+# CDKTN prebuilt bindings for hashicorp/random provider version ~>2.0
 
-This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK for Terraform](https://cdk.tf).
+This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK Terrain](https://cdktn.io).
 
 ## Available Packages
 
@@ -4326,11 +4329,11 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
 
 ## Versioning
 
-This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdk.tf/imports).
+This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdktn.io/docs/concepts/providers#import-providers).
 
 These are the upstream dependencies:
 
-- [CDK for Terraform](https://cdk.tf) - Last official release
+- [CDK Terrain](https://cdktn.io) - Last official release
 - [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0)
 - [Terraform Engine](https://terraform.io)
 
@@ -4338,10 +4341,10 @@ If there are breaking changes (backward incompatible) in any of the above, the m
 
 ## Features / Issues / Bugs
 
-Please report bugs and issues to the [CDK for Terraform](https://cdk.tf) project:
+Please report bugs and issues to the [CDK Terrain](https://cdktn.io) project:
 
-- [Create bug report](https://cdk.tf/bug)
-- [Create feature request](https://cdk.tf/feature)
+- [Create bug report](https://github.com/open-constructs/cdk-terrain/issues)
+- [Create feature request](https://github.com/open-constructs/cdk-terrain/issues)
 
 ## Contributing
 
@@ -4351,7 +4354,7 @@ This is mostly based on [Projen](https://projen.io), which takes care of generat
 
 ### cdktn-provider-project based on Projen
 
-There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktf\` prebuilt providers.
+There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktn\` prebuilt providers.
 
 ### Provider Version
 
@@ -4373,7 +4376,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 ",
   "package.json": "{
   "name": "@cdktn/provider-random",
-  "description": "Prebuilt random Provider for Terraform CDK (cdktf)",
+  "description": "Prebuilt random Provider for CDK Terrain (cdktn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
@@ -4422,8 +4425,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "@actions/core": "^1.1.0",
     "@cdktn/provider-project": "^0.0.0",
     "@types/node": "ts5.2",
-    "cdktf": ">=0.12.2 <0.14.0",
-    "cdktf-cli": ">=0.12.2 <0.14.0",
+    "cdktn": ">=0.12.2 <0.14.0",
+    "cdktn-cli": ">=0.12.2 <0.14.0",
     "commit-and-tag-version": "^12",
     "constructs": "10.0.0",
     "dot-prop": "^5.2.0",
@@ -4437,7 +4440,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "typescript": "~5.2.0"
   },
   "peerDependencies": {
-    "cdktf": ">=0.12.2 <0.14.0",
+    "cdktn": ">=0.12.2 <0.14.0",
     "constructs": "10.0.0"
   },
   "resolutions": {
@@ -4445,7 +4448,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
+    "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -4511,7 +4517,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -4529,11 +4535,11 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 const semver = require("semver");
 const actions = require("@actions/core");
 
-// Code is inlined below, as this import requires us to add all dev dependencies of cdktf-cli as we're not
+// Code is inlined below, as this import requires us to add all dev dependencies of cdktn-cli as we're not
 // using the bundle. A better alternative would be to refactor this method to move to its own package, that
-// the cdktf-cli and others can use (we have the same "problem" with some other code in cdktf, cdktf-cli and
+// the cdktn-cli and others can use (we have the same "problem" with some other code in cdktn, cdktn-cli and
 // the @cdktn/provider-generator package, too)
-// const { versionMatchesConstraint } = require('cdktf-cli/lib/dependencies/version-constraints');
+// const { versionMatchesConstraint } = require('cdktn-cli/lib/dependencies/version-constraints');
 
 // set by the projen file that generates this script
 const CONSTRAINT = "~>2.0";
@@ -4606,7 +4612,7 @@ async function getCurrentProviderVersion() {
 }
 
 // SEE NOTICE AT THE TOP WHY THIS IS INLINED CURRENTLY
-// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktf/cli-core/src/lib/dependencies/version-constraints.ts
+// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktn/cli-core/src/lib/dependencies/version-constraints.ts
 // and converted to JavaScript
 
 // constraints can be prefixed with "~>", ">", "<", "=", ">=", "<=" or "!="
@@ -4724,16 +4730,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
-        name: "cdktf peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktf,
-        current: currPackageJson.peerDependencies.cdktf,
+        name: "cdktn peer dependency",
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -5505,7 +5517,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -5580,7 +5592,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -5740,7 +5752,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -5750,7 +5762,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdk.tf/imports for details on how to continue to use the random provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -5944,7 +5956,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -5995,7 +6007,7 @@ jobs:
           days-before-close: -1
           days-before-pr-stale: 1
           days-before-pr-close: 0
-          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTF issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
+          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTN issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
           close-pr-message: Closing this pull request as it hasn't seen activity for a while. Please add a comment @mentioning a maintainer to reopen. If you wish to exclude this issue from being marked as stale, add the "no-auto-close" label.
           stale-pr-label: stale
           exempt-pr-labels: no-auto-close
@@ -6230,12 +6242,12 @@ scripts
       "type": "build"
     },
     {
-      "name": "cdktf-cli",
+      "name": "cdktn-cli",
       "version": "0.10.3",
       "type": "build"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "build"
     },
@@ -6297,7 +6309,7 @@ scripts
       "type": "override"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "peer"
     },
@@ -6483,7 +6495,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -6696,7 +6708,7 @@ scripts
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktf-cli cdktf commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
         },
         {
           "exec": "npx projen"
@@ -7090,9 +7102,9 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
       the Mozilla Public License, v. 2.0.
 ",
   "README.md": "
-# CDKTF prebuilt bindings for hashicorp/random provider version ~>2.0
+# CDKTN prebuilt bindings for hashicorp/random provider version ~>2.0
 
-This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK for Terraform](https://cdk.tf).
+This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK Terrain](https://cdktn.io).
 
 ## Available Packages
 
@@ -7149,11 +7161,11 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
 
 ## Versioning
 
-This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdk.tf/imports).
+This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdktn.io/docs/concepts/providers#import-providers).
 
 These are the upstream dependencies:
 
-- [CDK for Terraform](https://cdk.tf) - Last official release
+- [CDK Terrain](https://cdktn.io) - Last official release
 - [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0)
 - [Terraform Engine](https://terraform.io)
 
@@ -7161,10 +7173,10 @@ If there are breaking changes (backward incompatible) in any of the above, the m
 
 ## Features / Issues / Bugs
 
-Please report bugs and issues to the [CDK for Terraform](https://cdk.tf) project:
+Please report bugs and issues to the [CDK Terrain](https://cdktn.io) project:
 
-- [Create bug report](https://cdk.tf/bug)
-- [Create feature request](https://cdk.tf/feature)
+- [Create bug report](https://github.com/open-constructs/cdk-terrain/issues)
+- [Create feature request](https://github.com/open-constructs/cdk-terrain/issues)
 
 ## Contributing
 
@@ -7174,7 +7186,7 @@ This is mostly based on [Projen](https://projen.io), which takes care of generat
 
 ### cdktn-provider-project based on Projen
 
-There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktf\` prebuilt providers.
+There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktn\` prebuilt providers.
 
 ### Provider Version
 
@@ -7196,7 +7208,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 ",
   "package.json": "{
   "name": "@cdktn/provider-random",
-  "description": "Prebuilt random Provider for Terraform CDK (cdktf)",
+  "description": "Prebuilt random Provider for CDK Terrain (cdktn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
@@ -7245,8 +7257,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "@actions/core": "^1.1.0",
     "@cdktn/provider-project": "^0.0.0",
     "@types/node": "ts5.2",
-    "cdktf": "0.10.3",
-    "cdktf-cli": "0.10.3",
+    "cdktn": "0.10.3",
+    "cdktn-cli": "0.10.3",
     "commit-and-tag-version": "^12",
     "constructs": "10.0.0",
     "dot-prop": "^5.2.0",
@@ -7260,7 +7272,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "typescript": "~5.2.0"
   },
   "peerDependencies": {
-    "cdktf": "0.10.3",
+    "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
   "resolutions": {
@@ -7268,7 +7280,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
+    "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -7334,7 +7349,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -7352,11 +7367,11 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 const semver = require("semver");
 const actions = require("@actions/core");
 
-// Code is inlined below, as this import requires us to add all dev dependencies of cdktf-cli as we're not
+// Code is inlined below, as this import requires us to add all dev dependencies of cdktn-cli as we're not
 // using the bundle. A better alternative would be to refactor this method to move to its own package, that
-// the cdktf-cli and others can use (we have the same "problem" with some other code in cdktf, cdktf-cli and
+// the cdktn-cli and others can use (we have the same "problem" with some other code in cdktn, cdktn-cli and
 // the @cdktn/provider-generator package, too)
-// const { versionMatchesConstraint } = require('cdktf-cli/lib/dependencies/version-constraints');
+// const { versionMatchesConstraint } = require('cdktn-cli/lib/dependencies/version-constraints');
 
 // set by the projen file that generates this script
 const CONSTRAINT = "~>2.0";
@@ -7429,7 +7444,7 @@ async function getCurrentProviderVersion() {
 }
 
 // SEE NOTICE AT THE TOP WHY THIS IS INLINED CURRENTLY
-// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktf/cli-core/src/lib/dependencies/version-constraints.ts
+// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktn/cli-core/src/lib/dependencies/version-constraints.ts
 // and converted to JavaScript
 
 // constraints can be prefixed with "~>", ">", "<", "=", ">=", "<=" or "!="
@@ -7547,16 +7562,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
-        name: "cdktf peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktf,
-        current: currPackageJson.peerDependencies.cdktf,
+        name: "cdktn peer dependency",
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -8328,7 +8349,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -8403,7 +8424,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -8563,7 +8584,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -8573,7 +8594,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdk.tf/imports for details on how to continue to use the random provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -8767,7 +8788,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -8818,7 +8839,7 @@ jobs:
           days-before-close: -1
           days-before-pr-stale: 1
           days-before-pr-close: 0
-          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTF issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
+          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTN issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
           close-pr-message: Closing this pull request as it hasn't seen activity for a while. Please add a comment @mentioning a maintainer to reopen. If you wish to exclude this issue from being marked as stale, add the "no-auto-close" label.
           stale-pr-label: stale
           exempt-pr-labels: no-auto-close
@@ -9053,12 +9074,12 @@ scripts
       "type": "build"
     },
     {
-      "name": "cdktf-cli",
+      "name": "cdktn-cli",
       "version": "0.10.3",
       "type": "build"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "build"
     },
@@ -9120,7 +9141,7 @@ scripts
       "type": "override"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "peer"
     },
@@ -9306,7 +9327,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -9519,7 +9540,7 @@ scripts
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktf-cli cdktf commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
         },
         {
           "exec": "npx projen"
@@ -9913,9 +9934,9 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
       the Mozilla Public License, v. 2.0.
 ",
   "README.md": "
-# CDKTF prebuilt bindings for hashicorp/random provider version ~>2.0
+# CDKTN prebuilt bindings for hashicorp/random provider version ~>2.0
 
-This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK for Terraform](https://cdk.tf).
+This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK Terrain](https://cdktn.io).
 
 ## Available Packages
 
@@ -9972,11 +9993,11 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
 
 ## Versioning
 
-This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdk.tf/imports).
+This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdktn.io/docs/concepts/providers#import-providers).
 
 These are the upstream dependencies:
 
-- [CDK for Terraform](https://cdk.tf) - Last official release
+- [CDK Terrain](https://cdktn.io) - Last official release
 - [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0)
 - [Terraform Engine](https://terraform.io)
 
@@ -9984,10 +10005,10 @@ If there are breaking changes (backward incompatible) in any of the above, the m
 
 ## Features / Issues / Bugs
 
-Please report bugs and issues to the [CDK for Terraform](https://cdk.tf) project:
+Please report bugs and issues to the [CDK Terrain](https://cdktn.io) project:
 
-- [Create bug report](https://cdk.tf/bug)
-- [Create feature request](https://cdk.tf/feature)
+- [Create bug report](https://github.com/open-constructs/cdk-terrain/issues)
+- [Create feature request](https://github.com/open-constructs/cdk-terrain/issues)
 
 ## Contributing
 
@@ -9997,7 +10018,7 @@ This is mostly based on [Projen](https://projen.io), which takes care of generat
 
 ### cdktn-provider-project based on Projen
 
-There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktf\` prebuilt providers.
+There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktn\` prebuilt providers.
 
 ### Provider Version
 
@@ -10019,7 +10040,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 ",
   "package.json": "{
   "name": "@cdktn/provider-random",
-  "description": "Prebuilt random Provider for Terraform CDK (cdktf)",
+  "description": "Prebuilt random Provider for CDK Terrain (cdktn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
@@ -10068,8 +10089,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "@actions/core": "^1.1.0",
     "@cdktn/provider-project": "^0.0.0",
     "@types/node": "ts5.2",
-    "cdktf": "0.10.3",
-    "cdktf-cli": "0.10.3",
+    "cdktn": "0.10.3",
+    "cdktn-cli": "0.10.3",
     "commit-and-tag-version": "^12",
     "constructs": "10.0.0",
     "dot-prop": "^5.2.0",
@@ -10083,7 +10104,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "typescript": "~5.2.0"
   },
   "peerDependencies": {
-    "cdktf": "0.10.3",
+    "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
   "resolutions": {
@@ -10091,7 +10112,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
+    "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -10157,7 +10181,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -10175,11 +10199,11 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 const semver = require("semver");
 const actions = require("@actions/core");
 
-// Code is inlined below, as this import requires us to add all dev dependencies of cdktf-cli as we're not
+// Code is inlined below, as this import requires us to add all dev dependencies of cdktn-cli as we're not
 // using the bundle. A better alternative would be to refactor this method to move to its own package, that
-// the cdktf-cli and others can use (we have the same "problem" with some other code in cdktf, cdktf-cli and
+// the cdktn-cli and others can use (we have the same "problem" with some other code in cdktn, cdktn-cli and
 // the @cdktn/provider-generator package, too)
-// const { versionMatchesConstraint } = require('cdktf-cli/lib/dependencies/version-constraints');
+// const { versionMatchesConstraint } = require('cdktn-cli/lib/dependencies/version-constraints');
 
 // set by the projen file that generates this script
 const CONSTRAINT = "~>2.0";
@@ -10252,7 +10276,7 @@ async function getCurrentProviderVersion() {
 }
 
 // SEE NOTICE AT THE TOP WHY THIS IS INLINED CURRENTLY
-// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktf/cli-core/src/lib/dependencies/version-constraints.ts
+// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktn/cli-core/src/lib/dependencies/version-constraints.ts
 // and converted to JavaScript
 
 // constraints can be prefixed with "~>", ">", "<", "=", ">=", "<=" or "!="
@@ -10370,16 +10394,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
-        name: "cdktf peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktf,
-        current: currPackageJson.peerDependencies.cdktf,
+        name: "cdktn peer dependency",
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -11152,7 +11182,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -11227,7 +11257,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -11387,7 +11417,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -11397,7 +11427,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-random "See https://cdk.tf/imports for details on how to continue to use the random provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-random "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the random provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -11592,7 +11622,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -11643,7 +11673,7 @@ jobs:
           days-before-close: -1
           days-before-pr-stale: 1
           days-before-pr-close: 0
-          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTF issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
+          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTN issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
           close-pr-message: Closing this pull request as it hasn't seen activity for a while. Please add a comment @mentioning a maintainer to reopen. If you wish to exclude this issue from being marked as stale, add the "no-auto-close" label.
           stale-pr-label: stale
           exempt-pr-labels: no-auto-close
@@ -11878,12 +11908,12 @@ scripts
       "type": "build"
     },
     {
-      "name": "cdktf-cli",
+      "name": "cdktn-cli",
       "version": "0.10.3",
       "type": "build"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "build"
     },
@@ -11945,7 +11975,7 @@ scripts
       "type": "override"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "0.10.3",
       "type": "peer"
     },
@@ -12131,7 +12161,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -12344,7 +12374,7 @@ scripts
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktf-cli cdktf commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
         },
         {
           "exec": "npx projen"
@@ -12738,9 +12768,9 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
       the Mozilla Public License, v. 2.0.
 ",
   "README.md": "
-# CDKTF prebuilt bindings for hashicorp/random provider version ~>2.0
+# CDKTN prebuilt bindings for hashicorp/random provider version ~>2.0
 
-This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK for Terraform](https://cdk.tf).
+This repo builds and publishes the [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0/docs) bindings for [CDK Terrain](https://cdktn.io).
 
 ## Available Packages
 
@@ -12797,11 +12827,11 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
 
 ## Versioning
 
-This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdk.tf/imports).
+This project is explicitly not tracking the Terraform random provider version 1:1. In fact, it always tracks \`latest\` of \`~>2.0\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdktn.io/docs/concepts/providers#import-providers).
 
 These are the upstream dependencies:
 
-- [CDK for Terraform](https://cdk.tf) - Last official release
+- [CDK Terrain](https://cdktn.io) - Last official release
 - [Terraform random provider](https://registry.terraform.io/providers/hashicorp/random/2.0.0)
 - [Terraform Engine](https://terraform.io)
 
@@ -12809,10 +12839,10 @@ If there are breaking changes (backward incompatible) in any of the above, the m
 
 ## Features / Issues / Bugs
 
-Please report bugs and issues to the [CDK for Terraform](https://cdk.tf) project:
+Please report bugs and issues to the [CDK Terrain](https://cdktn.io) project:
 
-- [Create bug report](https://cdk.tf/bug)
-- [Create feature request](https://cdk.tf/feature)
+- [Create bug report](https://github.com/open-constructs/cdk-terrain/issues)
+- [Create feature request](https://github.com/open-constructs/cdk-terrain/issues)
 
 ## Contributing
 
@@ -12822,7 +12852,7 @@ This is mostly based on [Projen](https://projen.io), which takes care of generat
 
 ### cdktn-provider-project based on Projen
 
-There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktf\` prebuilt providers.
+There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktn\` prebuilt providers.
 
 ### Provider Version
 
@@ -12844,7 +12874,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 ",
   "package.json": "{
   "name": "@cdktn/provider-random",
-  "description": "Prebuilt random Provider for Terraform CDK (cdktf)",
+  "description": "Prebuilt random Provider for CDK Terrain (cdktn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
@@ -12893,8 +12923,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "@actions/core": "^1.1.0",
     "@cdktn/provider-project": "^0.0.0",
     "@types/node": "ts5.2",
-    "cdktf": "0.10.3",
-    "cdktf-cli": "0.10.3",
+    "cdktn": "0.10.3",
+    "cdktn-cli": "0.10.3",
     "commit-and-tag-version": "^12",
     "constructs": "10.0.0",
     "dot-prop": "^5.2.0",
@@ -12908,7 +12938,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "typescript": "~5.2.0"
   },
   "peerDependencies": {
-    "cdktf": "0.10.3",
+    "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
   "resolutions": {
@@ -12916,7 +12946,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   },
   "keywords": [
     "cdk",
+    "cdk-terrain",
     "cdktf",
+    "cdktn",
+    "opentofu",
     "provider",
     "random",
     "terraform"
@@ -12982,7 +13015,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -13000,11 +13033,11 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 const semver = require("semver");
 const actions = require("@actions/core");
 
-// Code is inlined below, as this import requires us to add all dev dependencies of cdktf-cli as we're not
+// Code is inlined below, as this import requires us to add all dev dependencies of cdktn-cli as we're not
 // using the bundle. A better alternative would be to refactor this method to move to its own package, that
-// the cdktf-cli and others can use (we have the same "problem" with some other code in cdktf, cdktf-cli and
+// the cdktn-cli and others can use (we have the same "problem" with some other code in cdktn, cdktn-cli and
 // the @cdktn/provider-generator package, too)
-// const { versionMatchesConstraint } = require('cdktf-cli/lib/dependencies/version-constraints');
+// const { versionMatchesConstraint } = require('cdktn-cli/lib/dependencies/version-constraints');
 
 // set by the projen file that generates this script
 const CONSTRAINT = "~>2.0";
@@ -13077,7 +13110,7 @@ async function getCurrentProviderVersion() {
 }
 
 // SEE NOTICE AT THE TOP WHY THIS IS INLINED CURRENTLY
-// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktf/cli-core/src/lib/dependencies/version-constraints.ts
+// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktn/cli-core/src/lib/dependencies/version-constraints.ts
 // and converted to JavaScript
 
 // constraints can be prefixed with "~>", ">", "<", "=", ">=", "<=" or "!="
@@ -13195,16 +13228,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
-        name: "cdktf peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktf,
-        current: currPackageJson.peerDependencies.cdktf,
+        name: "cdktn peer dependency",
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 
@@ -13984,7 +14023,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -14060,7 +14099,7 @@ jobs:
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
-        run: echo "value=$(jq -r '.cdktf.provider.version' package.json)" >> $GITHUB_OUTPUT
+        run: echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT
       - if: \${{ steps.check_version.outputs.new_version == 'available' }}
         env:
           CHECKPOINT_DISABLE: "1"
@@ -14225,7 +14264,7 @@ jobs:
       - name: Check deprecation status
         id: check_status
         run: |-
-          IS_DEPRECATED=$(cat package.json | jq .cdktf.isDeprecated -r)
+          IS_DEPRECATED=$(cat package.json | jq '(.cdktn // .cdktf).isDeprecated' -r)
           echo "is_deprecated=$IS_DEPRECATED"
           echo "is_deprecated=$IS_DEPRECATED" >> $GITHUB_OUTPUT
       - name: Deprecate the package on NPM
@@ -14235,7 +14274,7 @@ jobs:
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: |-
           npm set "//$NPM_REGISTRY/:_authToken=$NPM_TOKEN"
-          npm deprecate @cdktn/provider-acme "See https://cdk.tf/imports for details on how to continue to use the acme provider in your CDK for Terraform (CDKTF) projects by generating the bindings locally."
+          npm deprecate @cdktn/provider-acme "See https://cdktn.io/docs/concepts/providers#import-providers for details on how to continue to use the acme provider in your CDK Terrain (cdktn) projects by generating the bindings locally."
   release_github:
     name: Publish to GitHub Releases
     needs: release
@@ -14429,7 +14468,7 @@ jobs:
         run: rm -f .repo/dist/go/.copywrite.hcl
       - name: Remove some text from the README that doesn't apply to Go
         run: |-
-          sed -i 's/# CDKTF prebuilt bindings for/# CDKTF Go bindings for/' .repo/dist/go/*/README.md
+          sed -i 's/# CDKTN prebuilt bindings for/# CDKTN Go bindings for/' .repo/dist/go/*/README.md
           sed -i -e '/## Available Packages/,/### Go/!b' -e '/### Go/!d;p; s/### Go/## Go Package/' -e 'd' .repo/dist/go/*/README.md
           sed -i 's/### Go/## Go Package/' .repo/dist/go/*/README.md
           sed -i -e '/API.typescript.md/,/You can also visit a hosted version/!b' -e 'd' .repo/dist/go/*/README.md
@@ -14480,7 +14519,7 @@ jobs:
           days-before-close: -1
           days-before-pr-stale: 1
           days-before-pr-close: 0
-          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTF issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
+          stale-pr-message: Closing this PR, if it has not merged there is most likely a CI or CDKTN issue preventing it from merging. If this has been a manual PR, please reopen it and add the \`no-auto-close\` label to prevent this from happening again.
           close-pr-message: Closing this pull request as it hasn't seen activity for a while. Please add a comment @mentioning a maintainer to reopen. If you wish to exclude this issue from being marked as stale, add the "no-auto-close" label.
           stale-pr-label: stale
           exempt-pr-labels: no-auto-close
@@ -14719,12 +14758,12 @@ scripts
       "type": "build"
     },
     {
-      "name": "cdktf-cli",
+      "name": "cdktn-cli",
       "version": "^0.20.0",
       "type": "build"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "^0.20.0",
       "type": "build"
     },
@@ -14786,7 +14825,7 @@ scripts
       "type": "override"
     },
     {
-      "name": "cdktf",
+      "name": "cdktn",
       "version": "^0.20.0",
       "type": "peer"
     },
@@ -14972,7 +15011,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/acme/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/acme/* ./src/ && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -15185,7 +15224,7 @@ scripts
           "exec": "yarn install --check-files"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktf-cli cdktf commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
         },
         {
           "exec": "npx projen"
@@ -15579,9 +15618,9 @@ Exhibit B - “Incompatible With Secondary Licenses” Notice
       the Mozilla Public License, v. 2.0.
 ",
   "README.md": "
-# CDKTF prebuilt bindings for vancluever/acme provider version ~> 2.10
+# CDKTN prebuilt bindings for vancluever/acme provider version ~> 2.10
 
-This repo builds and publishes the [Terraform acme provider](https://registry.terraform.io/providers/vancluever/acme/2.10.0/docs) bindings for [CDK for Terraform](https://cdk.tf).
+This repo builds and publishes the [Terraform acme provider](https://registry.terraform.io/providers/vancluever/acme/2.10.0/docs) bindings for [CDK Terrain](https://cdktn.io).
 
 ## Available Packages
 
@@ -15638,11 +15677,11 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
 
 ## Versioning
 
-This project is explicitly not tracking the Terraform acme provider version 1:1. In fact, it always tracks \`latest\` of \`~> 2.10\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdk.tf/imports).
+This project is explicitly not tracking the Terraform acme provider version 1:1. In fact, it always tracks \`latest\` of \`~> 2.10\` with every release. If there are scenarios where you explicitly have to pin your provider version, you can do so by [generating the provider constructs manually](https://cdktn.io/docs/concepts/providers#import-providers).
 
 These are the upstream dependencies:
 
-- [CDK for Terraform](https://cdk.tf) - Last official release
+- [CDK Terrain](https://cdktn.io) - Last official release
 - [Terraform acme provider](https://registry.terraform.io/providers/vancluever/acme/2.10.0)
 - [Terraform Engine](https://terraform.io)
 
@@ -15650,10 +15689,10 @@ If there are breaking changes (backward incompatible) in any of the above, the m
 
 ## Features / Issues / Bugs
 
-Please report bugs and issues to the [CDK for Terraform](https://cdk.tf) project:
+Please report bugs and issues to the [CDK Terrain](https://cdktn.io) project:
 
-- [Create bug report](https://cdk.tf/bug)
-- [Create feature request](https://cdk.tf/feature)
+- [Create bug report](https://github.com/open-constructs/cdk-terrain/issues)
+- [Create feature request](https://github.com/open-constructs/cdk-terrain/issues)
 
 ## Contributing
 
@@ -15663,7 +15702,7 @@ This is mostly based on [Projen](https://projen.io), which takes care of generat
 
 ### cdktn-provider-project based on Projen
 
-There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktf\` prebuilt providers.
+There's a custom [project builder](https://github.com/cdktn-io/cdktn-provider-project) which encapsulate the common settings for all \`cdktn\` prebuilt providers.
 
 ### Provider Version
 
@@ -15685,7 +15724,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 ",
   "package.json": "{
   "name": "@cdktn/provider-acme",
-  "description": "Prebuilt acme Provider for Terraform CDK (cdktf)",
+  "description": "Prebuilt acme Provider for CDK Terrain (cdktn)",
   "repository": {
     "type": "git",
     "url": "https://github.com/cdktn-io/cdktn-provider-acme.git"
@@ -15734,8 +15773,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "@actions/core": "^1.1.0",
     "@cdktn/provider-project": "^0.5.0",
     "@types/node": "^18",
-    "cdktf": "^0.20.0",
-    "cdktf-cli": "^0.20.0",
+    "cdktn": "^0.20.0",
+    "cdktn-cli": "^0.20.0",
     "commit-and-tag-version": "^12",
     "constructs": "^10.3.0",
     "dot-prop": "^5.2.0",
@@ -15749,7 +15788,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "typescript": "~5.3.0"
   },
   "peerDependencies": {
-    "cdktf": "^0.20.0",
+    "cdktn": "^0.20.0",
     "constructs": "^10.3.0"
   },
   "resolutions": {
@@ -15758,7 +15797,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   "keywords": [
     "acme",
     "cdk",
+    "cdk-terrain",
     "cdktf",
+    "cdktn",
+    "opentofu",
     "provider",
     "terraform"
   ],
@@ -15826,7 +15868,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
-  "cdktf": {
+  "cdktn": {
     "isDeprecated": false,
     "provider": {
       "name": "<unknown>",
@@ -15844,11 +15886,11 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 const semver = require("semver");
 const actions = require("@actions/core");
 
-// Code is inlined below, as this import requires us to add all dev dependencies of cdktf-cli as we're not
+// Code is inlined below, as this import requires us to add all dev dependencies of cdktn-cli as we're not
 // using the bundle. A better alternative would be to refactor this method to move to its own package, that
-// the cdktf-cli and others can use (we have the same "problem" with some other code in cdktf, cdktf-cli and
+// the cdktn-cli and others can use (we have the same "problem" with some other code in cdktn, cdktn-cli and
 // the @cdktn/provider-generator package, too)
-// const { versionMatchesConstraint } = require('cdktf-cli/lib/dependencies/version-constraints');
+// const { versionMatchesConstraint } = require('cdktn-cli/lib/dependencies/version-constraints');
 
 // set by the projen file that generates this script
 const CONSTRAINT = "~> 2.10";
@@ -15921,7 +15963,7 @@ async function getCurrentProviderVersion() {
 }
 
 // SEE NOTICE AT THE TOP WHY THIS IS INLINED CURRENTLY
-// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktf/cli-core/src/lib/dependencies/version-constraints.ts
+// copied from https://github.com/open-constructs/cdk-terrain/blob/df858ccf4ac71a168e3636f053c6743324c98332/packages/%40cdktn/cli-core/src/lib/dependencies/version-constraints.ts
 // and converted to JavaScript
 
 // constraints can be prefixed with "~>", ">", "<", "=", ">=", "<=" or "!="
@@ -16039,16 +16081,22 @@ const execSync = require("child_process").execSync;
     );
     const currPackageJson = require("../package.json");
 
+    // Support both old "cdktf" and new "cdktn" field names for backward compatibility
+    const prevMeta = prevPackageJson.cdktn || prevPackageJson.cdktf;
+    const currMeta = currPackageJson.cdktn || currPackageJson.cdktf;
+    const prevPeerDep = prevPackageJson.peerDependencies.cdktn || prevPackageJson.peerDependencies.cdktf;
+    const currPeerDep = currPackageJson.peerDependencies.cdktn || currPackageJson.peerDependencies.cdktf;
+
     const thingsToDiff = [
       {
         name: "Terraform provider version",
-        previous: prevPackageJson.cdktf.provider.version,
-        current: currPackageJson.cdktf.provider.version,
+        previous: prevMeta.provider.version,
+        current: currMeta.provider.version,
       },
       {
-        name: "cdktf peer dependency",
-        previous: prevPackageJson.peerDependencies.cdktf,
-        current: currPackageJson.peerDependencies.cdktf,
+        name: "cdktn peer dependency",
+        previous: prevPeerDep,
+        current: currPeerDep,
       },
     ];
 

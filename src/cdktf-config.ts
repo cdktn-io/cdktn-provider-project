@@ -16,7 +16,7 @@ interface CdktfConfigOptions {
   providerName: string;
   fqproviderName: string;
   providerVersion: string;
-  cdktfVersion: string;
+  cdktnVersion: string;
   constructsVersion: string;
   packageInfo: PackageInfo;
   githubNamespace: string;
@@ -45,14 +45,14 @@ export class CdktfConfig {
       isDeprecated,
     } = options;
 
-    const cdktfVersion = options.cdktfVersion;
+    const cdktnVersion = options.cdktnVersion;
     const constructsVersion = options.constructsVersion;
 
-    project.addPeerDeps(`cdktf@${cdktfVersion}`);
+    project.addPeerDeps(`cdktn@${cdktnVersion}`);
     project.addPeerDeps(`constructs@${constructsVersion}`);
 
-    project.addDevDeps(`cdktf@${cdktfVersion}`);
-    project.addDevDeps(`cdktf-cli@${cdktfVersion}`);
+    project.addDevDeps(`cdktn@${cdktnVersion}`);
+    project.addDevDeps(`cdktn-cli@${cdktnVersion}`);
     project.addDevDeps(`constructs@${constructsVersion}`);
 
     if (jsiiVersion) {
@@ -63,7 +63,7 @@ export class CdktfConfig {
     }
 
     const fetchTask = project.addTask("fetch", {
-      exec: `mkdir -p src && rm -rf ./src/* && cdktf get && cp -R .gen/providers/${providerName}/* ./src/ && cp .gen/versions.json ./src/version.json`,
+      exec: `mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/${providerName}/* ./src/ && cp .gen/versions.json ./src/version.json`,
       env: {
         CHECKPOINT_DISABLE: "1",
       },
@@ -149,7 +149,7 @@ export class CdktfConfig {
     }
 
     project.addFields({
-      cdktf: {
+      cdktn: {
         isDeprecated,
         provider: {
           name: fullyQualifiedProviderName,
