@@ -1931,6 +1931,13 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
       }
     ]
   },
+  "cdktf": {
+    "isDeprecated": true,
+    "provider": {
+      "name": "<unknown>",
+      "version": "<unknown>"
+    }
+  },
   "cdktn": {
     "isDeprecated": true,
     "provider": {
@@ -4516,6 +4523,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
         "hidden": true
       }
     ]
+  },
+  "cdktf": {
+    "isDeprecated": false,
+    "provider": {
+      "name": "<unknown>",
+      "version": "<unknown>"
+    }
   },
   "cdktn": {
     "isDeprecated": false,
@@ -7349,6 +7363,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       }
     ]
   },
+  "cdktf": {
+    "isDeprecated": false,
+    "provider": {
+      "name": "<unknown>",
+      "version": "<unknown>"
+    }
+  },
   "cdktn": {
     "isDeprecated": false,
     "provider": {
@@ -10180,6 +10201,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
         "hidden": true
       }
     ]
+  },
+  "cdktf": {
+    "isDeprecated": false,
+    "provider": {
+      "name": "<unknown>",
+      "version": "<unknown>"
+    }
   },
   "cdktn": {
     "isDeprecated": false,
@@ -13014,6 +13042,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
         "hidden": true
       }
     ]
+  },
+  "cdktf": {
+    "isDeprecated": false,
+    "provider": {
+      "name": "<unknown>",
+      "version": "<unknown>"
+    }
   },
   "cdktn": {
     "isDeprecated": false,
@@ -15867,6 +15902,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
         "hidden": true
       }
     ]
+  },
+  "cdktf": {
+    "isDeprecated": false,
+    "provider": {
+      "name": "<unknown>",
+      "version": "<unknown>"
+    }
   },
   "cdktn": {
     "isDeprecated": false,
