@@ -30,6 +30,15 @@ test("build runs without crash reporting", () => {
   );
 });
 
+test("package metadata includes both legacy and new provider keys", () => {
+  const snapshot = synthSnapshot(getProject());
+  const packageJson = JSON.parse(snapshot["package.json"]);
+
+  expect(packageJson).toHaveProperty("cdktf.provider");
+  expect(packageJson).toHaveProperty("cdktn.provider");
+  expect(packageJson.cdktf.provider).toEqual(packageJson.cdktn.provider);
+});
+
 test("synths with custom Github runners", () => {
   const snapshot = synthSnapshot(getProject({ useCustomGithubRunner: true }));
 
@@ -108,6 +117,10 @@ test("has a custom workflow and README if the project is deprecated", () => {
 
   expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
     "cdktn.isDeprecated",
+    true
+  );
+  expect(JSON.parse(snapshot["package.json"])).toHaveProperty(
+    "cdktf.isDeprecated",
     true
   );
 

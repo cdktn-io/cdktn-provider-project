@@ -148,14 +148,17 @@ export class CdktfConfig {
       actualProviderVersion = version as string;
     }
 
-    project.addFields({
-      cdktn: {
-        isDeprecated,
-        provider: {
-          name: fullyQualifiedProviderName,
-          version: actualProviderVersion,
-        },
+    const providerMetadata = {
+      isDeprecated,
+      provider: {
+        name: fullyQualifiedProviderName,
+        version: actualProviderVersion,
       },
+    };
+
+    project.addFields({
+      cdktf: providerMetadata,
+      cdktn: providerMetadata,
     });
 
     if (project.npmignore) {
