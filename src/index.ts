@@ -129,7 +129,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       namespace = "cdktn",
       githubNamespace = "cdktn-io",
       mavenEndpoint = "https://central.sonatype.com", // TODO
-      nugetOrg = "Io.Cdktn", // TODO
+      nugetOrg = "Io.Cdktn",
       mavenOrg = "cdktn", // TODO
       npmTrustedPublishing,
     } = options;
@@ -290,8 +290,8 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         },
       },
       python: packageInfo.python,
+      publishToNuget: packageInfo.publishToNuget,
       // TODO: Re-enable if requested and when available
-      // publishToNuget: packageInfo.publishToNuget,
       // publishToMaven: packageInfo.publishToMaven,
       publishToGo: packageInfo.publishToGo,
       releaseFailureIssue: true,
