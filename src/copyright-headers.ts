@@ -35,7 +35,8 @@ project {
     "docs/**",
     "API.md",
     ".mergify.yml",
-    "scripts/*.js"
+    "scripts/*.js",
+    "pnpm-lock.yaml"
   ]
 }
 `.split("\n"),
