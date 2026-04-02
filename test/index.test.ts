@@ -66,9 +66,10 @@ test("sets resolution for yargs", () => {
   const snapshot = synthSnapshot(getProject());
 
   const packageJson = JSON.parse(snapshot["package.json"]);
-  expect(packageJson).toHaveProperty("resolutions");
-  expect(packageJson.resolutions).toHaveProperty("@types/yargs");
-  expect(packageJson.resolutions["@types/yargs"]).toEqual("17.0.13");
+  // pnpm uses pnpm.overrides instead of resolutions
+  expect(packageJson).toHaveProperty("pnpm.overrides");
+  expect(packageJson.pnpm.overrides).toHaveProperty("@types/yargs");
+  expect(packageJson.pnpm.overrides["@types/yargs"]).toEqual("17.0.13");
 });
 
 test("README contains provided Namespace", () => {

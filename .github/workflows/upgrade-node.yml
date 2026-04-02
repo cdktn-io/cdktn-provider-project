@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: 20.16.0
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Get current Node.js version
         id: current_version
         run: |-
@@ -85,7 +85,7 @@ jobs:
         with:
           node-version: ${{ needs.version.outputs.latest }}
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Set the new minNodeVersion in .projenrc.ts
         env:
           NEW_NODEJS_VERSION: ${{ needs.version.outputs.latest }}
@@ -93,7 +93,7 @@ jobs:
       - name: Activate Projen to propagate the new version everywhere
         env:
           CI: "false"
-        run: yarn projen
+        run: pnpm projen
       - name: Generate token
         id: generate_token
         uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf

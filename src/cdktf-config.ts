@@ -82,13 +82,13 @@ export class CdktfConfig {
     );
     project.setScript(
       "prebump",
-      "yarn fetch && yarn compile && yarn run commit && yarn run should-release"
+      "pnpm run fetch && pnpm run compile && pnpm run commit && pnpm run should-release"
     );
     project.setScript("compile", "jsii --silence-warnings=reserved-word");
 
     project.setScript(
       "build-provider",
-      "yarn fetch && yarn compile && yarn docgen"
+      "pnpm run fetch && pnpm run compile && pnpm run docgen"
     );
     project.setScript("test", "jest --passWithNoTests");
     project.addFields({ publishConfig: { access: "public" } });
@@ -174,7 +174,7 @@ export class CdktfConfig {
     }
     project.gitignore.exclude(".gen");
     project.gitignore.exclude(".terraform");
-    project.gitignore.exclude("package-lock.json");
+    // pnpm uses pnpm-lock.yaml; projen handles its gitignore automatically
 
     new JsonFile(project, CDKTF_JSON_FILE, {
       obj: {

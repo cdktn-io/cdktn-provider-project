@@ -5,6 +5,7 @@
     "url": "https://github.com/cdktn-io/cdktn-provider-project.git"
   },
   "scripts": {
+    "audit": "npx projen audit",
     "build": "npx projen build",
     "bump": "npx projen bump",
     "clobber": "npx projen clobber",
@@ -77,6 +78,7 @@
     "change-case",
     "fs-extra"
   ],
+  "pnpm": {},
   "engines": {
     "node": ">= 20.16.0"
   },
