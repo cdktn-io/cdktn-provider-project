@@ -58,7 +58,7 @@ export class UpgradeNode {
           },
           {
             name: "Install",
-            run: "yarn install",
+            run: "pnpm install --frozen-lockfile",
           },
           {
             name: "Get current Node.js version",
@@ -153,7 +153,7 @@ export class UpgradeNode {
           },
           {
             name: "Install",
-            run: "yarn install",
+            run: "pnpm install --frozen-lockfile",
           },
           {
             name: "Set the new minNodeVersion in .projenrc.ts",
@@ -164,7 +164,7 @@ export class UpgradeNode {
           },
           {
             name: "Activate Projen to propagate the new version everywhere",
-            run: "yarn projen",
+            run: "pnpm projen",
             env: {
               CI: "false", // otherwise, `npx projen` will fail because it tries to update the lockfile
             },

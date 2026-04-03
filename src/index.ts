@@ -3,7 +3,10 @@ import assert = require("assert");
 import { pascalCase } from "change-case";
 import { TextFile, cdk, github, JsonPatch } from "projen";
 import { JobStep } from "projen/lib/github/workflows-model";
-import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
+import {
+  NodePackageManager,
+  UpgradeDependenciesSchedule,
+} from "projen/lib/javascript";
 import { AlertOpenPrs } from "./alert-open-prs";
 import { AutoApprove } from "./auto-approve";
 import { AutoCloseCommunityIssues } from "./auto-close-community-issues";
@@ -188,7 +191,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
           },
           {
             name: "Install Dependencies",
-            run: "cd .repo && yarn install --check-files --frozen-lockfile",
+            run: "cd .repo && pnpm install --frozen-lockfile",
           },
           {
             name: "Extract build artifact",
@@ -280,14 +283,21 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       authorOrganization: true,
       defaultReleaseBranch: "main",
       repository: `https://github.com/${repository}.git`,
+      packageManager: NodePackageManager.PNPM,
       mergify: false,
       eslint: false,
       depsUpgrade: !isDeprecated,
       depsUpgradeOptions: {
+        cooldown: 4,
         workflowOptions: {
           labels: ["automerge", "auto-approve", "dependencies"],
           schedule: UpgradeDependenciesSchedule.WEEKLY,
         },
+      },
+      auditDeps: !isDeprecated,
+      auditDepsOptions: {
+        level: "high",
+        runOn: "build",
       },
       python: packageInfo.python,
       // TODO: Re-enable if requested and when available

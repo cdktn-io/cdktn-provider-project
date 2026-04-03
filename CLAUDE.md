@@ -29,9 +29,9 @@ npm run validate-workflows    # Validate GitHub Actions workflow YAML files
 
 ### Testing Changes
 ```bash
-yarn link                     # Create a local link for testing in provider repos
+pnpm link --global            # Create a global link for testing in provider repos
 # In a provider repo:
-yarn link @cdktn/provider-project
+pnpm link --global @cdktn/provider-project
 npx projen                    # Apply the linked version
 ```
 
@@ -81,7 +81,7 @@ Determines if a release is needed by comparing `version.json` against the last g
 **Provider Update Flow:**
 1. `provider-upgrade` workflow runs daily (randomized cron between 3-4am)
 2. Checks Terraform Registry for new provider version
-3. If available, runs `yarn fetch` (which executes `cdktf get`)
+3. If available, runs `pnpm run fetch` (which executes `cdktf get`)
 4. Adds copyright headers back (they get nuked by fetch)
 5. Creates PR with appropriate semantic commit message (`feat:` for minor, `fix:` for patch)
 6. Auto-approve and auto-merge labels trigger automated merge
@@ -152,7 +152,7 @@ Key test scenarios:
 2. **Run `npx projen`** - Regenerates all project files
 3. **Run tests** - `npm test`
 4. **Validate workflows** - Happens automatically in post-compile, checks YAML against schemas
-5. **Test in a provider repo** - Use `yarn link` for local testing
+5. **Test in a provider repo** - Use `pnpm link --global` for local testing
 6. **Commit and release** - Auto-release on main branch (if not paths-ignored)
 
 ## Fork-Specific Context

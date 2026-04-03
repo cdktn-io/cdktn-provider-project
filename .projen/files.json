@@ -12,6 +12,7 @@
     ".github/workflows/upgrade-main.yml",
     ".github/workflows/upgrade-node.yml",
     ".gitignore",
+    ".npmrc",
     ".prettierignore",
     ".prettierrc.json",
     ".projen/deps.json",

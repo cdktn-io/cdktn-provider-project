@@ -59,7 +59,7 @@ export class UpgradeJSIIAndTypeScript {
           },
           {
             name: "Install",
-            run: "yarn install",
+            run: "pnpm install --frozen-lockfile",
           },
           {
             name: "Get current JSII version",
@@ -160,7 +160,7 @@ export class UpgradeJSIIAndTypeScript {
           },
           {
             name: "Install",
-            run: "yarn install",
+            run: "pnpm install --frozen-lockfile",
           },
           {
             name: "Run upgrade script",

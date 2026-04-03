@@ -23,7 +23,8 @@ project {
     "docs/**",
     "API.md",
     ".mergify.yml",
-    "scripts/*.js"
+    "scripts/*.js",
+    "pnpm-lock.yaml"
   ]
 }
 ",
@@ -45,6 +46,7 @@ project {
 /.github/workflows/stale.yml linguist-generated
 /.gitignore linguist-generated
 /.npmignore linguist-generated
+/.npmrc linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
@@ -53,9 +55,9 @@ project {
 /docs/*.md linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/pnpm-lock.yaml linguist-generated
 /README.md linguist-generated
-/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
-/yarn.lock linguist-generated",
+/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments",
   ".github/CODEOWNERS": "# These owners will be the default owners for everything in 
 # the repo. Unless a later match takes precedence, 
 # they will be requested for review when someone opens a 
@@ -232,8 +234,12 @@ jobs:
           ref: \${{ github.event.pull_request.head.ref }}
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files
+        run: pnpm i --no-frozen-lockfile
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
       - name: build
@@ -328,6 +334,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -335,7 +345,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -365,6 +375,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -372,7 +386,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -402,6 +416,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -409,7 +427,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -503,8 +521,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen release
       - name: Check if version has already been tagged
@@ -546,7 +568,7 @@ jobs:
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with: {}
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Check deprecation status
         id: check_status
         run: |-
@@ -619,12 +641,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -676,12 +702,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -737,7 +767,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -854,6 +884,7 @@ jspm_packages/
 /dist/changelog.md
 /dist/version.txt
 !/.github/workflows/release.yml
+!/.npmrc
 !/test/
 !/tsconfig.dev.json
 !/src/
@@ -863,7 +894,6 @@ jspm_packages/
 tsconfig.json
 .gen
 .terraform
-package-lock.json
 !/cdktf.json
 !/README.md
 !/LICENSE
@@ -907,6 +937,10 @@ scripts
 .projenrc.js
 .copywrite.hcl
 /.gitattributes
+",
+  ".npmrc": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "npx projen".
+
+resolution-mode=highest
 ",
   ".projen/deps.json": "{
   "dependencies": [
@@ -1025,6 +1059,7 @@ scripts
     ".github/workflows/release.yml",
     ".github/workflows/stale.yml",
     ".gitignore",
+    ".npmrc",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
@@ -1179,7 +1214,7 @@ scripts
       "description": "Install project dependencies and update lockfile (non-frozen)",
       "steps": [
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         }
       ]
     },
@@ -1188,7 +1223,7 @@ scripts
       "description": "Install project dependencies using frozen lockfile",
       "steps": [
         {
-          "exec": "yarn install --check-files --frozen-lockfile"
+          "exec": "pnpm i --frozen-lockfile"
         }
       ]
     },
@@ -1226,7 +1261,7 @@ scripts
       "description": "Create go language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target go"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target go"
         }
       ]
     },
@@ -1235,7 +1270,7 @@ scripts
       "description": "Create js language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target js"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target js"
         }
       ]
     },
@@ -1244,7 +1279,7 @@ scripts
       "description": "Create python language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target python"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target python"
         }
       ]
     },
@@ -1356,7 +1391,7 @@ scripts
     }
   },
   "env": {
-    "PATH": "$(npx -c \\"node --print process.env.PATH\\")",
+    "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
     "NODE_OPTIONS": "--max-old-space-size=6656",
     "CHECKPOINT_DISABLE": "1"
   },
@@ -1826,8 +1861,8 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
     "projen": "npx projen",
     "commit": "git add -A && git commit -am \\"Update provider\\" || echo \\"No changes to commit\\"",
     "should-release": "! git diff --exit-code v$(cat version.json | jq -r '.version') ./src ./package.json",
-    "prebump": "yarn fetch && yarn compile && yarn run commit && yarn run should-release",
-    "build-provider": "yarn fetch && yarn compile && yarn docgen"
+    "prebump": "pnpm run fetch && pnpm run compile && pnpm run commit && pnpm run should-release",
+    "build-provider": "pnpm run fetch && pnpm run compile && pnpm run docgen"
   },
   "author": {
     "name": "CDK Terrain Maintainers",
@@ -1857,8 +1892,10 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
     "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
-  "resolutions": {
-    "@types/yargs": "17.0.13"
+  "pnpm": {
+    "overrides": {
+      "@types/yargs": "17.0.13"
+    }
   },
   "keywords": [
     "cdk",
@@ -2011,7 +2048,8 @@ project {
     "docs/**",
     "API.md",
     ".mergify.yml",
-    "scripts/*.js"
+    "scripts/*.js",
+    "pnpm-lock.yaml"
   ]
 }
 ",
@@ -2038,6 +2076,7 @@ project {
 /.github/workflows/upgrade-main.yml linguist-generated
 /.gitignore linguist-generated
 /.npmignore linguist-generated
+/.npmrc linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
@@ -2046,11 +2085,11 @@ project {
 /docs/*.md linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/pnpm-lock.yaml linguist-generated
 /README.md linguist-generated
 /scripts/check-for-upgrades.js linguist-generated
 /scripts/should-release.js linguist-generated
-/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
-/yarn.lock linguist-generated",
+/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments",
   ".github/CODEOWNERS": "# These owners will be the default owners for everything in 
 # the repo. Unless a later match takes precedence, 
 # they will be requested for review when someone opens a 
@@ -2281,8 +2320,12 @@ jobs:
           ref: \${{ github.event.pull_request.head.ref }}
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files
+        run: pnpm i --no-frozen-lockfile
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
       - name: build
@@ -2377,6 +2420,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -2384,7 +2431,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -2414,6 +2461,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -2421,7 +2472,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -2451,6 +2502,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -2458,7 +2513,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -2519,8 +2574,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen unconditional-release
       - name: Check if version has already been tagged
@@ -2585,12 +2644,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -2628,12 +2691,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -2675,7 +2742,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -2761,9 +2828,9 @@ jobs:
         with: {}
       - name: Setup Copywrite tool
         uses: hashicorp/setup-copywrite@32638da2d4e81d56a0764aa1547882fc4d209636
-      - run: yarn install
+      - run: pnpm install --frozen-lockfile
       - id: check_version
-        run: yarn check-if-new-provider-version
+        run: pnpm run check-if-new-provider-version
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
@@ -2772,7 +2839,7 @@ jobs:
         env:
           CHECKPOINT_DISABLE: "1"
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-        run: yarn fetch
+        run: pnpm run fetch
       - name: Add headers using Copywrite tool
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
         run: copywrite headers
@@ -2882,8 +2949,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen release
       - name: Check if version has already been tagged
@@ -2923,7 +2994,7 @@ jobs:
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with: {}
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Check deprecation status
         id: check_status
         run: |-
@@ -2996,12 +3067,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -3053,12 +3128,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -3114,7 +3193,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -3215,8 +3294,12 @@ jobs:
           ref: main
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: Upgrade dependencies
         run: npx projen upgrade
       - name: Find mutations
@@ -3331,6 +3414,7 @@ jspm_packages/
 /dist/version.txt
 !/.github/workflows/release.yml
 !/.github/workflows/upgrade-main.yml
+!/.npmrc
 !/test/
 !/tsconfig.dev.json
 !/src/
@@ -3340,7 +3424,6 @@ jspm_packages/
 tsconfig.json
 .gen
 .terraform
-package-lock.json
 !/cdktf.json
 !/README.md
 !/LICENSE
@@ -3390,6 +3473,10 @@ scripts
 .projenrc.js
 .copywrite.hcl
 /.gitattributes
+",
+  ".npmrc": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "npx projen".
+
+resolution-mode=highest
 ",
   ".projen/deps.json": "{
   "dependencies": [
@@ -3518,6 +3605,7 @@ scripts
     ".github/workflows/stale.yml",
     ".github/workflows/upgrade-main.yml",
     ".gitignore",
+    ".npmrc",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
@@ -3533,6 +3621,15 @@ scripts
 ",
   ".projen/tasks.json": "{
   "tasks": {
+    "audit": {
+      "name": "audit",
+      "description": "Run security audit",
+      "steps": [
+        {
+          "exec": "pnpm audit --audit-level high"
+        }
+      ]
+    },
     "build": {
       "name": "build",
       "description": "Full release build",
@@ -3682,7 +3779,7 @@ scripts
       "description": "Install project dependencies and update lockfile (non-frozen)",
       "steps": [
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         }
       ]
     },
@@ -3691,7 +3788,7 @@ scripts
       "description": "Install project dependencies using frozen lockfile",
       "steps": [
         {
-          "exec": "yarn install --check-files --frozen-lockfile"
+          "exec": "pnpm i --frozen-lockfile"
         }
       ]
     },
@@ -3729,7 +3826,7 @@ scripts
       "description": "Create go language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target go"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target go"
         }
       ]
     },
@@ -3738,7 +3835,7 @@ scripts
       "description": "Create js language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target js"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target js"
         }
       ]
     },
@@ -3747,7 +3844,7 @@ scripts
       "description": "Create python language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target python"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target python"
         }
       ]
     },
@@ -3771,6 +3868,9 @@ scripts
       "name": "pre-compile",
       "description": "Prepare the project for compilation",
       "steps": [
+        {
+          "spawn": "audit"
+        },
         {
           "spawn": "unconditional-bump"
         }
@@ -3877,13 +3977,13 @@ scripts
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --cooldown=4 --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
         },
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "pnpm update @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript --config.minimum-release-age=5760"
         },
         {
           "exec": "npx projen"
@@ -3913,7 +4013,7 @@ scripts
     }
   },
   "env": {
-    "PATH": "$(npx -c \\"node --print process.env.PATH\\")",
+    "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
     "NODE_OPTIONS": "--max-old-space-size=6656",
     "CHECKPOINT_DISABLE": "1"
   },
@@ -4389,6 +4489,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
   },
   "scripts": {
+    "audit": "npx projen audit",
     "build": "npx projen build",
     "bump": "npx projen bump",
     "check-if-new-provider-version": "npx projen check-if-new-provider-version",
@@ -4418,8 +4519,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "projen": "npx projen",
     "commit": "git add -A && git commit -am \\"Update provider\\" || echo \\"No changes to commit\\"",
     "should-release": "! git diff --exit-code v$(cat version.json | jq -r '.version') ./src ./package.json",
-    "prebump": "yarn fetch && yarn compile && yarn run commit && yarn run should-release",
-    "build-provider": "yarn fetch && yarn compile && yarn docgen"
+    "prebump": "pnpm run fetch && pnpm run compile && pnpm run commit && pnpm run should-release",
+    "build-provider": "pnpm run fetch && pnpm run compile && pnpm run docgen"
   },
   "author": {
     "name": "CDK Terrain Maintainers",
@@ -4450,8 +4551,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "cdktn": ">=0.12.2 <0.14.0",
     "constructs": "10.0.0"
   },
-  "resolutions": {
-    "@types/yargs": "17.0.13"
+  "pnpm": {
+    "overrides": {
+      "@types/yargs": "17.0.13"
+    }
   },
   "keywords": [
     "cdk",
@@ -4850,7 +4953,8 @@ project {
     "docs/**",
     "API.md",
     ".mergify.yml",
-    "scripts/*.js"
+    "scripts/*.js",
+    "pnpm-lock.yaml"
   ]
 }
 ",
@@ -4877,6 +4981,7 @@ project {
 /.github/workflows/upgrade-main.yml linguist-generated
 /.gitignore linguist-generated
 /.npmignore linguist-generated
+/.npmrc linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
@@ -4885,11 +4990,11 @@ project {
 /docs/*.md linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/pnpm-lock.yaml linguist-generated
 /README.md linguist-generated
 /scripts/check-for-upgrades.js linguist-generated
 /scripts/should-release.js linguist-generated
-/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
-/yarn.lock linguist-generated",
+/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments",
   ".github/CODEOWNERS": "# These owners will be the default owners for everything in 
 # the repo. Unless a later match takes precedence, 
 # they will be requested for review when someone opens a 
@@ -5120,8 +5225,12 @@ jobs:
           ref: \${{ github.event.pull_request.head.ref }}
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files
+        run: pnpm i --no-frozen-lockfile
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
       - name: build
@@ -5216,6 +5325,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -5223,7 +5336,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5253,6 +5366,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -5260,7 +5377,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5290,6 +5407,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -5297,7 +5418,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5358,8 +5479,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen unconditional-release
       - name: Check if version has already been tagged
@@ -5424,12 +5549,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5467,12 +5596,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5514,7 +5647,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5600,9 +5733,9 @@ jobs:
         with: {}
       - name: Setup Copywrite tool
         uses: hashicorp/setup-copywrite@32638da2d4e81d56a0764aa1547882fc4d209636
-      - run: yarn install
+      - run: pnpm install --frozen-lockfile
       - id: check_version
-        run: yarn check-if-new-provider-version
+        run: pnpm run check-if-new-provider-version
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
@@ -5611,7 +5744,7 @@ jobs:
         env:
           CHECKPOINT_DISABLE: "1"
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-        run: yarn fetch
+        run: pnpm run fetch
       - name: Add headers using Copywrite tool
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
         run: copywrite headers
@@ -5721,8 +5854,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen release
       - name: Check if version has already been tagged
@@ -5762,7 +5899,7 @@ jobs:
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with: {}
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Check deprecation status
         id: check_status
         run: |-
@@ -5835,12 +5972,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5892,12 +6033,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -5953,7 +6098,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -6054,8 +6199,12 @@ jobs:
           ref: main
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: Upgrade dependencies
         run: npx projen upgrade
       - name: Find mutations
@@ -6170,6 +6319,7 @@ jspm_packages/
 /dist/version.txt
 !/.github/workflows/release.yml
 !/.github/workflows/upgrade-main.yml
+!/.npmrc
 !/test/
 !/tsconfig.dev.json
 !/src/
@@ -6179,7 +6329,6 @@ jspm_packages/
 tsconfig.json
 .gen
 .terraform
-package-lock.json
 !/cdktf.json
 !/README.md
 !/LICENSE
@@ -6229,6 +6378,10 @@ scripts
 .projenrc.js
 .copywrite.hcl
 /.gitattributes
+",
+  ".npmrc": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "npx projen".
+
+resolution-mode=highest
 ",
   ".projen/deps.json": "{
   "dependencies": [
@@ -6357,6 +6510,7 @@ scripts
     ".github/workflows/stale.yml",
     ".github/workflows/upgrade-main.yml",
     ".gitignore",
+    ".npmrc",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
@@ -6372,6 +6526,15 @@ scripts
 ",
   ".projen/tasks.json": "{
   "tasks": {
+    "audit": {
+      "name": "audit",
+      "description": "Run security audit",
+      "steps": [
+        {
+          "exec": "pnpm audit --audit-level high"
+        }
+      ]
+    },
     "build": {
       "name": "build",
       "description": "Full release build",
@@ -6521,7 +6684,7 @@ scripts
       "description": "Install project dependencies and update lockfile (non-frozen)",
       "steps": [
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         }
       ]
     },
@@ -6530,7 +6693,7 @@ scripts
       "description": "Install project dependencies using frozen lockfile",
       "steps": [
         {
-          "exec": "yarn install --check-files --frozen-lockfile"
+          "exec": "pnpm i --frozen-lockfile"
         }
       ]
     },
@@ -6568,7 +6731,7 @@ scripts
       "description": "Create go language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target go"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target go"
         }
       ]
     },
@@ -6577,7 +6740,7 @@ scripts
       "description": "Create js language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target js"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target js"
         }
       ]
     },
@@ -6586,7 +6749,7 @@ scripts
       "description": "Create python language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target python"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target python"
         }
       ]
     },
@@ -6610,6 +6773,9 @@ scripts
       "name": "pre-compile",
       "description": "Prepare the project for compilation",
       "steps": [
+        {
+          "spawn": "audit"
+        },
         {
           "spawn": "unconditional-bump"
         }
@@ -6716,13 +6882,13 @@ scripts
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --cooldown=4 --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
         },
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "pnpm update @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript --config.minimum-release-age=5760"
         },
         {
           "exec": "npx projen"
@@ -6752,7 +6918,7 @@ scripts
     }
   },
   "env": {
-    "PATH": "$(npx -c \\"node --print process.env.PATH\\")",
+    "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
     "NODE_OPTIONS": "--max-old-space-size=31744",
     "CHECKPOINT_DISABLE": "1"
   },
@@ -7228,6 +7394,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
   },
   "scripts": {
+    "audit": "npx projen audit",
     "build": "npx projen build",
     "bump": "npx projen bump",
     "check-if-new-provider-version": "npx projen check-if-new-provider-version",
@@ -7257,8 +7424,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "projen": "npx projen",
     "commit": "git add -A && git commit -am \\"Update provider\\" || echo \\"No changes to commit\\"",
     "should-release": "! git diff --exit-code v$(cat version.json | jq -r '.version') ./src ./package.json",
-    "prebump": "yarn fetch && yarn compile && yarn run commit && yarn run should-release",
-    "build-provider": "yarn fetch && yarn compile && yarn docgen"
+    "prebump": "pnpm run fetch && pnpm run compile && pnpm run commit && pnpm run should-release",
+    "build-provider": "pnpm run fetch && pnpm run compile && pnpm run docgen"
   },
   "author": {
     "name": "CDK Terrain Maintainers",
@@ -7289,8 +7456,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
-  "resolutions": {
-    "@types/yargs": "17.0.13"
+  "pnpm": {
+    "overrides": {
+      "@types/yargs": "17.0.13"
+    }
   },
   "keywords": [
     "cdk",
@@ -7689,7 +7858,8 @@ project {
     "docs/**",
     "API.md",
     ".mergify.yml",
-    "scripts/*.js"
+    "scripts/*.js",
+    "pnpm-lock.yaml"
   ]
 }
 ",
@@ -7716,6 +7886,7 @@ project {
 /.github/workflows/upgrade-main.yml linguist-generated
 /.gitignore linguist-generated
 /.npmignore linguist-generated
+/.npmrc linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
@@ -7724,11 +7895,11 @@ project {
 /docs/*.md linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/pnpm-lock.yaml linguist-generated
 /README.md linguist-generated
 /scripts/check-for-upgrades.js linguist-generated
 /scripts/should-release.js linguist-generated
-/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
-/yarn.lock linguist-generated",
+/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments",
   ".github/CODEOWNERS": "# These owners will be the default owners for everything in 
 # the repo. Unless a later match takes precedence, 
 # they will be requested for review when someone opens a 
@@ -7959,8 +8130,12 @@ jobs:
           ref: \${{ github.event.pull_request.head.ref }}
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files
+        run: pnpm i --no-frozen-lockfile
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
       - name: build
@@ -8055,6 +8230,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -8062,7 +8241,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8092,6 +8271,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -8099,7 +8282,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8129,6 +8312,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -8136,7 +8323,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8197,8 +8384,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen unconditional-release
       - name: Check if version has already been tagged
@@ -8263,12 +8454,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8306,12 +8501,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8353,7 +8552,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8439,9 +8638,9 @@ jobs:
         with: {}
       - name: Setup Copywrite tool
         uses: hashicorp/setup-copywrite@32638da2d4e81d56a0764aa1547882fc4d209636
-      - run: yarn install
+      - run: pnpm install --frozen-lockfile
       - id: check_version
-        run: yarn check-if-new-provider-version
+        run: pnpm run check-if-new-provider-version
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
@@ -8450,7 +8649,7 @@ jobs:
         env:
           CHECKPOINT_DISABLE: "1"
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-        run: yarn fetch
+        run: pnpm run fetch
       - name: Add headers using Copywrite tool
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
         run: copywrite headers
@@ -8560,8 +8759,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen release
       - name: Check if version has already been tagged
@@ -8601,7 +8804,7 @@ jobs:
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with: {}
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Check deprecation status
         id: check_status
         run: |-
@@ -8674,12 +8877,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8731,12 +8938,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8792,7 +9003,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -8893,8 +9104,12 @@ jobs:
           ref: main
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: Upgrade dependencies
         run: npx projen upgrade
       - name: Find mutations
@@ -9009,6 +9224,7 @@ jspm_packages/
 /dist/version.txt
 !/.github/workflows/release.yml
 !/.github/workflows/upgrade-main.yml
+!/.npmrc
 !/test/
 !/tsconfig.dev.json
 !/src/
@@ -9018,7 +9234,6 @@ jspm_packages/
 tsconfig.json
 .gen
 .terraform
-package-lock.json
 !/cdktf.json
 !/README.md
 !/LICENSE
@@ -9068,6 +9283,10 @@ scripts
 .projenrc.js
 .copywrite.hcl
 /.gitattributes
+",
+  ".npmrc": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "npx projen".
+
+resolution-mode=highest
 ",
   ".projen/deps.json": "{
   "dependencies": [
@@ -9196,6 +9415,7 @@ scripts
     ".github/workflows/stale.yml",
     ".github/workflows/upgrade-main.yml",
     ".gitignore",
+    ".npmrc",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
@@ -9211,6 +9431,15 @@ scripts
 ",
   ".projen/tasks.json": "{
   "tasks": {
+    "audit": {
+      "name": "audit",
+      "description": "Run security audit",
+      "steps": [
+        {
+          "exec": "pnpm audit --audit-level high"
+        }
+      ]
+    },
     "build": {
       "name": "build",
       "description": "Full release build",
@@ -9360,7 +9589,7 @@ scripts
       "description": "Install project dependencies and update lockfile (non-frozen)",
       "steps": [
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         }
       ]
     },
@@ -9369,7 +9598,7 @@ scripts
       "description": "Install project dependencies using frozen lockfile",
       "steps": [
         {
-          "exec": "yarn install --check-files --frozen-lockfile"
+          "exec": "pnpm i --frozen-lockfile"
         }
       ]
     },
@@ -9407,7 +9636,7 @@ scripts
       "description": "Create go language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target go"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target go"
         }
       ]
     },
@@ -9416,7 +9645,7 @@ scripts
       "description": "Create js language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target js"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target js"
         }
       ]
     },
@@ -9425,7 +9654,7 @@ scripts
       "description": "Create python language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target python"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target python"
         }
       ]
     },
@@ -9449,6 +9678,9 @@ scripts
       "name": "pre-compile",
       "description": "Prepare the project for compilation",
       "steps": [
+        {
+          "spawn": "audit"
+        },
         {
           "spawn": "unconditional-bump"
         }
@@ -9555,13 +9787,13 @@ scripts
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --cooldown=4 --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
         },
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "pnpm update @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript --config.minimum-release-age=5760"
         },
         {
           "exec": "npx projen"
@@ -9591,7 +9823,7 @@ scripts
     }
   },
   "env": {
-    "PATH": "$(npx -c \\"node --print process.env.PATH\\")",
+    "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
     "NODE_OPTIONS": "--max-old-space-size=6656",
     "CHECKPOINT_DISABLE": "1"
   },
@@ -10067,6 +10299,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
   },
   "scripts": {
+    "audit": "npx projen audit",
     "build": "npx projen build",
     "bump": "npx projen bump",
     "check-if-new-provider-version": "npx projen check-if-new-provider-version",
@@ -10096,8 +10329,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "projen": "npx projen",
     "commit": "git add -A && git commit -am \\"Update provider\\" || echo \\"No changes to commit\\"",
     "should-release": "! git diff --exit-code v$(cat version.json | jq -r '.version') ./src ./package.json",
-    "prebump": "yarn fetch && yarn compile && yarn run commit && yarn run should-release",
-    "build-provider": "yarn fetch && yarn compile && yarn docgen"
+    "prebump": "pnpm run fetch && pnpm run compile && pnpm run commit && pnpm run should-release",
+    "build-provider": "pnpm run fetch && pnpm run compile && pnpm run docgen"
   },
   "author": {
     "name": "CDK Terrain Maintainers",
@@ -10128,8 +10361,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
-  "resolutions": {
-    "@types/yargs": "17.0.13"
+  "pnpm": {
+    "overrides": {
+      "@types/yargs": "17.0.13"
+    }
   },
   "keywords": [
     "cdk",
@@ -10528,7 +10763,8 @@ project {
     "docs/**",
     "API.md",
     ".mergify.yml",
-    "scripts/*.js"
+    "scripts/*.js",
+    "pnpm-lock.yaml"
   ]
 }
 ",
@@ -10555,6 +10791,7 @@ project {
 /.github/workflows/upgrade-main.yml linguist-generated
 /.gitignore linguist-generated
 /.npmignore linguist-generated
+/.npmrc linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
@@ -10563,11 +10800,11 @@ project {
 /docs/*.md linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/pnpm-lock.yaml linguist-generated
 /README.md linguist-generated
 /scripts/check-for-upgrades.js linguist-generated
 /scripts/should-release.js linguist-generated
-/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
-/yarn.lock linguist-generated",
+/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments",
   ".github/CODEOWNERS": "# These owners will be the default owners for everything in 
 # the repo. Unless a later match takes precedence, 
 # they will be requested for review when someone opens a 
@@ -10798,8 +11035,12 @@ jobs:
           ref: \${{ github.event.pull_request.head.ref }}
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files
+        run: pnpm i --no-frozen-lockfile
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
       - name: build
@@ -10894,6 +11135,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -10901,7 +11146,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -10931,6 +11176,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -10938,7 +11187,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -10968,6 +11217,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -10975,7 +11228,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -11036,8 +11289,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen unconditional-release
       - name: Check if version has already been tagged
@@ -11103,12 +11360,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -11146,12 +11407,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -11193,7 +11458,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -11279,9 +11544,9 @@ jobs:
         with: {}
       - name: Setup Copywrite tool
         uses: hashicorp/setup-copywrite@32638da2d4e81d56a0764aa1547882fc4d209636
-      - run: yarn install
+      - run: pnpm install --frozen-lockfile
       - id: check_version
-        run: yarn check-if-new-provider-version
+        run: pnpm run check-if-new-provider-version
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
@@ -11290,7 +11555,7 @@ jobs:
         env:
           CHECKPOINT_DISABLE: "1"
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-        run: yarn fetch
+        run: pnpm run fetch
       - name: Add headers using Copywrite tool
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
         run: copywrite headers
@@ -11400,8 +11665,12 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen release
       - name: Check if version has already been tagged
@@ -11441,7 +11710,7 @@ jobs:
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with: {}
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Check deprecation status
         id: check_status
         run: |-
@@ -11515,12 +11784,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -11572,12 +11845,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -11633,7 +11910,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -11734,8 +12011,12 @@ jobs:
           ref: main
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: Upgrade dependencies
         run: npx projen upgrade
       - name: Find mutations
@@ -11850,6 +12131,7 @@ jspm_packages/
 /dist/version.txt
 !/.github/workflows/release.yml
 !/.github/workflows/upgrade-main.yml
+!/.npmrc
 !/test/
 !/tsconfig.dev.json
 !/src/
@@ -11859,7 +12141,6 @@ jspm_packages/
 tsconfig.json
 .gen
 .terraform
-package-lock.json
 !/cdktf.json
 !/README.md
 !/LICENSE
@@ -11909,6 +12190,10 @@ scripts
 .projenrc.js
 .copywrite.hcl
 /.gitattributes
+",
+  ".npmrc": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "npx projen".
+
+resolution-mode=highest
 ",
   ".projen/deps.json": "{
   "dependencies": [
@@ -12037,6 +12322,7 @@ scripts
     ".github/workflows/stale.yml",
     ".github/workflows/upgrade-main.yml",
     ".gitignore",
+    ".npmrc",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
@@ -12052,6 +12338,15 @@ scripts
 ",
   ".projen/tasks.json": "{
   "tasks": {
+    "audit": {
+      "name": "audit",
+      "description": "Run security audit",
+      "steps": [
+        {
+          "exec": "pnpm audit --audit-level high"
+        }
+      ]
+    },
     "build": {
       "name": "build",
       "description": "Full release build",
@@ -12201,7 +12496,7 @@ scripts
       "description": "Install project dependencies and update lockfile (non-frozen)",
       "steps": [
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         }
       ]
     },
@@ -12210,7 +12505,7 @@ scripts
       "description": "Install project dependencies using frozen lockfile",
       "steps": [
         {
-          "exec": "yarn install --check-files --frozen-lockfile"
+          "exec": "pnpm i --frozen-lockfile"
         }
       ]
     },
@@ -12248,7 +12543,7 @@ scripts
       "description": "Create go language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target go"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target go"
         }
       ]
     },
@@ -12257,7 +12552,7 @@ scripts
       "description": "Create js language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target js"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target js"
         }
       ]
     },
@@ -12266,7 +12561,7 @@ scripts
       "description": "Create python language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target python"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target python"
         }
       ]
     },
@@ -12290,6 +12585,9 @@ scripts
       "name": "pre-compile",
       "description": "Prepare the project for compilation",
       "steps": [
+        {
+          "spawn": "audit"
+        },
         {
           "spawn": "unconditional-bump"
         }
@@ -12396,13 +12694,13 @@ scripts
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --cooldown=4 --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
         },
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "pnpm update @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript --config.minimum-release-age=5760"
         },
         {
           "exec": "npx projen"
@@ -12432,7 +12730,7 @@ scripts
     }
   },
   "env": {
-    "PATH": "$(npx -c \\"node --print process.env.PATH\\")",
+    "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
     "NODE_OPTIONS": "--max-old-space-size=6656",
     "CHECKPOINT_DISABLE": "1"
   },
@@ -12908,6 +13206,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "url": "https://github.com/cdktn-io/cdktn-provider-random.git"
   },
   "scripts": {
+    "audit": "npx projen audit",
     "build": "npx projen build",
     "bump": "npx projen bump",
     "check-if-new-provider-version": "npx projen check-if-new-provider-version",
@@ -12937,8 +13236,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "projen": "npx projen",
     "commit": "git add -A && git commit -am \\"Update provider\\" || echo \\"No changes to commit\\"",
     "should-release": "! git diff --exit-code v$(cat version.json | jq -r '.version') ./src ./package.json",
-    "prebump": "yarn fetch && yarn compile && yarn run commit && yarn run should-release",
-    "build-provider": "yarn fetch && yarn compile && yarn docgen"
+    "prebump": "pnpm run fetch && pnpm run compile && pnpm run commit && pnpm run should-release",
+    "build-provider": "pnpm run fetch && pnpm run compile && pnpm run docgen"
   },
   "author": {
     "name": "CDK Terrain Maintainers",
@@ -12969,8 +13268,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "cdktn": "0.10.3",
     "constructs": "10.0.0"
   },
-  "resolutions": {
-    "@types/yargs": "17.0.13"
+  "pnpm": {
+    "overrides": {
+      "@types/yargs": "17.0.13"
+    }
   },
   "keywords": [
     "cdk",
@@ -13369,7 +13670,8 @@ project {
     "docs/**",
     "API.md",
     ".mergify.yml",
-    "scripts/*.js"
+    "scripts/*.js",
+    "pnpm-lock.yaml"
   ]
 }
 ",
@@ -13396,6 +13698,7 @@ project {
 /.github/workflows/upgrade-main.yml linguist-generated
 /.gitignore linguist-generated
 /.npmignore linguist-generated
+/.npmrc linguist-generated
 /.projen/** linguist-generated
 /.projen/deps.json linguist-generated
 /.projen/files.json linguist-generated
@@ -13404,11 +13707,11 @@ project {
 /docs/*.md linguist-generated
 /LICENSE linguist-generated
 /package.json linguist-generated
+/pnpm-lock.yaml linguist-generated
 /README.md linguist-generated
 /scripts/check-for-upgrades.js linguist-generated
 /scripts/should-release.js linguist-generated
-/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments
-/yarn.lock linguist-generated",
+/tsconfig.dev.json linguist-generated linguist-language=JSON-with-Comments",
   ".github/CODEOWNERS": "# These owners will be the default owners for everything in 
 # the repo. Unless a later match takes precedence, 
 # they will be requested for review when someone opens a 
@@ -13639,12 +13942,16 @@ jobs:
           ref: \${{ github.event.pull_request.head.ref }}
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Setup Node.js
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with:
           node-version: 18.12.0
       - name: Install dependencies
-        run: yarn install --check-files
+        run: pnpm i --no-frozen-lockfile
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
       - name: build
@@ -13739,6 +14046,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -13746,7 +14057,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -13776,6 +14087,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -13783,7 +14098,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -13813,6 +14128,10 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
@@ -13820,7 +14139,7 @@ jobs:
           repository: \${{ github.event.pull_request.head.repo.full_name }}
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -13881,12 +14200,16 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Setup Node.js
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with:
           node-version: 18.12.0
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen unconditional-release
       - name: Check if version has already been tagged
@@ -13951,12 +14274,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -13994,12 +14321,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -14041,7 +14372,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -14128,9 +14459,9 @@ jobs:
           node-version: 18.12.0
       - name: Setup Copywrite tool
         uses: hashicorp/setup-copywrite@32638da2d4e81d56a0764aa1547882fc4d209636
-      - run: yarn install
+      - run: pnpm install --frozen-lockfile
       - id: check_version
-        run: yarn check-if-new-provider-version
+        run: pnpm run check-if-new-provider-version
       - name: get provider current version
         id: current_version
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
@@ -14139,7 +14470,7 @@ jobs:
         env:
           CHECKPOINT_DISABLE: "1"
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
-        run: yarn fetch
+        run: pnpm run fetch
       - name: Add headers using Copywrite tool
         if: \${{ steps.check_version.outputs.new_version == 'available' }}
         run: copywrite headers
@@ -14249,12 +14580,16 @@ jobs:
         run: |-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Setup Node.js
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with:
           node-version: 18.12.0
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: release
         run: npx projen release
       - name: Check if version has already been tagged
@@ -14295,7 +14630,7 @@ jobs:
         with:
           node-version: 18.12.0
       - name: Install
-        run: yarn install
+        run: pnpm install --frozen-lockfile
       - name: Check deprecation status
         id: check_status
         run: |-
@@ -14368,12 +14703,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -14425,12 +14764,16 @@ jobs:
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl
         continue-on-error: true
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm i --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -14486,7 +14829,7 @@ jobs:
         with:
           path: .repo
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -14587,12 +14930,16 @@ jobs:
           ref: main
       - name: Set git config safe.directory
         run: git config --global --add safe.directory $(pwd)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: "10"
       - name: Setup Node.js
         uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
         with:
           node-version: 18.12.0
       - name: Install dependencies
-        run: yarn install --check-files --frozen-lockfile
+        run: pnpm i --frozen-lockfile
       - name: Upgrade dependencies
         run: npx projen upgrade
       - name: Find mutations
@@ -14707,6 +15054,7 @@ jspm_packages/
 /dist/version.txt
 !/.github/workflows/release.yml
 !/.github/workflows/upgrade-main.yml
+!/.npmrc
 !/test/
 !/tsconfig.dev.json
 !/src/
@@ -14716,7 +15064,6 @@ jspm_packages/
 tsconfig.json
 .gen
 .terraform
-package-lock.json
 !/cdktf.json
 !/README.md
 !/LICENSE
@@ -14766,6 +15113,10 @@ scripts
 .projenrc.js
 .copywrite.hcl
 /.gitattributes
+",
+  ".npmrc": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "npx projen".
+
+resolution-mode=highest
 ",
   ".projen/deps.json": "{
   "dependencies": [
@@ -14894,6 +15245,7 @@ scripts
     ".github/workflows/stale.yml",
     ".github/workflows/upgrade-main.yml",
     ".gitignore",
+    ".npmrc",
     ".projen/deps.json",
     ".projen/files.json",
     ".projen/tasks.json",
@@ -14909,6 +15261,15 @@ scripts
 ",
   ".projen/tasks.json": "{
   "tasks": {
+    "audit": {
+      "name": "audit",
+      "description": "Run security audit",
+      "steps": [
+        {
+          "exec": "pnpm audit --audit-level high"
+        }
+      ]
+    },
     "build": {
       "name": "build",
       "description": "Full release build",
@@ -15058,7 +15419,7 @@ scripts
       "description": "Install project dependencies and update lockfile (non-frozen)",
       "steps": [
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         }
       ]
     },
@@ -15067,7 +15428,7 @@ scripts
       "description": "Install project dependencies using frozen lockfile",
       "steps": [
         {
-          "exec": "yarn install --check-files --frozen-lockfile"
+          "exec": "pnpm i --frozen-lockfile"
         }
       ]
     },
@@ -15105,7 +15466,7 @@ scripts
       "description": "Create go language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target go"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target go"
         }
       ]
     },
@@ -15114,7 +15475,7 @@ scripts
       "description": "Create js language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target js"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target js"
         }
       ]
     },
@@ -15123,7 +15484,7 @@ scripts
       "description": "Create python language bindings",
       "steps": [
         {
-          "exec": "jsii-pacmak -v --target python"
+          "exec": "jsii-pacmak -v --pack-command \\"pnpm pack\\" --target python"
         }
       ]
     },
@@ -15147,6 +15508,9 @@ scripts
       "name": "pre-compile",
       "description": "Prepare the project for compilation",
       "steps": [
+        {
+          "spawn": "audit"
+        },
         {
           "spawn": "unconditional-bump"
         }
@@ -15253,13 +15617,13 @@ scripts
       },
       "steps": [
         {
-          "exec": "npx npm-check-updates@18 --upgrade --target=minor --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+          "exec": "pnpm dlx npm-check-updates@18 --upgrade --target=minor --cooldown=4 --peer --no-deprecated --dep=dev,peer,prod,optional --filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
         },
         {
-          "exec": "yarn install --check-files"
+          "exec": "pnpm i --no-frozen-lockfile"
         },
         {
-          "exec": "yarn upgrade @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript"
+          "exec": "pnpm update @action-validator/cli @action-validator/core @actions/core @cdktn/provider-project @types/node cdktn-cli cdktn commit-and-tag-version constructs dot-prop jsii-diff jsii-docgen jsii-pacmak jsii-rosetta jsii projen semver typescript --config.minimum-release-age=5760"
         },
         {
           "exec": "npx projen"
@@ -15289,7 +15653,7 @@ scripts
     }
   },
   "env": {
-    "PATH": "$(npx -c \\"node --print process.env.PATH\\")",
+    "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
     "NODE_OPTIONS": "--max-old-space-size=6656",
     "CHECKPOINT_DISABLE": "1"
   },
@@ -15765,6 +16129,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "url": "https://github.com/cdktn-io/cdktn-provider-acme.git"
   },
   "scripts": {
+    "audit": "npx projen audit",
     "build": "npx projen build",
     "bump": "npx projen bump",
     "check-if-new-provider-version": "npx projen check-if-new-provider-version",
@@ -15794,8 +16159,8 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "projen": "npx projen",
     "commit": "git add -A && git commit -am \\"Update provider\\" || echo \\"No changes to commit\\"",
     "should-release": "! git diff --exit-code v$(cat version.json | jq -r '.version') ./src ./package.json",
-    "prebump": "yarn fetch && yarn compile && yarn run commit && yarn run should-release",
-    "build-provider": "yarn fetch && yarn compile && yarn docgen"
+    "prebump": "pnpm run fetch && pnpm run compile && pnpm run commit && pnpm run should-release",
+    "build-provider": "pnpm run fetch && pnpm run compile && pnpm run docgen"
   },
   "author": {
     "name": "CDK Terrain Maintainers",
@@ -15826,8 +16191,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "cdktn": "^0.20.0",
     "constructs": "^10.3.0"
   },
-  "resolutions": {
-    "@types/yargs": "17.0.13"
+  "pnpm": {
+    "overrides": {
+      "@types/yargs": "17.0.13"
+    }
   },
   "keywords": [
     "acme",

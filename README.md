@@ -39,7 +39,7 @@ Adjust the `terraformProvider` attribute as required and run the following comma
 ```
 npm install @cdktn/provider-project@latest
 npx projen
-yarn install
+pnpm install
 ```
 
 This will generate an entire repository ready to be published, including Github Workflows for publishing NPM, Pypi and maven packages. The only thing which is needed to be set manually are the tokens for these registries:
@@ -63,7 +63,7 @@ Commit and push the required changes to this repository here and wait for the au
 ```
 npm install @cdktn/provider-project@latest
 npx projen
-yarn install
+pnpm install
 ```
 
 Commit, push and check for the auto-released version.
@@ -72,7 +72,7 @@ Commit, push and check for the auto-released version.
 
 Whatever needs to be changed in the downstream [provider repositories](https://github.com/cdktn-io/cdktn-repository-manager) should be done via the [code definitions](./src/index.ts) here.
 
-For local development, [yarn link](https://classic.yarnpkg.com/en/docs/cli/link/) might be quite helpful for testing.
+For local development, [`pnpm link --global`](https://pnpm.io/cli/link) might be quite helpful for testing.
 
 ## CAVEATS
 

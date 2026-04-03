@@ -4,7 +4,10 @@
  */
 
 import { cdk, github, JsonPatch } from "projen";
-import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
+import {
+  NodePackageManager,
+  UpgradeDependenciesSchedule,
+} from "projen/lib/javascript";
 import { UpgradeJSIIAndTypeScript } from "./projenrc/upgrade-jsii-typescript";
 import { UpgradeNode } from "./projenrc/upgrade-node";
 import { AutoApprove } from "./src/auto-approve";
@@ -43,6 +46,7 @@ const project = new cdk.JsiiProject({
   pullRequestTemplate: false,
   typescriptVersion,
   jsiiVersion: typescriptVersion,
+  packageManager: NodePackageManager.PNPM,
   peerDeps: ["projen@^0.99.0", "constructs@^10.4.2"],
   deps: ["change-case", "fs-extra"],
   bundledDeps: ["change-case", "fs-extra"],
@@ -52,6 +56,11 @@ const project = new cdk.JsiiProject({
   minNodeVersion: "20.16.0",
   mergify: false,
   prettier: true,
+  auditDeps: true,
+  auditDepsOptions: {
+    level: "high",
+    runOn: "build",
+  },
   scripts: {
     "eslint:fix": "eslint . --ext .ts --fix",
   },
@@ -81,6 +90,7 @@ const project = new cdk.JsiiProject({
     },
   },
   depsUpgradeOptions: {
+    cooldown: 4,
     workflowOptions: {
       labels: ["automerge", "auto-approve", "dependencies"],
       schedule: UpgradeDependenciesSchedule.WEEKLY,
@@ -96,6 +106,9 @@ const project = new cdk.JsiiProject({
     projenCredentials: github.GithubCredentials.fromApp(),
   },
 });
+
+// pnpm's isolated linker doesn't support bundledDependencies (needed for jsii packaging)
+project.npmrc.addConfig("node-linker", "hoisted");
 
 project.addDevDeps(
   "glob",
