@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Projen (https://projen.io) project template for creating CDKTF (CDK for Terraform) pre-built provider binding repositories. This is a fork maintained by CDK Terrain (cdktn.io) after HashiCorp's sunset announcement on December 10, 2025.
 
-**Purpose**: This repository generates the structure and workflows for individual provider repositories. Changes made here propagate to all downstream provider repos (managed at cdktn-io/repository-manager).
+**Purpose**: This repository generates the structure and workflows for individual provider repositories. Changes made here propagate to all downstream provider repos (managed at cdktn-io/cdktn-repository-manager).
 
 ## Key Concepts
 
@@ -166,7 +166,7 @@ This fork (cdktn.io) continues development after HashiCorp's sunset. With a Phas
 ## Common Gotchas
 
 - **Don't manually edit workflow YAML files** - Modify the Projen components in `src/` instead
-- **Provider repos need secrets** - NPM_TOKEN, TWINE_*, MAVEN_*, GH_TOKEN for publishing (this is managed by a separate project called the "cdkn-repository-manager")
+- **Provider repos need secrets** - NPM_TOKEN, TWINE_*, MAVEN_*, GH_TOKEN for publishing (this is managed by a separate project called the "cdktn-repository-manager")
 - **Fetch nukes src/ directory** - Copyright headers must be re-added after `cdktf get`
 - **version.json has exactly one entry** - Multi-provider projects are not supported
 - **Release task is conditional** - Controlled by `should-release.js`, use `unconditional-release` to force

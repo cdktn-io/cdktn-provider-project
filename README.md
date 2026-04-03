@@ -19,7 +19,7 @@ The provider repos are entirely auto generated from the configuration contained 
 > [!NOTE] 
 > Only Offical Terraform Providers or Hashicorp partner Terraform Poviders will be accepted for pre-built provider generation.
 
-Add a new repository [over here](https://github.com/cdktn-io/repository-manager).
+Add a new repository [over here](https://github.com/cdktn-io/cdktn-repository-manager).
 
 In the newly created repository, all we need is a `.projenrc.js` file like this:
 
@@ -70,7 +70,7 @@ Commit, push and check for the auto-released version.
 
 ## Development
 
-Whatever needs to be changed in the downstream [provider repositories](https://github.com/cdktn-io/repository-manager) should be done via the [code definitions](./src/index.ts) here.
+Whatever needs to be changed in the downstream [provider repositories](https://github.com/cdktn-io/cdktn-repository-manager) should be done via the [code definitions](./src/index.ts) here.
 
 For local development, [yarn link](https://classic.yarnpkg.com/en/docs/cli/link/) might be quite helpful for testing.
 
