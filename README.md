@@ -77,4 +77,3 @@ For local development, [yarn link](https://classic.yarnpkg.com/en/docs/cli/link/
 ## CAVEATS
 
 1. Maven publishing is disabled (TODO: re-enable when requested and infra available)
-1. NuGet publishing is disabled (TODO: re-enable when requested and infra available)

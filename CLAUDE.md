@@ -114,11 +114,11 @@ Generated packages follow this pattern:
 - **npm**: `@{namespace}/provider-{providerName}`
 - **Python**: `{namespace}-provider-{providerName}`
 - **Go**: `github.com/{githubNamespace}/cdktn-provider-{providerName}-go`
+- **NuGet**: `{NuGetOrg}.Providers.{ProviderName}`
 
 ### For Future
 
 - **Maven**: `{mavenOrg}.providers.{providerName}`
-- **NuGet**: `{NuGetOrg}.Providers.{ProviderName}`
 
 Special cases: `null` and `random` providers get `_provider` suffix in Maven to avoid keyword conflicts.
 

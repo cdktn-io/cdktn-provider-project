@@ -381,6 +381,43 @@ jobs:
         run: cd .repo && npx projen package:python
       - name: Collect python artifact
         run: mv .repo/dist dist
+  package-dotnet:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
   package-go:
     needs: build
     runs-on: ubuntu-latest
@@ -708,6 +745,61 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to PyPI failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to NuGet Gallery failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_golang:
     name: Publish to GitHub Go Module Repository
@@ -1217,7 +1309,19 @@ scripts
           "spawn": "package:python"
         },
         {
+          "spawn": "package:dotnet"
+        },
+        {
           "spawn": "package:go"
+        }
+      ]
+    },
+    "package:dotnet": {
+      "name": "package:dotnet",
+      "description": "Create dotnet language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target dotnet"
         }
       ]
     },
@@ -1812,6 +1916,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
     "fetch": "npx projen fetch",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
+    "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
@@ -1884,6 +1989,10 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
+      },
+      "dotnet": {
+        "namespace": "Io.Cdktn.Providers.Random",
+        "packageId": "Io.Cdktn.Providers.Random"
       },
       "go": {
         "moduleName": "github.com/cdktn-io/cdktn-provider-random-go",
@@ -2430,6 +2539,43 @@ jobs:
         run: cd .repo && npx projen package:python
       - name: Collect python artifact
         run: mv .repo/dist dist
+  package-dotnet:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
   package-go:
     needs: build
     runs-on: ubuntu-latest
@@ -2647,6 +2793,47 @@ jobs:
           TWINE_USERNAME: \${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: \${{ secrets.TWINE_PASSWORD }}
         run: npx -p publib@latest publib-pypi
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_nuget }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -3085,6 +3272,61 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to PyPI failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to NuGet Gallery failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_golang:
     name: Publish to GitHub Go Module Repository
@@ -3720,7 +3962,19 @@ scripts
           "spawn": "package:python"
         },
         {
+          "spawn": "package:dotnet"
+        },
+        {
           "spawn": "package:go"
+        }
+      ]
+    },
+    "package:dotnet": {
+      "name": "package:dotnet",
+      "description": "Create dotnet language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target dotnet"
         }
       ]
     },
@@ -4401,6 +4655,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "fetch": "npx projen fetch",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
+    "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
@@ -4477,6 +4732,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
+      },
+      "dotnet": {
+        "namespace": "Io.Cdktn.Providers.Random",
+        "packageId": "Io.Cdktn.Providers.Random"
       },
       "go": {
         "moduleName": "github.com/cdktn-io/cdktn-provider-random-go",
@@ -5269,6 +5528,43 @@ jobs:
         run: cd .repo && npx projen package:python
       - name: Collect python artifact
         run: mv .repo/dist dist
+  package-dotnet:
+    needs: build
+    runs-on: depot-ubuntu-24.04-8
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
   package-go:
     needs: build
     runs-on: depot-ubuntu-24.04-8
@@ -5486,6 +5782,47 @@ jobs:
           TWINE_USERNAME: \${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: \${{ secrets.TWINE_PASSWORD }}
         run: npx -p publib@latest publib-pypi
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: depot-ubuntu-24.04-8
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_nuget }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -5924,6 +6261,61 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to PyPI failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: depot-ubuntu-24.04-8
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to NuGet Gallery failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_golang:
     name: Publish to GitHub Go Module Repository
@@ -6559,7 +6951,19 @@ scripts
           "spawn": "package:python"
         },
         {
+          "spawn": "package:dotnet"
+        },
+        {
           "spawn": "package:go"
+        }
+      ]
+    },
+    "package:dotnet": {
+      "name": "package:dotnet",
+      "description": "Create dotnet language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target dotnet"
         }
       ]
     },
@@ -7240,6 +7644,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "fetch": "npx projen fetch",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
+    "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
@@ -7316,6 +7721,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
+      },
+      "dotnet": {
+        "namespace": "Io.Cdktn.Providers.Random",
+        "packageId": "Io.Cdktn.Providers.Random"
       },
       "go": {
         "moduleName": "github.com/cdktn-io/cdktn-provider-random-go",
@@ -8108,6 +8517,43 @@ jobs:
         run: cd .repo && npx projen package:python
       - name: Collect python artifact
         run: mv .repo/dist dist
+  package-dotnet:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
   package-go:
     needs: build
     runs-on: ubuntu-latest
@@ -8325,6 +8771,47 @@ jobs:
           TWINE_USERNAME: \${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: \${{ secrets.TWINE_PASSWORD }}
         run: npx -p publib@latest publib-pypi
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_nuget }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -8763,6 +9250,61 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to PyPI failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to NuGet Gallery failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_golang:
     name: Publish to GitHub Go Module Repository
@@ -9398,7 +9940,19 @@ scripts
           "spawn": "package:python"
         },
         {
+          "spawn": "package:dotnet"
+        },
+        {
           "spawn": "package:go"
+        }
+      ]
+    },
+    "package:dotnet": {
+      "name": "package:dotnet",
+      "description": "Create dotnet language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target dotnet"
         }
       ]
     },
@@ -10079,6 +10633,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "fetch": "npx projen fetch",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
+    "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
@@ -10155,6 +10710,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
+      },
+      "dotnet": {
+        "namespace": "Io.Cdktn.Providers.Random",
+        "packageId": "Io.Cdktn.Providers.Random"
       },
       "go": {
         "moduleName": "github.com/cdktn-io/cdktn-provider-random-go",
@@ -10947,6 +11506,43 @@ jobs:
         run: cd .repo && npx projen package:python
       - name: Collect python artifact
         run: mv .repo/dist dist
+  package-dotnet:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
   package-go:
     needs: build
     runs-on: ubuntu-latest
@@ -11165,6 +11761,47 @@ jobs:
           TWINE_USERNAME: \${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: \${{ secrets.TWINE_PASSWORD }}
         run: npx -p publib@latest publib-pypi
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_nuget }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -11604,6 +12241,61 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to PyPI failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to NuGet Gallery failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_golang:
     name: Publish to GitHub Go Module Repository
@@ -12239,7 +12931,19 @@ scripts
           "spawn": "package:python"
         },
         {
+          "spawn": "package:dotnet"
+        },
+        {
           "spawn": "package:go"
+        }
+      ]
+    },
+    "package:dotnet": {
+      "name": "package:dotnet",
+      "description": "Create dotnet language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target dotnet"
         }
       ]
     },
@@ -12920,6 +13624,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "fetch": "npx projen fetch",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
+    "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
@@ -12996,6 +13701,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
+      },
+      "dotnet": {
+        "namespace": "Io.Cdktn.Providers.Random",
+        "packageId": "Io.Cdktn.Providers.Random"
       },
       "go": {
         "moduleName": "github.com/cdktn-io/cdktn-provider-random-go",
@@ -13792,6 +14501,43 @@ jobs:
         run: cd .repo && npx projen package:python
       - name: Collect python artifact
         run: mv .repo/dist dist
+  package-dotnet:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: 18.12.0
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
   package-go:
     needs: build
     runs-on: ubuntu-latest
@@ -14013,6 +14759,47 @@ jobs:
           TWINE_USERNAME: \${{ secrets.TWINE_USERNAME }}
           TWINE_PASSWORD: \${{ secrets.TWINE_PASSWORD }}
         run: npx -p publib@latest publib-pypi
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_nuget }}
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: 18.12.0
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -14457,6 +15244,61 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to PyPI failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_nuget:
+    name: Publish to NuGet Gallery
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: 18.12.0
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9
+        with:
+          dotnet-version: 6.x
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create dotnet artifact
+        run: cd .repo && npx projen package:dotnet
+      - name: Collect dotnet artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+        run: npx -p publib@latest publib-nuget
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to NuGet Gallery failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_golang:
     name: Publish to GitHub Go Module Repository
@@ -15096,7 +15938,19 @@ scripts
           "spawn": "package:python"
         },
         {
+          "spawn": "package:dotnet"
+        },
+        {
           "spawn": "package:go"
+        }
+      ]
+    },
+    "package:dotnet": {
+      "name": "package:dotnet",
+      "description": "Create dotnet language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target dotnet"
         }
       ]
     },
@@ -15777,6 +16631,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "fetch": "npx projen fetch",
     "package": "npx projen package",
     "package-all": "npx projen package-all",
+    "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
@@ -15856,6 +16711,10 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
       "python": {
         "distName": "cdktn-provider-acme",
         "module": "cdktn_provider_acme"
+      },
+      "dotnet": {
+        "namespace": "Io.Cdktn.Providers.Acme",
+        "packageId": "Io.Cdktn.Providers.Acme"
       },
       "go": {
         "moduleName": "github.com/cdktn-io/cdktn-provider-acme-go",
