@@ -3396,7 +3396,7 @@ jobs:
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: x-access-token:\${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -6394,7 +6394,7 @@ jobs:
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: x-access-token:\${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -9392,7 +9392,7 @@ jobs:
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: x-access-token:\${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -12392,7 +12392,7 @@ jobs:
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: x-access-token:\${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -15404,7 +15404,7 @@ jobs:
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
+          GITHUB_TOKEN: x-access-token:\${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version

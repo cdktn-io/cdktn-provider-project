@@ -438,7 +438,11 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         ),
         JsonPatch.add(
           "/jobs/release_golang/steps/17/env/GITHUB_TOKEN",
-          goPublishToken.tokenRef
+          // GitHub App installation tokens (ghs_*) require the `x-access-token`
+          // username when used in HTTPS git URLs. publib renders this env var
+          // verbatim into `https://${GITHUB_TOKEN}@github.com/...`, so without
+          // the prefix the push 401s and falls back to a TTY password prompt.
+          `x-access-token:${goPublishToken.tokenRef}`
         )
       );
     }
