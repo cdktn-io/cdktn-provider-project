@@ -344,6 +344,44 @@ jobs:
         run: cd .repo && npx projen package:js
       - name: Collect js artifact
         run: mv .repo/dist dist
+  package-java:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
   package-python:
     needs: build
     runs-on: ubuntu-latest
@@ -689,6 +727,67 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to npm failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to Maven Central failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_pypi:
     name: Publish to PyPI
@@ -1236,7 +1335,7 @@ scripts
       "description": "Generate documentation for the project",
       "steps": [
         {
-          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
+          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
         }
       ]
     },
@@ -1306,6 +1405,9 @@ scripts
           "spawn": "package:js"
         },
         {
+          "spawn": "package:java"
+        },
+        {
           "spawn": "package:python"
         },
         {
@@ -1331,6 +1433,15 @@ scripts
       "steps": [
         {
           "exec": "jsii-pacmak -v --target go"
+        }
+      ]
+    },
+    "package:java": {
+      "name": "package:java",
+      "description": "Create java language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target java"
         }
       ]
     },
@@ -1918,6 +2029,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
     "package-all": "npx projen package-all",
     "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
+    "package:java": "npx projen package:java",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
@@ -1986,6 +2098,13 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.cdktn.providers.random_provider",
+        "maven": {
+          "groupId": "io.cdktn",
+          "artifactId": "cdktn-provider-random"
+        }
+      },
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
@@ -2502,6 +2621,44 @@ jobs:
         run: cd .repo && npx projen package:js
       - name: Collect js artifact
         run: mv .repo/dist dist
+  package-java:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
   package-python:
     needs: build
     runs-on: ubuntu-latest
@@ -2751,6 +2908,54 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: npx -p publib@latest publib-npm
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_maven }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_STAGING_PROFILE_ID: \${{ secrets.MAVEN_STAGING_PROFILE_ID }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -3225,6 +3430,67 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to npm failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to Maven Central failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_pypi:
     name: Publish to PyPI
@@ -3907,7 +4173,7 @@ scripts
       "description": "Generate documentation for the project",
       "steps": [
         {
-          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
+          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
         }
       ]
     },
@@ -3977,6 +4243,9 @@ scripts
           "spawn": "package:js"
         },
         {
+          "spawn": "package:java"
+        },
+        {
           "spawn": "package:python"
         },
         {
@@ -4002,6 +4271,15 @@ scripts
       "steps": [
         {
           "exec": "jsii-pacmak -v --target go"
+        }
+      ]
+    },
+    "package:java": {
+      "name": "package:java",
+      "description": "Create java language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target java"
         }
       ]
     },
@@ -4675,6 +4953,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "package-all": "npx projen package-all",
     "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
+    "package:java": "npx projen package:java",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
@@ -4747,6 +5026,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.cdktn.providers.random_provider",
+        "maven": {
+          "groupId": "io.cdktn",
+          "artifactId": "cdktn-provider-random"
+        }
+      },
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
@@ -5509,6 +5795,44 @@ jobs:
         run: cd .repo && npx projen package:js
       - name: Collect js artifact
         run: mv .repo/dist dist
+  package-java:
+    needs: build
+    runs-on: depot-ubuntu-24.04-8
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
   package-python:
     needs: build
     runs-on: depot-ubuntu-24.04-8
@@ -5758,6 +6082,54 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: npx -p publib@latest publib-npm
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: depot-ubuntu-24.04-8
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_maven }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_STAGING_PROFILE_ID: \${{ secrets.MAVEN_STAGING_PROFILE_ID }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -6232,6 +6604,67 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to npm failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: depot-ubuntu-24.04-8
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to Maven Central failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_pypi:
     name: Publish to PyPI
@@ -6914,7 +7347,7 @@ scripts
       "description": "Generate documentation for the project",
       "steps": [
         {
-          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
+          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
         }
       ]
     },
@@ -6984,6 +7417,9 @@ scripts
           "spawn": "package:js"
         },
         {
+          "spawn": "package:java"
+        },
+        {
           "spawn": "package:python"
         },
         {
@@ -7009,6 +7445,15 @@ scripts
       "steps": [
         {
           "exec": "jsii-pacmak -v --target go"
+        }
+      ]
+    },
+    "package:java": {
+      "name": "package:java",
+      "description": "Create java language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target java"
         }
       ]
     },
@@ -7682,6 +8127,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "package-all": "npx projen package-all",
     "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
+    "package:java": "npx projen package:java",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
@@ -7754,6 +8200,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.cdktn.providers.random_provider",
+        "maven": {
+          "groupId": "io.cdktn",
+          "artifactId": "cdktn-provider-random"
+        }
+      },
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
@@ -8516,6 +8969,44 @@ jobs:
         run: cd .repo && npx projen package:js
       - name: Collect js artifact
         run: mv .repo/dist dist
+  package-java:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
   package-python:
     needs: build
     runs-on: ubuntu-latest
@@ -8765,6 +9256,54 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: npx -p publib@latest publib-npm
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_maven }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_STAGING_PROFILE_ID: \${{ secrets.MAVEN_STAGING_PROFILE_ID }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -9239,6 +9778,67 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to npm failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to Maven Central failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_pypi:
     name: Publish to PyPI
@@ -9921,7 +10521,7 @@ scripts
       "description": "Generate documentation for the project",
       "steps": [
         {
-          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
+          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
         }
       ]
     },
@@ -9991,6 +10591,9 @@ scripts
           "spawn": "package:js"
         },
         {
+          "spawn": "package:java"
+        },
+        {
           "spawn": "package:python"
         },
         {
@@ -10016,6 +10619,15 @@ scripts
       "steps": [
         {
           "exec": "jsii-pacmak -v --target go"
+        }
+      ]
+    },
+    "package:java": {
+      "name": "package:java",
+      "description": "Create java language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target java"
         }
       ]
     },
@@ -10689,6 +11301,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "package-all": "npx projen package-all",
     "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
+    "package:java": "npx projen package:java",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
@@ -10761,6 +11374,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.cdktn.providers.random_provider",
+        "maven": {
+          "groupId": "io.cdktn",
+          "artifactId": "cdktn-provider-random"
+        }
+      },
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
@@ -11523,6 +12143,44 @@ jobs:
         run: cd .repo && npx projen package:js
       - name: Collect js artifact
         run: mv .repo/dist dist
+  package-java:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
   package-python:
     needs: build
     runs-on: ubuntu-latest
@@ -11773,6 +12431,54 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_TRUSTED_PUBLISHER: "true"
         run: npx -p publib@latest publib-npm
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_maven }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_STAGING_PROFILE_ID: \${{ secrets.MAVEN_STAGING_PROFILE_ID }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -12248,6 +12954,67 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to npm failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: lts/*
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to Maven Central failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_pypi:
     name: Publish to PyPI
@@ -12930,7 +13697,7 @@ scripts
       "description": "Generate documentation for the project",
       "steps": [
         {
-          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
+          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
         }
       ]
     },
@@ -13000,6 +13767,9 @@ scripts
           "spawn": "package:js"
         },
         {
+          "spawn": "package:java"
+        },
+        {
           "spawn": "package:python"
         },
         {
@@ -13025,6 +13795,15 @@ scripts
       "steps": [
         {
           "exec": "jsii-pacmak -v --target go"
+        }
+      ]
+    },
+    "package:java": {
+      "name": "package:java",
+      "description": "Create java language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target java"
         }
       ]
     },
@@ -13698,6 +14477,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "package-all": "npx projen package-all",
     "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
+    "package:java": "npx projen package:java",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
@@ -13770,6 +14550,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.cdktn.providers.random_provider",
+        "maven": {
+          "groupId": "io.cdktn",
+          "artifactId": "cdktn-provider-random"
+        }
+      },
       "python": {
         "distName": "cdktn-provider-random",
         "module": "cdktn_provider_random"
@@ -14536,6 +15323,44 @@ jobs:
         run: cd .repo && npx projen package:js
       - name: Collect js artifact
         run: mv .repo/dist dist
+  package-java:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    if: \${{ !needs.build.outputs.self_mutation_happened }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: 18.12.0
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          repository: \${{ github.event.pull_request.head.repo.full_name }}
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
   package-python:
     needs: build
     runs-on: ubuntu-latest
@@ -14789,6 +15614,54 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_TOKEN: \${{ secrets.NPM_TOKEN }}
         run: npx -p publib@latest publib-npm
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: \${{ inputs.publish_to_maven }}
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: 18.12.0
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_STAGING_PROFILE_ID: \${{ secrets.MAVEN_STAGING_PROFILE_ID }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -15269,6 +16142,67 @@ jobs:
         with:
           labels: failed-release
           title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to npm failed
+          body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+  release_maven:
+    name: Publish to Maven Central
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
+    steps:
+      - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        with:
+          distribution: corretto
+          java-version: "11"
+      - uses: actions/setup-node@cdca7365b2dadb8aad0a33bc7601856ffabcc48e
+        with:
+          node-version: 18.12.0
+      - name: Download build artifacts
+        uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e
+        with:
+          name: build-artifact
+          path: dist
+      - name: Restore build artifact permissions
+        run: cd dist && setfacl --restore=permissions-backup.acl
+        continue-on-error: true
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: .repo
+      - name: Install Dependencies
+        run: cd .repo && yarn install --check-files --frozen-lockfile
+      - name: Extract build artifact
+        run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
+      - name: Move build artifact out of the way
+        run: mv dist dist.old
+      - name: Create java artifact
+        run: cd .repo && npx projen package:java
+      - name: Collect java artifact
+        run: mv .repo/dist dist
+      - name: Release
+        env:
+          MAVEN_SERVER_ID: central-ossrh
+          MAVEN_GPG_PRIVATE_KEY: \${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          MAVEN_GPG_PRIVATE_KEY_PASSPHRASE: \${{ secrets.MAVEN_GPG_PRIVATE_KEY_PASSPHRASE }}
+          MAVEN_PASSWORD: \${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_USERNAME: \${{ secrets.MAVEN_USERNAME }}
+          MAVEN_OPTS: --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED
+        run: npx -p publib@latest publib-maven
+      - name: Extract Version
+        id: extract-version
+        if: \${{ failure() }}
+        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        shell: bash
+      - name: Create Issue
+        if: \${{ failure() }}
+        uses: imjohnbo/issue-bot@572eed14422c4d6ca37e870f97e7da209422f5bd
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        with:
+          labels: failed-release
+          title: Publishing v\${{ steps.extract-version.outputs.VERSION }} to Maven Central failed
           body: See https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
   release_pypi:
     name: Publish to PyPI
@@ -15955,7 +16889,7 @@ scripts
       "description": "Generate documentation for the project",
       "steps": [
         {
-          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
+          "exec": "rm -rf docs && rm -f API.md && mkdir docs && jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go && mv *.*.md docs && cd docs && ls ./ | xargs sed -i '150000,$ d' $1"
         }
       ]
     },
@@ -16025,6 +16959,9 @@ scripts
           "spawn": "package:js"
         },
         {
+          "spawn": "package:java"
+        },
+        {
           "spawn": "package:python"
         },
         {
@@ -16050,6 +16987,15 @@ scripts
       "steps": [
         {
           "exec": "jsii-pacmak -v --target go"
+        }
+      ]
+    },
+    "package:java": {
+      "name": "package:java",
+      "description": "Create java language bindings",
+      "steps": [
+        {
+          "exec": "jsii-pacmak -v --target java"
         }
       ]
     },
@@ -16723,6 +17669,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "package-all": "npx projen package-all",
     "package:dotnet": "npx projen package:dotnet",
     "package:go": "npx projen package:go",
+    "package:java": "npx projen package:java",
     "package:js": "npx projen package:js",
     "package:python": "npx projen package:python",
     "post-compile": "npx projen post-compile",
@@ -16798,6 +17745,13 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
   "jsii": {
     "outdir": "dist",
     "targets": {
+      "java": {
+        "package": "io.cdktn.providers.acme",
+        "maven": {
+          "groupId": "io.cdktn",
+          "artifactId": "cdktn-provider-acme"
+        }
+      },
       "python": {
         "distName": "cdktn-provider-acme",
         "module": "cdktn_provider_acme"

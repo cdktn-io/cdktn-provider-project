@@ -1715,7 +1715,6 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.githubNamespace">githubNamespace</a></code> | <code>string</code> | defaults to "cdktn-io" previously was "cdktf". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.isDeprecated">isDeprecated</a></code> | <code>boolean</code> | Whether or not this prebuilt provider is deprecated. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.licensee">licensee</a></code> | <code>string</code> | defaults to "HashiCorp, Inc.". |
-| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenEndpoint">mavenEndpoint</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenGroupId">mavenGroupId</a></code> | <code>string</code> | defaults to "io.${mavenOrg}". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenOrg">mavenOrg</a></code> | <code>string</code> | defaults to "cdktn". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.namespace">namespace</a></code> | <code>string</code> | defaults to "cdktn". |
@@ -4296,16 +4295,6 @@ public readonly licensee: string;
 - *Type:* string
 
 defaults to "HashiCorp, Inc.".
-
----
-
-##### `mavenEndpoint`<sup>Optional</sup> <a name="mavenEndpoint" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenEndpoint"></a>
-
-```typescript
-public readonly mavenEndpoint: string;
-```
-
-- *Type:* string
 
 ---
 

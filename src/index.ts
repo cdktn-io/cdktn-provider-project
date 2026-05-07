@@ -44,7 +44,6 @@ export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
    * previously was "cdktf". Used for GitHub org name and package scoping
    */
   readonly githubNamespace?: string;
-  readonly mavenEndpoint?: string;
   /**
    * defaults to "Io.Cdktn"
    */
@@ -128,9 +127,8 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       authorAddress = "https://cdktn.io",
       namespace = "cdktn",
       githubNamespace = "cdktn-io",
-      mavenEndpoint = "https://central.sonatype.com", // TODO
       nugetOrg = "Io.Cdktn",
-      mavenOrg = "cdktn", // TODO
+      mavenOrg = "cdktn",
       npmTrustedPublishing,
     } = options;
 
@@ -169,7 +167,6 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         javaPackage: mavenName,
         mavenGroupId: mavenGroupId,
         mavenArtifactId: `${namespace}-provider-${providerName}`,
-        mavenEndpoint,
       },
       publishToGo: {
         moduleName: `${repositoryUrl}-go`,
@@ -291,8 +288,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       },
       python: packageInfo.python,
       publishToNuget: packageInfo.publishToNuget,
-      // TODO: Re-enable if requested and when available
-      // publishToMaven: packageInfo.publishToMaven,
+      publishToMaven: packageInfo.publishToMaven,
       publishToGo: packageInfo.publishToGo,
       releaseFailureIssue: true,
       peerDependencyOptions: {
@@ -447,15 +443,18 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       patchGoPublishToUseAppToken(releaseWorkflow);
     }
 
-    // // TODO: Re-enable when Maven requested and infra available
-    // // Fix maven issue (https://github.com/cdklabs/publib/pull/777)
-    // github.GitHub.of(this)?.tryFindWorkflow("release")?.file?.patch(
-    //   JsonPatch.add(
-    //     "/jobs/release_maven/steps/10/env/MAVEN_OPTS",
-    //     // See https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco
-    //     "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
-    //   )
-    // );
+    // Fix maven issue (https://github.com/cdklabs/publib/pull/777)
+    github.GitHub.of(this)?.tryFindWorkflow("release")?.file?.patch(
+      JsonPatch.add(
+        "/jobs/release_maven/steps/10/env/MAVEN_OPTS",
+        // See https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco
+        "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
+      ),
+      JsonPatch.remove(
+        // This is no longer used.
+        "/jobs/release_maven/steps/10/env/MAVEN_STAGING_PROFILE_ID"
+      )
+    );
 
     this.pinGithubActionVersions(githubActionPinnedVersions);
 
@@ -582,9 +581,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
             "rm -rf docs",
             "rm -f API.md",
             "mkdir docs",
-            // TODO: Re-enable java / csharp
-            // "jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go",
-            "jsii-docgen --split-by-submodule -l typescript -l python -l go",
+            "jsii-docgen --split-by-submodule -l typescript -l python -l java -l csharp -l go",
             // There is no nice way to tell jsii-docgen to generate docs into a folder so I went this route
             "mv *.*.md docs",
             // Some part of the documentation are too long, we need to truncate them to ~10MB
