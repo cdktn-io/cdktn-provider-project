@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import assert = require("assert");
 import { pascalCase } from "change-case";
-import { TextFile, cdk, github, JsonPatch } from "projen";
+import { ObjectFile, TextFile, cdk, github, JsonPatch } from "projen";
 import { JobStep } from "projen/lib/github/workflows-model";
 import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
 import { AlertOpenPrs } from "./alert-open-prs";
@@ -411,27 +411,23 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       pr.steps.splice(1, 0, setSafeDirectory);
     }
 
-    // release: Go
-    if (!isDeprecated) {
-      const appToken = (
-        repositories?: string[],
-        permissions?: github.workflows.AppPermissions
-      ) => {
-        return github.GithubCredentials.fromApp({
-          appIdSecret: "PROJEN_APP_ID",
-          privateKeySecret: "PROJEN_APP_PRIVATE_KEY",
-          owner: repositories ? "${{ github.repository_owner }}" : undefined,
-          repositories,
-          permissions,
-        });
-      };
-
-      const goPublishToken = appToken(
-        [packageInfo.publishToGo?.moduleName?.split("/").pop() ?? ""],
-        { contents: github.workflows.AppPermission.WRITE }
-      );
-
-      releaseWorkflow?.patch(
+    // release: Go — patch the release workflow's Go publish to use a GitHub
+    // App installation token. The same patch is applied to force-release.yml
+    // further below (after ForceRelease has constructed it), since
+    // ForceRelease renders publish jobs from a fresh source and bypasses this
+    // patch.
+    const patchGoPublishToUseAppToken = (workflowFile?: ObjectFile) => {
+      if (!workflowFile) return;
+      const goPublishToken = github.GithubCredentials.fromApp({
+        appIdSecret: "PROJEN_APP_ID",
+        privateKeySecret: "PROJEN_APP_PRIVATE_KEY",
+        owner: "${{ github.repository_owner }}",
+        repositories: [
+          packageInfo.publishToGo?.moduleName?.split("/").pop() ?? "",
+        ],
+        permissions: { contents: github.workflows.AppPermission.WRITE },
+      });
+      workflowFile.patch(
         JsonPatch.add(
           "/jobs/release_golang/steps/16",
           goPublishToken.setupSteps[0]
@@ -445,6 +441,10 @@ export class CdktnProviderProject extends cdk.JsiiProject {
           `x-access-token:${goPublishToken.tokenRef}`
         )
       );
+    };
+
+    if (!isDeprecated) {
+      patchGoPublishToUseAppToken(releaseWorkflow);
     }
 
     // // TODO: Re-enable when Maven requested and infra available
@@ -637,6 +637,9 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     });
     if (!isDeprecated) {
       new ForceRelease(this, { workflowRunsOn });
+      patchGoPublishToUseAppToken(
+        this.tryFindObjectFile(".github/workflows/force-release.yml")
+      );
     }
   }
 
