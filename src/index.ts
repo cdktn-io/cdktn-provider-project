@@ -411,6 +411,38 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       pr.steps.splice(1, 0, setSafeDirectory);
     }
 
+    // release: Go
+    if (!isDeprecated) {
+      const appToken = (
+        repositories?: string[],
+        permissions?: github.workflows.AppPermissions
+      ) => {
+        return github.GithubCredentials.fromApp({
+          appIdSecret: "PROJEN_APP_ID",
+          privateKeySecret: "PROJEN_APP_PRIVATE_KEY",
+          owner: repositories ? "${{ github.repository_owner }}" : undefined,
+          repositories,
+          permissions,
+        });
+      };
+
+      const goPublishToken = appToken(
+        [packageInfo.publishToGo?.moduleName?.split("/").pop() ?? ""],
+        { contents: github.workflows.AppPermission.WRITE }
+      );
+
+      releaseWorkflow?.patch(
+        JsonPatch.add(
+          "/jobs/release_golang/steps/16",
+          goPublishToken.setupSteps[0]
+        ),
+        JsonPatch.add(
+          "/jobs/release_golang/steps/17/env/GITHUB_TOKEN",
+          goPublishToken.tokenRef
+        )
+      );
+    }
+
     // // TODO: Re-enable when Maven requested and infra available
     // // Fix maven issue (https://github.com/cdklabs/publib/pull/777)
     // github.GitHub.of(this)?.tryFindWorkflow("release")?.file?.patch(

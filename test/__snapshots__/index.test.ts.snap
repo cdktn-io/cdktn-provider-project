@@ -3383,11 +3383,20 @@ jobs:
         run: cp .repo/dist/go/*/README.md .repo/dist/go/README.md
       - name: Collect go Artifact
         run: mv .repo/dist dist
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5
+        with:
+          app-id: \${{ secrets.PROJEN_APP_ID }}
+          private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
+          owner: \${{ github.repository_owner }}
+          repositories: cdktn-provider-random-go
+          permission-contents: write
       - name: Release
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ secrets.GO_GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -6372,11 +6381,20 @@ jobs:
         run: cp .repo/dist/go/*/README.md .repo/dist/go/README.md
       - name: Collect go Artifact
         run: mv .repo/dist dist
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5
+        with:
+          app-id: \${{ secrets.PROJEN_APP_ID }}
+          private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
+          owner: \${{ github.repository_owner }}
+          repositories: cdktn-provider-random-go
+          permission-contents: write
       - name: Release
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ secrets.GO_GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -9361,11 +9379,20 @@ jobs:
         run: cp .repo/dist/go/*/README.md .repo/dist/go/README.md
       - name: Collect go Artifact
         run: mv .repo/dist dist
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5
+        with:
+          app-id: \${{ secrets.PROJEN_APP_ID }}
+          private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
+          owner: \${{ github.repository_owner }}
+          repositories: cdktn-provider-random-go
+          permission-contents: write
       - name: Release
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ secrets.GO_GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -12352,11 +12379,20 @@ jobs:
         run: cp .repo/dist/go/*/README.md .repo/dist/go/README.md
       - name: Collect go Artifact
         run: mv .repo/dist dist
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5
+        with:
+          app-id: \${{ secrets.PROJEN_APP_ID }}
+          private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
+          owner: \${{ github.repository_owner }}
+          repositories: cdktn-provider-random-go
+          permission-contents: write
       - name: Release
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ secrets.GO_GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
@@ -15355,11 +15391,20 @@ jobs:
         run: cp .repo/dist/go/*/README.md .repo/dist/go/README.md
       - name: Collect go Artifact
         run: mv .repo/dist dist
+      - name: Generate token
+        id: generate_token
+        uses: actions/create-github-app-token@3ff1caaa28b64c9cc276ce0a02e2ff584f3900c5
+        with:
+          app-id: \${{ secrets.PROJEN_APP_ID }}
+          private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
+          owner: \${{ github.repository_owner }}
+          repositories: cdktn-provider-acme-go
+          permission-contents: write
       - name: Release
         env:
           GIT_USER_NAME: team-cdk-terrain
           GIT_USER_EMAIL: github-team-cdk-terrain@cdktn.io
-          GITHUB_TOKEN: \${{ secrets.GO_GITHUB_TOKEN }}
+          GITHUB_TOKEN: \${{ steps.generate_token.outputs.token }}
         run: npx -p publib@latest publib-golang
       - name: Extract Version
         id: extract-version
