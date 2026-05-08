@@ -47,14 +47,10 @@ This will generate an entire repository ready to be published, including Github 
 - `NPM_TOKEN`
 - `TWINE_PASSWORD`
 - `TWINE_USERNAME`
-
-<!-- TODO: Re-enable Maven 
 - `MAVEN_GPG_PRIVATE_KEY`
 - `MAVEN_GPG_PRIVATE_KEY_PASSPHRASE`
 - `MAVEN_PASSWORD`
 - `MAVEN_USERNAME`
-- `MAVEN_STAGING_PROFILE_ID`
--->
 
 ### Updating an existing Provider
 
@@ -73,7 +69,3 @@ Commit, push and check for the auto-released version.
 Whatever needs to be changed in the downstream [provider repositories](https://github.com/cdktn-io/cdktn-repository-manager) should be done via the [code definitions](./src/index.ts) here.
 
 For local development, [yarn link](https://classic.yarnpkg.com/en/docs/cli/link/) might be quite helpful for testing.
-
-## CAVEATS
-
-1. Maven publishing is disabled (TODO: re-enable when requested and infra available)
