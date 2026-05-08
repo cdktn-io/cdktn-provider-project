@@ -126,6 +126,7 @@ export class ForceRelease {
         // I couldn't find a better way to do this so this is manually c&ped from /src/index.ts line 389
         releaseStep.env.MAVEN_OPTS =
           "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED";
+        delete releaseStep.env.MAVEN_STAGING_PROFILE_ID;
       }
       if (jobName === "release_pypi") {
         job.if = "${{ inputs.publish_to_pypi }}";
