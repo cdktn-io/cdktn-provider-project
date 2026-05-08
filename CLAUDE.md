@@ -19,12 +19,12 @@ This is a Projen (https://projen.io) project template for creating CDKTF (CDK fo
 ### Development
 ```bash
 npx projen                    # Regenerate all project files from .projenrc.ts
-npm run build                 # Compile TypeScript and run all build steps
-npm run compile               # Compile TypeScript only
-npm test                      # Run Jest tests
-npm run eslint                # Lint TypeScript files
-npm run eslint:fix            # Fix auto-fixable linting issues
-npm run validate-workflows    # Validate GitHub Actions workflow YAML files
+yarn build                    # Compile TypeScript and run all build steps
+yarn compile                  # Compile TypeScript only
+yarn test                     # Run Jest tests
+yarn eslint                   # Lint TypeScript files
+yarn eslint:fix               # Fix auto-fixable linting issues
+yarn validate-workflows       # Validate GitHub Actions workflow YAML files
 ```
 
 ### Testing Changes
@@ -134,7 +134,7 @@ Tests use snapshot testing via `synthSnapshot()` helper:
 - Generates a full Projen project in memory
 - Captures all generated files
 - Compares against committed snapshots
-- Update snapshots: `npm test -- -u`
+- Update snapshots: `yarn test -u`
 
 Key test scenarios:
 - Minimal configuration
