@@ -1719,6 +1719,7 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenOrg">mavenOrg</a></code> | <code>string</code> | defaults to "cdktn". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.namespace">namespace</a></code> | <code>string</code> | defaults to "cdktn". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.nugetOrg">nugetOrg</a></code> | <code>string</code> | defaults to "Io.Cdktn". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.pypiTrustedPublishing">pypiTrustedPublishing</a></code> | <code>boolean</code> | Use trusted publishing for publishing to pypi.org Needs to be pre-configured on PyPI to work. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.useCustomGithubRunner">useCustomGithubRunner</a></code> | <code>boolean</code> | *No description.* |
 
 ---
@@ -4343,6 +4344,24 @@ public readonly nugetOrg: string;
 - *Type:* string
 
 defaults to "Io.Cdktn".
+
+---
+
+##### `pypiTrustedPublishing`<sup>Optional</sup> <a name="pypiTrustedPublishing" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.pypiTrustedPublishing"></a>
+
+```typescript
+public readonly pypiTrustedPublishing: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Use trusted publishing for publishing to pypi.org Needs to be pre-configured on PyPI to work.
+
+When enabled, the `release_pypi` job is moved to a GitHub-hosted runner,
+since PyPI OIDC trust is not supported on the self-hosted/Depot runners.
+
+> [https://docs.pypi.org/trusted-publishers/](https://docs.pypi.org/trusted-publishers/)
 
 ---
 

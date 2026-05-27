@@ -131,6 +131,7 @@ export class ForceRelease {
       }
       if (jobName === "release_pypi") {
         job.if = "${{ inputs.publish_to_pypi }}";
+        job["runs-on"] = "ubuntu-latest"; // Self-hosted runners not supported
       }
       if (jobName === "release_nuget") {
         job.if = "${{ inputs.publish_to_nuget }}";

@@ -75,6 +75,18 @@ export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
    * defaults to "HashiCorp, Inc."
    */
   readonly licensee?: string;
+  /**
+   * Use trusted publishing for publishing to pypi.org
+   * Needs to be pre-configured on PyPI to work.
+   *
+   * When enabled, the `release_pypi` job is moved to a GitHub-hosted runner,
+   * since PyPI OIDC trust is not supported on the self-hosted/Depot runners.
+   *
+   * @see https://docs.pypi.org/trusted-publishers/
+   *
+   * @default - false
+   */
+  readonly pypiTrustedPublishing?: boolean;
 }
 
 const getMavenName = (providerName: string): string => {
@@ -130,6 +142,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       nugetOrg = "Io.Cdktn",
       mavenOrg = "cdktn",
       npmTrustedPublishing,
+      pypiTrustedPublishing,
     } = options;
 
     const [fqproviderName, providerVersion] = terraformProvider.split("@");
@@ -158,6 +171,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         distName: `${namespace}-provider-${providerName.replace(/-/gi, "_")}`,
         // module: `${githubNamespace}_${namespace}_provider_${providerName.replace(
         module: `${namespace}_provider_${providerName.replace(/-/gi, "_")}`,
+        trustedPublishing: pypiTrustedPublishing ?? false,
       },
       publishToNuget: {
         dotNetNamespace: nugetName,
@@ -391,6 +405,15 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         ?.tryFindWorkflow("release")
         ?.file?.patch(
           JsonPatch.replace("/jobs/release_npm/runs-on", "ubuntu-latest")
+        );
+    }
+
+    // PyPI OIDC (trusted publishing) doesn't support self-hosted runners yet
+    if (pypiTrustedPublishing) {
+      this.github
+        ?.tryFindWorkflow("release")
+        ?.file?.patch(
+          JsonPatch.replace("/jobs/release_pypi/runs-on", "ubuntu-latest")
         );
     }
 
