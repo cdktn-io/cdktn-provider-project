@@ -218,6 +218,54 @@ test("npm trusted publishing is disabled by default", () => {
   expect(release).toEqual(expect.stringContaining("NPM_TOKEN"));
 });
 
+const releaseJobSection = (release: string, jobName: string): string => {
+  const lines = release.split("\n");
+  const start = lines.findIndex((line: string) => line.includes(`${jobName}:`));
+  const end = lines.findIndex(
+    (line: string, idx: number) => idx > start && /^\s{2}\w/.test(line)
+  );
+  return lines.slice(start, end > 0 ? end : undefined).join("\n");
+};
+
+test("synths with pypi trusted publishing enabled", () => {
+  const snapshot = synthSnapshot(
+    getProject({ useCustomGithubRunner: true, pypiTrustedPublishing: true })
+  );
+
+  expect(snapshot).toMatchSnapshot();
+
+  const release = snapshot[".github/workflows/release.yml"];
+  const pypiJobSection = releaseJobSection(release, "release_pypi");
+  // Trusted publishing should set id-token: write permission
+  expect(pypiJobSection).toEqual(expect.stringContaining("id-token: write"));
+  // Should not reference TWINE credentials in the release_pypi job
+  expect(pypiJobSection).not.toEqual(expect.stringContaining("TWINE"));
+  // OIDC is unsupported on self-hosted runners, so the job moves to a GitHub-hosted runner
+  expect(pypiJobSection).toEqual(
+    expect.stringContaining("runs-on: ubuntu-latest")
+  );
+});
+
+test("pypi trusted publishing is disabled by default", () => {
+  const snapshot = synthSnapshot(getProject());
+
+  const release = snapshot[".github/workflows/release.yml"];
+  // Default should use TWINE credentials
+  const pypiJobSection = releaseJobSection(release, "release_pypi");
+  expect(pypiJobSection).toEqual(expect.stringContaining("TWINE"));
+});
+
+test("pypi release stays on the custom runner when trusted publishing is off", () => {
+  const snapshot = synthSnapshot(getProject({ useCustomGithubRunner: true }));
+
+  const release = snapshot[".github/workflows/release.yml"];
+  const pypiJobSection = releaseJobSection(release, "release_pypi");
+  expect(pypiJobSection).toEqual(
+    expect.stringContaining("depot-ubuntu-24.04-8")
+  );
+  expect(pypiJobSection).not.toEqual(expect.stringContaining("ubuntu-latest"));
+});
+
 test("deprecated project with trusted publishing uses NPM_TOKEN fallback for deprecation", () => {
   const snapshot = synthSnapshot(
     getProject({
