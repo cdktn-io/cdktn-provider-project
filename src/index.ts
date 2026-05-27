@@ -99,7 +99,7 @@ const githubActionPinnedVersions = {
   "dessant/lock-threads": "7266a7ce5c1df01b1c6db85bf8cd86c737dadbe7", // v6.0.0
   "hashicorp/setup-copywrite": "32638da2d4e81d56a0764aa1547882fc4d209636", // v1.1.3
   "hashicorp/setup-terraform": "5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85", // v4.0.0
-  "imjohnbo/issue-bot": "3188c6ce06249206709d3b1f274d0d4c5a521601", // v3.4.4
+  "imjohnbo/issue-bot": "3188c6ce06249206709d3b1f274d0d4c5a521601", // v3.4.5
   "peter-evans/create-pull-request": "5f6978faf089d4d20b00c7766989d076bb2fc7f1", // v8.1.1
   "slackapi/slack-github-action": "45a88b9581bfab2566dc881e2cd66d334e621e2c", // v3.0.3
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
