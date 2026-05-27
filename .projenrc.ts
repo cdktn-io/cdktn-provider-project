@@ -17,17 +17,17 @@ import { generateRandomCron, Schedule } from "./src/util/random-cron";
 // If you want to update actions versions for the individual prebuilt providers,
 // you will need to update the map in src/index.ts
 const githubActionPinnedVersions = {
-  "actions/checkout": "11bd71901bbe5b1630ceea73d27597364c9af683", // v4.2.2
-  "actions/download-artifact": "95815c38cf2ff2164869cbab79da8d1f422bc89e", // v4.2.1
-  "actions/github-script": "60a0d83039c74a4aee543508d2ffcb1c3799cdea", // v7.0.1
-  "actions/setup-node": "cdca7365b2dadb8aad0a33bc7601856ffabcc48e", // v4.3.0
-  "actions/stale": "5bef64f19d7facfb25b37b414482c7164d639639", // v9.1.0
-  "actions/upload-artifact": "ea165f8d65b6e75b540449e92b4886f43607fa02", // v4.6.2
+  "actions/checkout": "de0fac2e4500dabe0009e67214ff5f5447ce83dd", // v6.0.2
+  "actions/download-artifact": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c", // v8.0.1
+  "actions/github-script": "ed597411d8f924073f98dfc5c65a23a2325f34cd", // v8.0.0
+  "actions/setup-node": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e", // v6.4.0
+  "actions/stale": "b5d41d4e1d5dceea10e7104786b73624c18a190f", // v10.2.0
+  "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", // v7.0.1
   "amannn/action-semantic-pull-request":
-    "0723387faaf9b38adef4775cd42cfd5155ed6017", // v5.5.3
-  "dessant/lock-threads": "1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771", // v5.0.1
+    "48f256284bd46cdaab1048c3721360e808335d50", // v6.1.1
+  "dessant/lock-threads": "7266a7ce5c1df01b1c6db85bf8cd86c737dadbe7", // v6.0.0
   "hashicorp/setup-copywrite": "32638da2d4e81d56a0764aa1547882fc4d209636", // v1.1.3
-  "peter-evans/create-pull-request": "271a8d0340265f705b14b6d32b9829c1cb33d45e", // v7.0.8
+  "peter-evans/create-pull-request": "5f6978faf089d4d20b00c7766989d076bb2fc7f1", // v8.1.1
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
 };
 

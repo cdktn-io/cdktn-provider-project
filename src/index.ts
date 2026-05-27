@@ -84,24 +84,24 @@ const getMavenName = (providerName: string): string => {
 };
 
 const githubActionPinnedVersions = {
-  "actions/checkout": "11bd71901bbe5b1630ceea73d27597364c9af683", // v4.2.2
-  "actions/download-artifact": "95815c38cf2ff2164869cbab79da8d1f422bc89e", // v4.2.1
-  "actions/github-script": "60a0d83039c74a4aee543508d2ffcb1c3799cdea", // v7.0.1
-  "actions/setup-dotnet": "67a3573c9a986a3f9c594539f4ab511d57bb3ce9", // v4.3.1
-  "actions/setup-go": "0aaccfd150d50ccaeb58ebd88d36e91967a5f35b", // v5.4.0
-  "actions/setup-java": "3a4f6e1af504cf6a31855fa899c6aa5355ba6c12", // v4.7.0
-  "actions/setup-node": "cdca7365b2dadb8aad0a33bc7601856ffabcc48e", // v4.3.0
-  "actions/setup-python": "42375524e23c412d93fb67b49958b491fce71c38", // v5.4.0
-  "actions/stale": "5bef64f19d7facfb25b37b414482c7164d639639", // v9.1.0
-  "actions/upload-artifact": "ea165f8d65b6e75b540449e92b4886f43607fa02", // v4.6.2
+  "actions/checkout": "de0fac2e4500dabe0009e67214ff5f5447ce83dd", // v6.0.2
+  "actions/download-artifact": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c", // v8.0.1
+  "actions/github-script": "ed597411d8f924073f98dfc5c65a23a2325f34cd", // v8.0.0
+  "actions/setup-dotnet": "c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7", // v5.2.0
+  "actions/setup-go": "4a3601121dd01d1626a1e23e37211e3254c1c06c", // v6.4.0
+  "actions/setup-java": "be666c2fcd27ec809703dec50e508c2fdc7f6654", // v5.2.0
+  "actions/setup-node": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e", // v6.4.0
+  "actions/setup-python": "a309ff8b426b58ec0e2a45f0f869d46889d02405", // v6.2.0
+  "actions/stale": "b5d41d4e1d5dceea10e7104786b73624c18a190f", // v10.2.0
+  "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", // v7.0.1
   "amannn/action-semantic-pull-request":
-    "0723387faaf9b38adef4775cd42cfd5155ed6017", // v5.5.3
-  "dessant/lock-threads": "1bf7ec25051fe7c00bdd17e6a7cf3d7bfb7dc771", // v5.0.1
+    "48f256284bd46cdaab1048c3721360e808335d50", // v6.1.1
+  "dessant/lock-threads": "7266a7ce5c1df01b1c6db85bf8cd86c737dadbe7", // v6.0.0
   "hashicorp/setup-copywrite": "32638da2d4e81d56a0764aa1547882fc4d209636", // v1.1.3
-  "hashicorp/setup-terraform": "b9cd54a3c349d3f38e8881555d616ced269862dd", // v3.1.2
-  "imjohnbo/issue-bot": "572eed14422c4d6ca37e870f97e7da209422f5bd", // v3.4.4
-  "peter-evans/create-pull-request": "271a8d0340265f705b14b6d32b9829c1cb33d45e", // v7.0.8
-  "slackapi/slack-github-action": "485a9d42d3a73031f12ec201c457e2162c45d02d", // v2.0.0
+  "hashicorp/setup-terraform": "5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85", // v4.0.0
+  "imjohnbo/issue-bot": "3188c6ce06249206709d3b1f274d0d4c5a521601", // v3.4.5
+  "peter-evans/create-pull-request": "5f6978faf089d4d20b00c7766989d076bb2fc7f1", // v8.1.1
+  "slackapi/slack-github-action": "45a88b9581bfab2566dc881e2cd66d334e621e2c", // v3.0.3
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
 };
 
