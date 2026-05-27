@@ -20,7 +20,7 @@ const githubActionPinnedVersions = {
   "actions/checkout": "de0fac2e4500dabe0009e67214ff5f5447ce83dd", // v6.0.2
   "actions/download-artifact": "3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c", // v8.0.1
   "actions/github-script": "ed597411d8f924073f98dfc5c65a23a2325f34cd", // v8.0.0
-  "actions/setup-node": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041", // v6.4.0
+  "actions/setup-node": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e", // v6.4.0
   "actions/stale": "b5d41d4e1d5dceea10e7104786b73624c18a190f", // v10.2.0
   "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", // v7.0.1
   "amannn/action-semantic-pull-request":

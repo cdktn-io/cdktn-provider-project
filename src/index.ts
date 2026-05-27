@@ -90,7 +90,7 @@ const githubActionPinnedVersions = {
   "actions/setup-dotnet": "c2fa09f4bde5ebb9d1777cf28262a3eb3db3ced7", // v5.2.0
   "actions/setup-go": "4a3601121dd01d1626a1e23e37211e3254c1c06c", // v6.4.0
   "actions/setup-java": "be666c2fcd27ec809703dec50e508c2fdc7f6654", // v5.2.0
-  "actions/setup-node": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041", // v6.4.0
+  "actions/setup-node": "48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e", // v6.4.0
   "actions/setup-python": "a309ff8b426b58ec0e2a45f0f869d46889d02405", // v6.2.0
   "actions/stale": "b5d41d4e1d5dceea10e7104786b73624c18a190f", // v10.2.0
   "actions/upload-artifact": "043fb46d1a93c77aae656e7c1c64a875d1fc6a0a", // v7.0.1
