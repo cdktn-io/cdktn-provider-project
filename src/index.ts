@@ -385,6 +385,13 @@ export class CdktnProviderProject extends cdk.JsiiProject {
             "24.x"
           )
         );
+
+      // NPM OIDC doesn't support self-hosted runners yet
+      this.github
+        ?.tryFindWorkflow("release")
+        ?.file?.patch(
+          JsonPatch.replace("/jobs/release_npm/runs-on", "ubuntu-latest")
+        );
     }
 
     // ensure we don't fail if the release file is not present

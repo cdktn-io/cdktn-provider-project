@@ -117,6 +117,7 @@ export class ForceRelease {
       }
       if (jobName === "release_npm") {
         job.if = "${{ inputs.publish_to_npm }}";
+        job["runs-on"] = "ubuntu-latest"; // Self-hosted runners not supported
       }
       if (jobName === "release_maven") {
         job.if = "${{ inputs.publish_to_maven }}";
