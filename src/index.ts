@@ -438,10 +438,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     }
 
     // release: Go — patch the release workflow's Go publish to use a GitHub
-    // App installation token. The same patch is applied to force-release.yml
-    // further below (after ForceRelease has constructed it), since
-    // ForceRelease renders publish jobs from a fresh source and bypasses this
-    // patch.
+    // App installation token.
     const patchGoPublishToUseAppToken = (workflowFile?: ObjectFile) => {
       if (!workflowFile) return;
       const goPublishToken = github.GithubCredentials.fromApp({
@@ -663,10 +660,9 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       isDeprecated: !!isDeprecated,
     });
     if (!isDeprecated) {
-      new ForceRelease(this, { workflowRunsOn });
-      patchGoPublishToUseAppToken(
-        this.tryFindObjectFile(".github/workflows/force-release.yml")
-      );
+      // Folds the manual force-release behaviour into release.yml behind a
+      // workflow_dispatch trigger, so npm/PyPI OIDC trusts a single workflow.
+      new ForceRelease(this);
     }
   }
 
