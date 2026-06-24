@@ -174,8 +174,8 @@ export class UpgradeNode {
             id: "generate_token",
             uses: "actions/create-github-app-token",
             with: {
-              "app-id": "${{ env.PROJEN_APP_ID }}",
-              "private-key": "${{ env.PROJEN_APP_PRIVATE_KEY }}",
+              "app-id": "${{ secrets.PROJEN_APP_ID }}",
+              "private-key": "${{ secrets.PROJEN_APP_PRIVATE_KEY }}",
             },
           },
           {
