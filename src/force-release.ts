@@ -37,46 +37,56 @@ export class ForceRelease extends Component {
       throw new Error("Could not find release workflow, aborting");
     }
     this.releaseWorkflow = releaseWorkflow;
+  }
 
-    // Extend the existing triggers (push + an empty workflow_dispatch added by
-    // projen) with the manual force-release inputs. `on()` merges, so the push
-    // trigger is preserved.
-    releaseWorkflow.on({
-      workflowDispatch: {
-        inputs: {
-          sha: {
-            type: "string",
-            required: true,
-            description: "The sha of the commit to release",
-          },
-          publish_to_npm: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to NPM",
-          },
-          publish_to_maven: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to Maven",
-          },
-          publish_to_pypi: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to PyPi",
-          },
-          publish_to_nuget: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to NuGet",
-          },
-          publish_to_go: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to Go",
-          },
+  /**
+   * Adds the manual force-release inputs to the workflow's existing
+   * `workflow_dispatch` trigger.
+   *
+   * Inputs are *merged* rather than replaced: depending on the resolved projen
+   * version, the trusted-publishing release workflow already defines a `dry_run`
+   * input (used by `run-name`, the GitHub-release step, and `PUBLIB_DRYRUN` on
+   * the publish jobs). Replacing the trigger would drop those while leaving the
+   * references behind, so we preserve whatever projen already declared.
+   */
+  private addDispatchInputs() {
+    const events = (this.releaseWorkflow as any).events;
+    events.workflowDispatch = {
+      ...events.workflowDispatch,
+      inputs: {
+        ...(events.workflowDispatch?.inputs ?? {}),
+        sha: {
+          type: "string",
+          required: true,
+          description: "The sha of the commit to release",
+        },
+        publish_to_npm: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to NPM",
+        },
+        publish_to_maven: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to Maven",
+        },
+        publish_to_pypi: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to PyPi",
+        },
+        publish_to_nuget: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to NuGet",
+        },
+        publish_to_go: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to Go",
         },
       },
-    });
+    };
   }
 
   /**
@@ -87,6 +97,8 @@ export class ForceRelease extends Component {
    * indices.
    */
   preSynthesize() {
+    this.addDispatchInputs();
+
     const wf = this.releaseWorkflow as any;
 
     const DISPATCH = "github.event_name == 'workflow_dispatch'";
