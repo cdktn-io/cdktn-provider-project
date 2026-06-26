@@ -49,7 +49,7 @@ const project = new cdk.JsiiProject({
   defaultReleaseBranch: "main",
   releaseToNpm: true,
   npmTrustedPublishing: true,
-  minNodeVersion: "20.16.0",
+  minNodeVersion: "22.11.0",
   mergify: false,
   prettier: true,
   scripts: {
