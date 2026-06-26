@@ -3,147 +3,188 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
-import { cdk } from "projen";
+import { cdk, Component } from "projen";
 import { GithubWorkflow } from "projen/lib/github";
-interface ForceReleaseOptions {
-  workflowRunsOn: string[];
-}
 
-export class ForceRelease {
-  constructor(project: cdk.JsiiProject, options: ForceReleaseOptions) {
-    const { workflowRunsOn } = options;
-    const workflow = new GithubWorkflow(project.github!, "force-release");
-    workflow.on({
-      workflowDispatch: {
-        inputs: {
-          sha: {
-            type: "string",
-            required: true,
-            description: "The sha of the commit to release",
-          },
-          publish_to_npm: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to NPM",
-          },
-          publish_to_maven: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to Maven",
-          },
-          publish_to_pypi: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to PyPi",
-          },
-          publish_to_nuget: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to NuGet",
-          },
-          publish_to_go: {
-            type: "boolean",
-            default: false,
-            description: "Whether or not to publish to Go",
-          },
+/**
+ * Folds the former standalone `force-release` workflow into the projen-generated
+ * `release` workflow.
+ *
+ * npm trusted publishing (OIDC) only allows a *single* trusted publisher per
+ * package, pinned to one repository + workflow filename. A second workflow
+ * (the old `force-release.yml`) that also publishes to npm via OIDC can
+ * therefore never be trusted. To keep a single OIDC entrypoint we fold the
+ * manual "force release" behaviour into `release.yml` behind a
+ * `workflow_dispatch` trigger. PyPI OIDC technically allows multiple trusted
+ * publishers, but we keep it aligned with npm for consistency.
+ *
+ * Behaviour:
+ * - On `push`: unchanged, a conditional release gated by `should-release`.
+ * - On `workflow_dispatch`: force-releases a specific commit (`sha`) by running
+ *   `unconditional-release` and publishes only to the package managers selected
+ *   via the `publish_to_*` inputs.
+ */
+export class ForceRelease extends Component {
+  private readonly releaseWorkflow: GithubWorkflow;
+
+  constructor(project: cdk.JsiiProject) {
+    super(project);
+
+    const releaseWorkflow = project.github?.tryFindWorkflow("release") as
+      | GithubWorkflow
+      | undefined;
+    if (!releaseWorkflow) {
+      throw new Error("Could not find release workflow, aborting");
+    }
+    this.releaseWorkflow = releaseWorkflow;
+  }
+
+  /**
+   * Adds the manual force-release inputs to the workflow's existing
+   * `workflow_dispatch` trigger.
+   *
+   * Inputs are *merged* rather than replaced: depending on the resolved projen
+   * version, the trusted-publishing release workflow already defines a `dry_run`
+   * input (used by `run-name`, the GitHub-release step, and `PUBLIB_DRYRUN` on
+   * the publish jobs). Replacing the trigger would drop those while leaving the
+   * references behind, so we preserve whatever projen already declared.
+   */
+  private addDispatchInputs() {
+    const events = (this.releaseWorkflow as any).events;
+    events.workflowDispatch = {
+      ...events.workflowDispatch,
+      inputs: {
+        ...(events.workflowDispatch?.inputs ?? {}),
+        sha: {
+          type: "string",
+          required: true,
+          description: "The sha of the commit to release",
+        },
+        publish_to_npm: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to NPM",
+        },
+        publish_to_maven: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to Maven",
+        },
+        publish_to_pypi: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to PyPi",
+        },
+        publish_to_nuget: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to NuGet",
+        },
+        publish_to_go: {
+          type: "boolean",
+          default: false,
+          description: "Whether or not to publish to Go",
         },
       },
-    });
+    };
+  }
 
-    const releaseWorkflow = project.github?.tryFindWorkflow(
-      "release"
-    ) as GithubWorkflow;
-    const releaseJobs: Array<{ [key: string]: any }> = (releaseWorkflow as any)
-      .jobs;
+  /**
+   * The publish jobs (`release_npm`, `release_pypi`, ...) are only added to the
+   * workflow during `Release.preSynthesize()`. Because this component is
+   * constructed last, running our mutations here (after that) lets us patch
+   * every job in-memory by step *name* instead of relying on brittle array
+   * indices.
+   */
+  preSynthesize() {
+    this.addDispatchInputs();
 
-    // Hacky way of doing a deep copy, otherwise the below modifies the regular release workflow as well
-    for (const [jobName, job] of Object.entries(
-      JSON.parse(JSON.stringify(releaseJobs))
-    )) {
-      if (jobName === "deprecate") {
-        continue; // skip it
-      }
-      if (jobName === "release") {
-        // I clearly am not a developer anymore because I cannot remember how types work, hence all the (any) usage
-        (job as any)["runs-on"] = workflowRunsOn;
-        delete (job as any).outputs.latest_commit;
+    const wf = this.releaseWorkflow as any;
 
-        const gitCheckoutStep = (job as any).steps.find(
-          (it: any) => it.name === "Checkout"
-        );
-        gitCheckoutStep.with.ref = "${{ inputs.sha }}";
+    const DISPATCH = "github.event_name == 'workflow_dispatch'";
+    const NOT_DISPATCH = "github.event_name != 'workflow_dispatch'";
+    // On push, only publish for a brand-new, still-current release.
+    const PUSH_PUBLISH =
+      "needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha";
 
-        const releaseStep = (job as any).steps.find(
-          (it: any) => it.name === "release"
-        );
-        releaseStep.run = "npx projen unconditional-release";
+    // --- release job: branch behaviour by trigger -------------------------
+    const releaseSteps: any[] = wf.getJob("release").steps;
 
-        const backupStep = (job as any).steps.find(
-          (it: any) => it.name === "Backup artifact permissions"
-        );
-        delete backupStep.if;
+    const checkout = releaseSteps.find((s) => s.name === "Checkout");
+    checkout.with = {
+      ...checkout.with,
+      // Force-release checks out the requested commit; push uses the default ref.
+      ref: `\${{ ${DISPATCH} && inputs.sha || '' }}`,
+    };
 
-        const uploadArtifactStep = (job as any).steps.find(
-          (it: any) => it.name === "Upload artifact"
-        );
-        delete uploadArtifactStep.if;
+    const releaseStep = releaseSteps.find((s) => s.name === "release");
+    releaseStep.run = [
+      `if [ "\${{ github.event_name }}" = "workflow_dispatch" ]; then`,
+      "  npx projen unconditional-release",
+      "else",
+      "  npx projen release",
+      "fi",
+    ].join("\n");
 
-        const gitRemoteStep = (job as any).steps.findIndex(
-          (it: any) => it.id === "git_remote"
-        );
-        (job as any).steps.splice(gitRemoteStep, 1);
+    // `should-release` only makes sense for automatic (push) releases.
+    releaseSteps.find((s) => s.id === "git_remote").if = NOT_DISPATCH;
 
-        workflow.addJob(jobName, job as any);
-      }
+    // The publish jobs download this artifact, so it must also be uploaded on a
+    // manual dispatch (where latest_commit is never computed).
+    const artifactGuard = `\${{ ${DISPATCH} || steps.git_remote.outputs.latest_commit == github.sha }}`;
+    releaseSteps.find((s) => s.name === "Backup artifact permissions").if =
+      artifactGuard;
+    releaseSteps.find((s) => s.name === "Upload artifact").if = artifactGuard;
+
+    // --- deprecate job: skip on manual dispatch ---------------------------
+    const deprecate = wf.getJob("deprecate");
+    if (deprecate) {
+      deprecate.if = NOT_DISPATCH;
     }
 
-    const publishJobs: Array<{ [key: string]: any }> = (
-      project.release?.publisher as any
-    )._renderJobsForBranch("main", {
-      workflowName: "force-release",
-    });
+    // --- GitHub release job ----------------------------------------------
+    const githubJob = wf.getJob("release_github");
+    if (githubJob) {
+      // (Re)create the GitHub release whenever the tag is new; on push also
+      // require the commit to still be the latest.
+      githubJob.if = `needs.release.outputs.tag_exists != 'true' && (${DISPATCH} || needs.release.outputs.latest_commit == github.sha)`;
+      const ghReleaseStep = githubJob.steps.find(
+        (s: any) => s.name === "Release"
+      );
+      ghReleaseStep.env = {
+        ...ghReleaseStep.env,
+        // Target the dispatched commit instead of the workflow's own sha.
+        GITHUB_REF: `\${{ ${DISPATCH} && inputs.sha || github.ref }}`,
+        GITHUB_SHA: `\${{ ${DISPATCH} && inputs.sha || github.sha }}`,
+      };
+      this.suppressManualFailureIssue(githubJob);
+    }
 
-    for (const [jobName, job] of Object.entries(publishJobs)) {
-      job["runs-on"] = workflowRunsOn;
+    // --- per-package publish jobs ----------------------------------------
+    const publishJobs: Array<[string, string]> = [
+      ["release_npm", "publish_to_npm"],
+      ["release_maven", "publish_to_maven"],
+      ["release_pypi", "publish_to_pypi"],
+      ["release_nuget", "publish_to_nuget"],
+      ["release_golang", "publish_to_go"],
+    ];
+    for (const [jobName, toggle] of publishJobs) {
+      const job = wf.getJob(jobName);
+      if (!job) continue;
+      job.if = `(${NOT_DISPATCH} && ${PUSH_PUBLISH}) || (${DISPATCH} && inputs.${toggle})`;
+      this.suppressManualFailureIssue(job);
+    }
+  }
 
-      if (jobName === "release_github") {
-        job.needs = ["release"];
-        job.if = "needs.release.outputs.tag_exists != 'true'";
-        const releaseStep = (job as any).steps.find(
-          (it: any) => it.name === "Release"
-        );
-        releaseStep.env.GITHUB_REF = "${{ inputs.sha }}"; // @todo remove when upgrading Projen
-        releaseStep.env.GITHUB_SHA = "${{ inputs.sha }}";
-      }
-      if (jobName === "release_npm") {
-        job.if = "${{ inputs.publish_to_npm }}";
-        job["runs-on"] = "ubuntu-latest"; // Self-hosted runners not supported
-      }
-      if (jobName === "release_maven") {
-        job.if = "${{ inputs.publish_to_maven }}";
-        const releaseStep = (job as any).steps.find(
-          (it: any) => it.name === "Release"
-        );
-        // I couldn't find a better way to do this so this is manually c&ped from /src/index.ts line 389
-        releaseStep.env.MAVEN_OPTS =
-          "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED";
-        delete releaseStep.env.MAVEN_STAGING_PROFILE_ID;
-      }
-      if (jobName === "release_pypi") {
-        job.if = "${{ inputs.publish_to_pypi }}";
-        job["runs-on"] = "ubuntu-latest"; // Self-hosted runners not supported
-      }
-      if (jobName === "release_nuget") {
-        job.if = "${{ inputs.publish_to_nuget }}";
-      }
-      if (jobName === "release_golang") {
-        job.if = "${{ inputs.publish_to_go }}";
-      }
-
-      // Delete the steps that create a new GitHub issue for a failed release
-      job.steps.splice(job.steps.length - 2, 2);
-
-      workflow.addJob(jobName, job as any);
+  /**
+   * Manual force-releases should not open "failed-release" issues, matching the
+   * behaviour of the previous standalone force-release workflow.
+   */
+  private suppressManualFailureIssue(job: any) {
+    const createIssue = job.steps.find((s: any) => s.name === "Create Issue");
+    if (createIssue) {
+      createIssue.if =
+        "${{ failure() && github.event_name != 'workflow_dispatch' }}";
     }
   }
 }
