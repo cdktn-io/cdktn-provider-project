@@ -11,6 +11,7 @@ jobs:
       contents: write
     outputs:
       self_mutation_happened: ${{ steps.self_mutation.outputs.self_mutation_happened }}
+      artifact_id: ${{ steps.upload_artifact.outputs.artifact-id }}
     env:
       CI: "true"
     steps:
@@ -23,6 +24,7 @@ jobs:
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: 22.11.0
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn install --check-files
       - name: build
@@ -57,6 +59,7 @@ jobs:
         run: cd dist && getfacl -R . > permissions-backup.acl
         continue-on-error: true
       - name: Upload artifact
+        id: upload_artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: build-artifact
@@ -109,10 +112,11 @@ jobs:
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
         with:
           node-version: 22.11.0
+          package-manager-cache: false
       - name: Download build artifacts
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
-          name: build-artifact
+          artifact-ids: ${{ needs.build.outputs.artifact_id }}
           path: dist
       - name: Restore build artifact permissions
         run: cd dist && setfacl --restore=permissions-backup.acl

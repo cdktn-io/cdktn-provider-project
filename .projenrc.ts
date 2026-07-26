@@ -43,18 +43,22 @@ const project = new cdk.JsiiProject({
   pullRequestTemplate: false,
   typescriptVersion,
   jsiiVersion: typescriptVersion,
-  peerDeps: ["projen@^0.99.0", "constructs@^10.4.2"],
+  peerDeps: ["projen@^0.101.20", "constructs@^10.5.0"],
+  // Without this, projen pins the dev copies of its peers to the *floor* of the
+  // ranges above. That bit us twice: CI tested projen 0.101.0 (which still emits
+  // the old `git_remote` wording) while the fleet resolves latest, and an exact
+  // constructs pin made projen nest a second copy, which jsii-pacmak rejects.
+  // Generated provider repos already set this; keep this project consistent.
+  peerDependencyOptions: {
+    pinnedDevDependency: false,
+  },
   deps: ["change-case", "fs-extra"],
   bundledDeps: ["change-case", "fs-extra"],
   defaultReleaseBranch: "main",
   releaseToNpm: true,
   npmTrustedPublishing: true,
   minNodeVersion: "22.11.0",
-  mergify: false,
   prettier: true,
-  scripts: {
-    "eslint:fix": "eslint . --ext .ts --fix",
-  },
   stale: false, // disabling for now but keeping the options below so we can turn it back on if desired
   staleOptions: {
     issues: {
@@ -94,6 +98,8 @@ const project = new cdk.JsiiProject({
   projenrcTs: true,
   githubOptions: {
     projenCredentials: github.GithubCredentials.fromApp(),
+    // projen >=0.100 moved the `mergify` project option under githubOptions
+    mergify: false,
   },
 });
 
@@ -106,6 +112,9 @@ project.addDevDeps(
 );
 
 project.addFields({ publishConfig: { access: "public" } });
+
+// projen >=0.100 removed the `scripts` project option; set it on the package directly
+project.package.setScript("eslint:fix", "eslint . --ext .ts --fix");
 
 // TODO: Keep original License and add new headers for Fork
 new CustomizedLicense(project, 2020);

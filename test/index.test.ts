@@ -227,6 +227,68 @@ const releaseJobSection = (release: string, jobName: string): string => {
   return lines.slice(start, end > 0 ? end : undefined).join("\n");
 };
 
+/** Split the release workflow into its individual job bodies, keyed by job id. */
+const releaseJobs = (release: string): Record<string, string> => {
+  const lines = release.split("\n");
+  const jobsAt = lines.findIndex((line) => /^jobs:/.test(line));
+  const starts: Array<[string, number]> = [];
+  lines.forEach((line, idx) => {
+    const match = /^ {2}([A-Za-z_][\w-]*):\s*$/.exec(line);
+    if (idx > jobsAt && match) starts.push([match[1], idx]);
+  });
+  return Object.fromEntries(
+    starts.map(([name, start], idx) => [
+      name,
+      lines
+        .slice(start, idx + 1 < starts.length ? starts[idx + 1][1] : undefined)
+        .join("\n"),
+    ])
+  );
+};
+
+// package:js only repacks the tarball the build job already produced; every
+// other package:* target is a real jsii-pacmak transpile that actually allocates.
+const HEAVY_PACKAGE_TASKS = [
+  "package:python",
+  "package:java",
+  "package:dotnet",
+  "package:go",
+];
+
+test("jobs forced onto hosted runners never run a heavy jsii-pacmak task", () => {
+  const snapshot = synthSnapshot(
+    getProject({
+      useCustomGithubRunner: true,
+      npmTrustedPublishing: true,
+      pypiTrustedPublishing: true,
+    })
+  );
+
+  // This ceiling is global to .projen/tasks.json, and projen's task runner
+  // merges it as `{...process.env, ...taskEnv}` -- so it overrides any ambient,
+  // job-level or step-level NODE_OPTIONS. A job we force onto a smaller
+  // GitHub-hosted runner therefore inherits a heap ceiling well above that
+  // runner's physical RAM, and V8 grows until the kernel OOM-kills it rather
+  // than collecting. That is only tolerable for tasks that barely allocate.
+  const tasks = JSON.parse(snapshot[".projen/tasks.json"]);
+  expect(tasks.env.NODE_OPTIONS).toEqual("--max-old-space-size=31744");
+
+  const jobs = releaseJobs(snapshot[".github/workflows/release.yml"]);
+  const hosted = Object.entries(jobs).filter(([, body]) =>
+    body.includes("runs-on: ubuntu-latest")
+  );
+  // npm OIDC is only supported on GitHub-hosted runners, so at least one job is
+  // always pinned there. If this is ever empty the test has stopped testing.
+  expect(hosted.map(([name]) => name)).toContain("release_npm");
+
+  const offenders = hosted.flatMap(([name, body]) =>
+    HEAVY_PACKAGE_TASKS.filter((task) => body.includes(task)).map(
+      (task) => `${name} -> ${task}`
+    )
+  );
+  expect(offenders).toEqual([]);
+});
+
 test("synths with pypi trusted publishing enabled", () => {
   const snapshot = synthSnapshot(
     getProject({ useCustomGithubRunner: true, pypiTrustedPublishing: true })
@@ -240,8 +302,14 @@ test("synths with pypi trusted publishing enabled", () => {
   expect(pypiJobSection).toEqual(expect.stringContaining("id-token: write"));
   // Should not reference TWINE credentials in the release_pypi job
   expect(pypiJobSection).not.toEqual(expect.stringContaining("TWINE"));
-  // OIDC is unsupported on self-hosted runners, so the job moves to a GitHub-hosted runner
+  // PyPI does not restrict trusted publishing to GitHub-hosted runners, so the
+  // job must stay on the custom runner. Moving it would strand package:python
+  // (a real jsii-pacmak transpile) with the 31GB heap ceiling that
+  // useCustomGithubRunner writes into .projen/tasks.json, on a smaller box.
   expect(pypiJobSection).toEqual(
+    expect.stringContaining("runs-on: depot-ubuntu-24.04-8")
+  );
+  expect(pypiJobSection).not.toEqual(
     expect.stringContaining("runs-on: ubuntu-latest")
   );
 });
