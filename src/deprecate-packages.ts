@@ -63,7 +63,7 @@ export class DeprecatePackages {
           },
           {
             name: "Install",
-            run: "yarn install",
+            run: "pnpm install --frozen-lockfile",
           },
           {
             name: "Check deprecation status",

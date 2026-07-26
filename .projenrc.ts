@@ -4,7 +4,11 @@
  */
 
 import { cdk, github, JsonPatch } from "projen";
-import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
+import {
+  NodePackageManager,
+  PnpmWorkspaceYamlSchemaNodeLinker,
+  UpgradeDependenciesSchedule,
+} from "projen/lib/javascript";
 import { UpgradeJSIIAndTypeScript } from "./projenrc/upgrade-jsii-typescript";
 import { UpgradeNode } from "./projenrc/upgrade-node";
 import { AutoApprove } from "./src/auto-approve";
@@ -29,6 +33,8 @@ const githubActionPinnedVersions = {
   "hashicorp/setup-copywrite": "32638da2d4e81d56a0764aa1547882fc4d209636", // v1.1.3
   "peter-evans/create-pull-request": "5f6978faf089d4d20b00c7766989d076bb2fc7f1", // v8.1.1
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
+  // projen emits this unpinned as `pnpm/action-setup@v5` once packageManager is pnpm
+  "pnpm/action-setup": "fc06bc1257f339d1d5d8b3a19a8cae5388b55320", // v5
 };
 
 /** JSII and TS should always use the same major/minor version range */
@@ -48,12 +54,42 @@ const project = new cdk.JsiiProject({
   // the projen floor at the version the fleet resolves -- upgrade-main takes
   // latest, so a floor that lags means CI tests something no provider repo runs.
   peerDeps: ["projen@^0.101.20", "constructs@^10.5.0"],
+  packageManager: NodePackageManager.PNPM,
+  // pnpm's default isolated linker symlinks deps into node_modules/.pnpm/. jsii-pacmak
+  // shells out to `npm pack`, which follows those symlinks and emits `..`-escaping
+  // tarball paths that most extractors silently drop -- publishing tarballs with the
+  // bundled deps' transitives missing. pnpm now errors outright
+  // (ERR_PNPM_BUNDLED_DEPENDENCIES_WITHOUT_HOISTED) rather than corrupting quietly.
+  // This must live in pnpm-workspace.yaml, NOT .npmrc: pnpm 11 moved settings out of
+  // .npmrc and silently ignores node-linker there.
+  pnpmOptions: {
+    workspaceYamlOptions: {
+      nodeLinker: PnpmWorkspaceYamlSchemaNodeLinker.HOISTED,
+      auditConfig: {
+        // GHSA-mh99-v99m-4gvg (brace-expansion DoS) declares a flat affected range
+        // of "<=5.0.7", which naively matches the 1.x line. We resolve 1.1.16 -- the
+        // newest 1.x there is -- via minimatch@3 under eslint and
+        // commit-and-tag-version, so there is nothing to upgrade to. Forcing 5.0.8
+        // would break minimatch@3, which requires ^1.1.7. Dev tooling only: it is not
+        // in `deps`/`bundledDeps` and so never ships. Revisit when those pull a
+        // minimatch that has moved off brace-expansion@1.
+        ignoreGhsas: ["GHSA-mh99-v99m-4gvg"],
+      },
+    },
+  },
   deps: ["change-case", "fs-extra"],
   bundledDeps: ["change-case", "fs-extra"],
   defaultReleaseBranch: "main",
   releaseToNpm: true,
   npmTrustedPublishing: true,
   minNodeVersion: "22.11.0",
+  // Fails the build on any high/critical advisory. Combined with auto-merge requiring
+  // green CI, a compromised upgrade PR cannot merge itself.
+  auditDeps: true,
+  auditDepsOptions: {
+    level: "high",
+    runOn: "build",
+  },
   prettier: true,
   stale: false, // disabling for now but keeping the options below so we can turn it back on if desired
   staleOptions: {
@@ -81,6 +117,10 @@ const project = new cdk.JsiiProject({
     },
   },
   depsUpgradeOptions: {
+    // Skip versions published in the last 4 days, so a compromised release has time
+    // to be flagged before an auto-merging upgrade PR pulls it in. Not supported on
+    // yarn classic, which is part of why this project moved to pnpm.
+    cooldown: 4,
     workflowOptions: {
       labels: ["automerge", "auto-approve", "dependencies"],
       schedule: UpgradeDependenciesSchedule.WEEKLY,

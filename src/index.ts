@@ -1,9 +1,20 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import assert = require("assert");
 import { pascalCase } from "change-case";
-import { ObjectFile, TextFile, cdk, github, JsonPatch } from "projen";
+import {
+  Component,
+  ObjectFile,
+  TextFile,
+  cdk,
+  github,
+  JsonPatch,
+} from "projen";
 import { JobStep } from "projen/lib/github/workflows-model";
-import { UpgradeDependenciesSchedule } from "projen/lib/javascript";
+import {
+  NodePackageManager,
+  PnpmWorkspaceYamlSchemaNodeLinker,
+  UpgradeDependenciesSchedule,
+} from "projen/lib/javascript";
 import { AlertOpenPrs } from "./alert-open-prs";
 import { AutoApprove } from "./auto-approve";
 import { AutoCloseCommunityIssues } from "./auto-close-community-issues";
@@ -118,6 +129,8 @@ const githubActionPinnedVersions = {
   "peter-evans/create-pull-request": "5f6978faf089d4d20b00c7766989d076bb2fc7f1", // v8.1.1
   "slackapi/slack-github-action": "45a88b9581bfab2566dc881e2cd66d334e621e2c", // v3.0.3
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
+  // projen emits this unpinned as `pnpm/action-setup@v5` once packageManager is pnpm
+  "pnpm/action-setup": "fc06bc1257f339d1d5d8b3a19a8cae5388b55320", // v5
 };
 
 export class CdktnProviderProject extends cdk.JsiiProject {
@@ -295,12 +308,27 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       defaultReleaseBranch: "main",
       repository: `https://github.com/${repository}.git`,
       eslint: false,
+      packageManager: NodePackageManager.PNPM,
+      // Provider repos run jsii-pacmak over bundled deps exactly as this project
+      // does, so they need the hoisted linker too -- see the note in .projenrc.ts.
+      // It must be in pnpm-workspace.yaml, not .npmrc, or pnpm 11 ignores it.
+      pnpmOptions: {
+        workspaceYamlOptions: {
+          nodeLinker: PnpmWorkspaceYamlSchemaNodeLinker.HOISTED,
+        },
+      },
       depsUpgrade: !isDeprecated,
       depsUpgradeOptions: {
+        cooldown: 4,
         workflowOptions: {
           labels: ["automerge", "auto-approve", "dependencies"],
           schedule: UpgradeDependenciesSchedule.WEEKLY,
         },
+      },
+      auditDeps: !isDeprecated,
+      auditDepsOptions: {
+        level: "high",
+        runOn: "build",
       },
       publishToPypi: packageInfo.python,
       publishToNuget: packageInfo.publishToNuget,
@@ -476,17 +504,13 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     }
 
     // Fix maven issue (https://github.com/cdklabs/publib/pull/777)
-    github.GitHub.of(this)?.tryFindWorkflow("release")?.file?.patch(
-      JsonPatch.add(
-        "/jobs/release_maven/steps/10/env/MAVEN_OPTS",
-        // See https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco
-        "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
-      ),
-      JsonPatch.remove(
-        // This is no longer used.
-        "/jobs/release_maven/steps/10/env/MAVEN_STAGING_PROFILE_ID"
-      )
-    );
+    //
+    // The publish jobs don't exist until Release synthesizes, and the step's index
+    // within release_maven shifts whenever the job gains a step -- switching the
+    // package manager to pnpm inserts a "Setup pnpm" step, which silently moved the
+    // old hardcoded /steps/10/ onto a step with no env at all. Resolve the step by
+    // what it runs, in preSynthesize, so neither problem can recur.
+    new MavenOptsPatch(this);
 
     this.pinGithubActionVersions(githubActionPinnedVersions);
 
@@ -690,6 +714,40 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     Object.entries(pinnedVersions).forEach(([name, sha]) => {
       this.github?.actions.set(name, `${name}@${sha}`);
     });
+  }
+}
+
+/**
+ * Sets MAVEN_OPTS on the maven publish step and drops the unused
+ * MAVEN_STAGING_PROFILE_ID, resolving the step by the command it runs.
+ *
+ * Runs in preSynthesize because the publish jobs are added by Release during
+ * synthesis, so the job does not exist yet at construction time.
+ *
+ * @see https://github.com/cdklabs/publib/pull/777
+ */
+class MavenOptsPatch extends Component {
+  public preSynthesize() {
+    const workflow = github.GitHub.of(this.project)?.tryFindWorkflow("release");
+    const steps: JobStep[] | undefined = (workflow as any)?.jobs?.release_maven
+      ?.steps;
+    assert(
+      steps,
+      "release_maven job not found, please check if the MAVEN_OPTS workaround still works!"
+    );
+    const step = steps.find((s) => s.run?.includes("publib-maven"));
+    assert(
+      step?.env,
+      "no publib-maven step with an env block in release_maven, please check if the MAVEN_OPTS workaround still works!"
+    );
+    // Mutate the step directly rather than JsonPatch-ing the rendered file: the
+    // publisher prepends tool-setup steps at render time, so in-memory indices do
+    // not match rendered ones, and a JSON Pointer would have to encode that offset.
+    // See https://stackoverflow.com/questions/70153962/nexus-staging-maven-plugin-maven-deploy-failed-an-api-incompatibility-was-enco
+    step.env.MAVEN_OPTS =
+      "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED";
+    // This is no longer used.
+    delete step.env.MAVEN_STAGING_PROFILE_ID;
   }
 }
 
