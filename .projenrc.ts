@@ -43,18 +43,18 @@ const project = new cdk.JsiiProject({
   pullRequestTemplate: false,
   typescriptVersion,
   jsiiVersion: typescriptVersion,
-  peerDeps: ["projen@^0.99.0", "constructs@^10.4.2"],
+  // NOTE: projen pins the dev copies of these peers to the *floor* of each range,
+  // which is what jsii wants (JSII6) and is what CI then compiles against. Keep
+  // the projen floor at the version the fleet resolves -- upgrade-main takes
+  // latest, so a floor that lags means CI tests something no provider repo runs.
+  peerDeps: ["projen@^0.101.20", "constructs@^10.5.0"],
   deps: ["change-case", "fs-extra"],
   bundledDeps: ["change-case", "fs-extra"],
   defaultReleaseBranch: "main",
   releaseToNpm: true,
   npmTrustedPublishing: true,
   minNodeVersion: "22.11.0",
-  mergify: false,
   prettier: true,
-  scripts: {
-    "eslint:fix": "eslint . --ext .ts --fix",
-  },
   stale: false, // disabling for now but keeping the options below so we can turn it back on if desired
   staleOptions: {
     issues: {
@@ -94,6 +94,8 @@ const project = new cdk.JsiiProject({
   projenrcTs: true,
   githubOptions: {
     projenCredentials: github.GithubCredentials.fromApp(),
+    // projen >=0.100 moved the `mergify` project option under githubOptions
+    mergify: false,
   },
 });
 
@@ -106,6 +108,19 @@ project.addDevDeps(
 );
 
 project.addFields({ publishConfig: { access: "public" } });
+
+// projen declares constructs as both a dependency and a peer at ^10.5.0. With the
+// dev copy pinned to the 10.5.0 floor (as jsii requires), yarn would otherwise
+// resolve projen's own ^10.5.0 to a newer release and nest a second copy, which
+// jsii-pacmak rejects: "Conflicting versions of constructs in type system".
+// Collapsing to one hoisted 10.5.0 satisfies projen's range and keeps what we
+// compile against identical to the floor we promise consumers.
+// NOTE: `resolutions` only affects installs *in this repo*; it is ignored for
+// consumers of the published package, so it does not narrow their contract.
+project.package.addPackageResolutions("constructs@10.5.0");
+
+// projen >=0.100 removed the `scripts` project option; set it on the package directly
+project.package.setScript("eslint:fix", "eslint . --ext .ts --fix");
 
 // TODO: Keep original License and add new headers for Fork
 new CustomizedLicense(project, 2020);

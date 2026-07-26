@@ -79,8 +79,11 @@ export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
    * Use trusted publishing for publishing to pypi.org
    * Needs to be pre-configured on PyPI to work.
    *
-   * When enabled, the `release_pypi` job is moved to a GitHub-hosted runner,
-   * since PyPI OIDC trust is not supported on the self-hosted/Depot runners.
+   * The `release_pypi` job keeps whatever runner the project is configured for.
+   * PyPI, unlike npm, does not restrict trusted publishing to GitHub-hosted
+   * runners -- trust is bound to the workflow ref, and the OIDC token is minted
+   * from ACTIONS_ID_TOKEN_REQUEST_URL, which is available on any runner with
+   * `id-token: write`.
    *
    * @see https://docs.pypi.org/trusted-publishers/
    *
@@ -291,7 +294,6 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       authorOrganization: true,
       defaultReleaseBranch: "main",
       repository: `https://github.com/${repository}.git`,
-      mergify: false,
       eslint: false,
       depsUpgrade: !isDeprecated,
       depsUpgradeOptions: {
@@ -300,7 +302,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
           schedule: UpgradeDependenciesSchedule.WEEKLY,
         },
       },
-      python: packageInfo.python,
+      publishToPypi: packageInfo.python,
       publishToNuget: packageInfo.publishToNuget,
       publishToMaven: packageInfo.publishToMaven,
       publishToGo: packageInfo.publishToGo,
@@ -337,6 +339,8 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       docgen: false,
       githubOptions: {
         projenCredentials: github.GithubCredentials.fromApp(),
+        // projen >=0.100 moved the `mergify` project option under githubOptions
+        mergify: false,
       },
     });
 
@@ -408,14 +412,15 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         );
     }
 
-    // PyPI OIDC (trusted publishing) doesn't support self-hosted runners yet
-    if (pypiTrustedPublishing) {
-      this.github
-        ?.tryFindWorkflow("release")
-        ?.file?.patch(
-          JsonPatch.replace("/jobs/release_pypi/runs-on", "ubuntu-latest")
-        );
-    }
+    // NOTE: release_pypi deliberately stays on whatever runner the project is
+    // configured for. Unlike npm, PyPI places no restriction on the runner
+    // environment: publib-pypi mints its token with `python3 -m id pypi` against
+    // ACTIONS_ID_TOKEN_REQUEST_URL, which GitHub injects on any runner given
+    // `id-token: write`, and PyPI's trust is bound to the workflow ref, not the
+    // runner. Forcing this job onto a hosted runner would also strand it with the
+    // 31GB NODE_OPTIONS heap ceiling that useCustomGithubRunner writes into
+    // .projen/tasks.json, on a box with far less RAM than that -- and unlike
+    // package:js, package:python is a real jsii-pacmak transpile.
 
     // ensure we don't fail if the release file is not present
     const checkExistingTagStep = (
@@ -554,12 +559,26 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         this.github?.tryFindWorkflow("release") as any
       ).jobs.release.steps;
       const gitRemoteJob = releaseJobSteps.find((it) => it.id === "git_remote");
-      prettyAssertEqual(
-        gitRemoteJob.run,
-        'echo "latest_commit=$(git ls-remote origin -h ${{ github.ref }} | cut -f1)" >> $GITHUB_OUTPUT\ncat $GITHUB_OUTPUT',
-        "git_remote step in release workflow did not match expected string, please check if the workaround still works!"
+      assert(
+        gitRemoteJob,
+        "git_remote step not found in release workflow, please check if the workaround still works!"
       );
-      const previousCommand = gitRemoteJob.run.replace("\n", " && ");
+      // We wrap whatever projen generated in a should-release guard rather than
+      // rewriting it, so assert only the two properties the wrapping actually
+      // depends on. Pinning to projen's exact wording broke the whole fleet
+      // once already: projen 0.101 changed `${{ github.ref }}` to `"$GITHUB_REF"`
+      // and every provider repo's upgrade-main started failing at synth.
+      assert(
+        typeof gitRemoteJob.run === "string" &&
+          gitRemoteJob.run.includes("git ls-remote") &&
+          gitRemoteJob.run.includes("latest_commit="),
+        `git_remote step no longer sets latest_commit from git ls-remote, please check if the workaround still works! Got: ${JSON.stringify(
+          gitRemoteJob.run
+        )}`
+      );
+      // Fold *every* line: projen emits two today, but String#replace with a
+      // string pattern only folds the first if that ever grows.
+      const previousCommand = gitRemoteJob.run.split("\n").join(" && ");
 
       const cancelCommand =
         'echo "latest_commit=release_cancelled" >> $GITHUB_OUTPUT'; // this cancels the release via a non-matching SHA;

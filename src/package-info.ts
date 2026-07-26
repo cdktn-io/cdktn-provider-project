@@ -9,7 +9,7 @@ export interface PackageInfo {
   npm: {
     name: string;
   };
-  python: NonNullable<cdk.JsiiProjectOptions["python"]>;
+  python: NonNullable<cdk.JsiiProjectOptions["publishToPypi"]>;
   publishToNuget: NonNullable<cdk.JsiiProjectOptions["publishToNuget"]>;
   publishToMaven: NonNullable<cdk.JsiiProjectOptions["publishToMaven"]>;
   publishToGo: cdk.JsiiProjectOptions["publishToGo"];
