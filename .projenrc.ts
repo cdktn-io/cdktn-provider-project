@@ -43,15 +43,11 @@ const project = new cdk.JsiiProject({
   pullRequestTemplate: false,
   typescriptVersion,
   jsiiVersion: typescriptVersion,
+  // NOTE: projen pins the dev copies of these peers to the *floor* of each range,
+  // which is what jsii wants (JSII6) and is what CI then compiles against. Keep
+  // the projen floor at the version the fleet resolves -- upgrade-main takes
+  // latest, so a floor that lags means CI tests something no provider repo runs.
   peerDeps: ["projen@^0.101.20", "constructs@^10.5.0"],
-  // Without this, projen pins the dev copies of its peers to the *floor* of the
-  // ranges above. That bit us twice: CI tested projen 0.101.0 (which still emits
-  // the old `git_remote` wording) while the fleet resolves latest, and an exact
-  // constructs pin made projen nest a second copy, which jsii-pacmak rejects.
-  // Generated provider repos already set this; keep this project consistent.
-  peerDependencyOptions: {
-    pinnedDevDependency: false,
-  },
   deps: ["change-case", "fs-extra"],
   bundledDeps: ["change-case", "fs-extra"],
   defaultReleaseBranch: "main",
@@ -112,6 +108,16 @@ project.addDevDeps(
 );
 
 project.addFields({ publishConfig: { access: "public" } });
+
+// projen declares constructs as both a dependency and a peer at ^10.5.0. With the
+// dev copy pinned to the 10.5.0 floor (as jsii requires), yarn would otherwise
+// resolve projen's own ^10.5.0 to a newer release and nest a second copy, which
+// jsii-pacmak rejects: "Conflicting versions of constructs in type system".
+// Collapsing to one hoisted 10.5.0 satisfies projen's range and keeps what we
+// compile against identical to the floor we promise consumers.
+// NOTE: `resolutions` only affects installs *in this repo*; it is ignored for
+// consumers of the published package, so it does not narrow their contract.
+project.package.addPackageResolutions("constructs@10.5.0");
 
 // projen >=0.100 removed the `scripts` project option; set it on the package directly
 project.package.setScript("eslint:fix", "eslint . --ext .ts --fix");
