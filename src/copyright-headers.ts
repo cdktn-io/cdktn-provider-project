@@ -36,7 +36,11 @@ project {
     "API.md",
     ".mergify.yml",
     "scripts/*.js",
-    "pnpm-lock.yaml"
+    # projen-owned and rewritten on every synth; copywrite headers .yaml files, so
+    # without these the header is added, stripped by the next synth, and re-added by
+    # CI -- permanent self-mutation churn across every provider repo.
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml"
   ]
 }
 `.split("\n"),

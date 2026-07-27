@@ -12,6 +12,12 @@ project {
     # "**autogen**",
     "**/node_modules/**",
     "dist/**",
+    # Both are projen-owned and rewritten from scratch on every synth. copywrite
+    # does header .yaml files, so without these it adds a header that the next
+    # `projen` strips, and CI's copywrite step re-adds -- permanent self-mutation
+    # churn. (.lock is not a recognised extension, so pnpm-lock.yaml is only at
+    # risk once renamed; kept for clarity.)
     "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
   ]
 }
