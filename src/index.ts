@@ -315,6 +315,15 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       pnpmOptions: {
         workspaceYamlOptions: {
           nodeLinker: PnpmWorkspaceYamlSchemaNodeLinker.HOISTED,
+          auditConfig: {
+            // Same flat-range artifact this project ignores for itself:
+            // GHSA-mh99-v99m-4gvg declares affected "<=5.0.7", which naively matches
+            // the 1.x line. Provider repos reach brace-expansion@1 via
+            // cdktn-cli > @cdktn/hcl2cdk > glob > minimatch@3, and there is no fixed
+            // 1.x to move to -- forcing 5.0.8 would break minimatch@3, which requires
+            // ^1.1.7. Dev tooling only; never shipped.
+            ignoreGhsas: ["GHSA-mh99-v99m-4gvg"],
+          },
         },
       },
       depsUpgrade: !isDeprecated,
@@ -374,7 +383,13 @@ export class CdktnProviderProject extends cdk.JsiiProject {
 
     this.addDevDeps(
       "dot-prop@^5.2.0",
-      "@actions/core@^1.1.0",
+      // ^1.1.0 could never leave the 1.x line, which drags in an old
+      // @actions/http-client and with it undici <6.24.0 -- three high advisories
+      // (GHSA-vrm6-8vpv-qv8q, GHSA-v9p9-hfj2-hcw8, and the <6.27.0 fragment-count
+      // DoS). 3.x depends on @actions/http-client ^4 -> undici ^6.23.0, resolving
+      // to 6.28.0. NOTE: 3.x is ESM-only, so check-for-upgrades.js loads it with a
+      // dynamic import rather than `require`.
+      "@actions/core@^3.0.0",
       "@action-validator/core",
       "@action-validator/cli"
     );
