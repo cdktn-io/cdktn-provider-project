@@ -13,7 +13,7 @@ if [ -z "$NEW_VERSION" ]; then
 fi
 
 echo "Updating JSII & TypeScript version to $NEW_VERSION"
-yarn
+pnpm install
 sed -i "s/typescriptVersion = \".*\";/typescriptVersion = \"~$NEW_VERSION\";/" "$PROJECT_ROOT/.projenrc.ts"
 CI=0 npx projen
 

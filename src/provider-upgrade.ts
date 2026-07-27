@@ -70,10 +70,10 @@ export class ProviderUpgrade {
         name: "Setup Copywrite tool",
         uses: "hashicorp/setup-copywrite",
       },
-      { run: "yarn install" },
+      { run: "pnpm install --frozen-lockfile" },
       {
         id: "check_version",
-        run: "yarn check-if-new-provider-version",
+        run: "pnpm run check-if-new-provider-version",
       },
       {
         name: "get provider current version",
@@ -82,7 +82,7 @@ export class ProviderUpgrade {
         run: `echo "value=$(jq -r '(.cdktn // .cdktf).provider.version' package.json)" >> $GITHUB_OUTPUT`,
       },
       {
-        run: "yarn fetch",
+        run: "pnpm run fetch",
         if: newerVersionAvailable,
         env: {
           CHECKPOINT_DISABLE: "1",
@@ -90,7 +90,7 @@ export class ProviderUpgrade {
         },
       },
       {
-        // Because yarn fetch nukes the contents of /src, we've lost our auto-generated copyright headers
+        // Because pnpm run fetch nukes the contents of /src, we've lost our auto-generated copyright headers
         name: "Add headers using Copywrite tool",
         if: newerVersionAvailable,
         run: "copywrite headers",
