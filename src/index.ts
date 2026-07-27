@@ -688,7 +688,17 @@ export class CdktnProviderProject extends cdk.JsiiProject {
           name: "Clear the changelog so that it doesn't get published twice",
           exec: "rm -f $CHANGELOG",
         },
-        { builtin: "release/bump-version" },
+        // projen 0.101 removed the combined `release/bump-version` builtin and split
+        // it into resolve-latest-tag -> suggest-version-bump -> apply-version-bump,
+        // handing results forward via step `outputEnv` captures. apply on its own
+        // throws "neither BUMP_TYPE nor SUGGESTED_BUMP is set", so all three are
+        // needed. Mirrors projen's own bump task (lib/version.js:128-144).
+        { builtin: "release/resolve-latest-tag", outputEnv: "LATEST_TAG" },
+        {
+          builtin: "release/suggest-version-bump",
+          outputEnv: "SUGGESTED_BUMP",
+        },
+        { builtin: "release/apply-version-bump" },
       ],
       env: {
         OUTFILE: "package.json",
