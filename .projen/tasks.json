@@ -381,6 +381,7 @@
             "ts-jest",
             "ts-node",
             "typescript",
+            "yaml",
             "change-case",
             "fs-extra",
             "--config.minimum-release-age=5760"

@@ -54,6 +54,17 @@ export class DeprecatePackages {
             name: "Checkout",
             uses: "actions/checkout",
           },
+          // Hand-built workflow, so projen does not inject its own "Setup pnpm"
+          // step -- see the same note in provider-upgrade.ts. This job only runs
+          // for deprecated providers, so the missing step was latent rather than
+          // breaking daily, but it would have failed the same way.
+          {
+            name: "Setup pnpm",
+            uses: "pnpm/action-setup",
+            with: {
+              version: project.package.pnpmVersion,
+            },
+          },
           {
             name: "Setup Node.js",
             uses: "actions/setup-node",

@@ -144,7 +144,12 @@ project.addDevDeps(
   "@types/glob",
   "@types/fs-extra",
   "@action-validator/core",
-  "@action-validator/cli"
+  "@action-validator/cli",
+  // Tests parse the generated workflow YAML so assertions can be job-scoped
+  // rather than grepping whole files. It already resolves transitively via
+  // projen, but relying on that trips import/no-extraneous-dependencies and
+  // would break silently if projen ever dropped it.
+  "yaml@^2.9.0"
 );
 
 project.addFields({ publishConfig: { access: "public" } });
