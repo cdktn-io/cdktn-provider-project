@@ -93,9 +93,16 @@ Determines if a release is needed by comparing `version.json` against the last g
 4. Custom `unconditional-bump` task sets version in package.json for Go docs
 
 **Memory Management:**
-- Default GitHub runners: 7GB (heap limit ~6.6GB)
-- Custom runners: 32GB (heap limit ~31.7GB)
+- Default GitHub runners: 7GB (heap limit 6656 MiB, ~6.5GB)
+- Custom runners: 32GB (heap limit 28672 MiB, 28GB)
 - Set via `NODE_OPTIONS` environment variable: `--max-old-space-size`
+- Override per provider with the `nodeHeapSizeMb` option (positive integer,
+  MiB). Only do this for a provider that has demonstrably OOMed on the default.
+- The custom-runner ceiling was 31744 MiB (~97% of RAM) until #38. That left no
+  headroom for the kernel, the runner agent, or the Go toolchain jsii-pacmak
+  shells out to, so a heap-hungry pacmak run was OOM-killed instead of being
+  made to collect. The signature is a step stuck `in_progress` with a null
+  `completedAt` and a job burning ~12-13m instead of ~4m. See #34.
 
 ## Important Configuration Details
 

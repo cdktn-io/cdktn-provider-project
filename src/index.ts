@@ -38,6 +38,29 @@ const MIN_MAJOR_VERSION = 1;
 
 export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
   readonly useCustomGithubRunner?: boolean;
+  /**
+   * V8 heap ceiling in MiB, written as `--max-old-space-size` into the global
+   * `NODE_OPTIONS` in `.projen/tasks.json`.
+   *
+   * Must be a positive safe integer. Node refuses to start on a malformed
+   * value (`--max-old-space-size=1.5` and `=NaN` are both rejected before any
+   * script runs), and `0` restores V8's own default rather than applying a
+   * ceiling -- so an invalid value here would break every task in the
+   * generated repo, far from this call site. It is validated at synth time.
+   *
+   * Leave unset to take the default for the runner class:
+   * `DEFAULT_HEAP_MB_CUSTOM_RUNNER` (28672, on 32GB custom runners) or
+   * `DEFAULT_HEAP_MB_HOSTED_RUNNER` (6656, on 7GB GitHub-hosted runners).
+   *
+   * Set it only for a provider that still OOMs on that default.
+   * `--max-old-space-size` is a *ceiling*, not a reservation: lowering it
+   * cannot slow down providers that never approach it, it only makes V8
+   * collect harder instead of letting the kernel OOM-kill the process.
+   *
+   * @default - DEFAULT_HEAP_MB_CUSTOM_RUNNER if `useCustomGithubRunner`,
+   * otherwise DEFAULT_HEAP_MB_HOSTED_RUNNER
+   */
+  readonly nodeHeapSizeMb?: number;
   readonly terraformProvider: string;
   readonly cdktnVersion: string;
   /**
@@ -395,9 +418,41 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     );
 
     // Default memory is 7GB: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
-    // Custom Runners we use have 32GB of memory
-    // The below numbers set heap limits that are ~1gb and ~0.5gb less, respectively, than the total available memory
-    const maxOldSpaceSize = options.useCustomGithubRunner ? "31744" : "6656";
+    // Custom Runners we use have 32GB of memory.
+    //
+    // The custom-runner ceiling used to be 31744 (31GB of 32GB, ~97% of RAM).
+    // That leaves nothing for the kernel, the runner agent, or the Go toolchain
+    // that jsii-pacmak shells out to, so a pacmak run that legitimately wants a
+    // lot of heap gets OOM-killed by the kernel instead of being told to collect.
+    // The signature is distinctive: the step sits in_progress with a null
+    // completedAt (killed process, not a non-zero exit) and the job burns ~12-13m
+    // instead of the ~4m a healthy run takes. See cdktn-provider-project#34.
+    //
+    // 28672 (28GB) keeps 4GB of headroom. This is a ceiling, not a reservation --
+    // providers that never approach it are unaffected.
+    const DEFAULT_HEAP_MB_CUSTOM_RUNNER = 28672;
+    const DEFAULT_HEAP_MB_HOSTED_RUNNER = 6656; // 6.5GB of 7GB
+
+    // `nodeHeapSizeMb` is public API and, via jsii, reachable from Python, Go,
+    // Java and .NET where `number` is even looser than TypeScript's. Node
+    // refuses to start on a malformed ceiling -- `--max-old-space-size=1.5`
+    // and `=NaN` are both rejected before any script runs -- and `0` silently
+    // restores V8's default instead of applying a limit. Interpolating an
+    // unchecked value would therefore break every task in the generated repo,
+    // surfacing as an inscrutable startup failure in CI rather than here.
+    assert(
+      options.nodeHeapSizeMb === undefined ||
+        (Number.isSafeInteger(options.nodeHeapSizeMb) &&
+          options.nodeHeapSizeMb > 0),
+      `nodeHeapSizeMb must be a positive safe integer (MiB), got ${options.nodeHeapSizeMb}`
+    );
+
+    const maxOldSpaceSize = String(
+      options.nodeHeapSizeMb ??
+        (options.useCustomGithubRunner
+          ? DEFAULT_HEAP_MB_CUSTOM_RUNNER
+          : DEFAULT_HEAP_MB_HOSTED_RUNNER)
+    );
 
     // Golang needs more memory to build
     this.tasks.addEnvironment(
@@ -461,7 +516,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     // ACTIONS_ID_TOKEN_REQUEST_URL, which GitHub injects on any runner given
     // `id-token: write`, and PyPI's trust is bound to the workflow ref, not the
     // runner. Forcing this job onto a hosted runner would also strand it with the
-    // 31GB NODE_OPTIONS heap ceiling that useCustomGithubRunner writes into
+    // 28GB NODE_OPTIONS heap ceiling that useCustomGithubRunner writes into
     // .projen/tasks.json, on a box with far less RAM than that -- and unlike
     // package:js, package:python is a real jsii-pacmak transpile.
 

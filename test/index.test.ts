@@ -256,6 +256,58 @@ const HEAVY_PACKAGE_TASKS = [
   "package:go",
 ];
 
+test("heap ceiling leaves headroom and is overridable per provider", () => {
+  const heapOf = (snapshot: Record<string, any>) =>
+    JSON.parse(snapshot[".projen/tasks.json"]).env.NODE_OPTIONS;
+
+  // Custom runners are 32GB; hosted are 7GB. Both defaults must stay strictly
+  // under the physical RAM -- a ceiling at ~97% of RAM is what let jsii-pacmak
+  // get OOM-killed instead of collecting (see #34).
+  expect(
+    heapOf(synthSnapshot(getProject({ useCustomGithubRunner: true })))
+  ).toEqual("--max-old-space-size=28672");
+  expect(
+    heapOf(synthSnapshot(getProject({ useCustomGithubRunner: false })))
+  ).toEqual("--max-old-space-size=6656");
+
+  // A provider that still OOMs on the default can dial it down without
+  // forcing every other provider off the shared default.
+  expect(
+    heapOf(
+      synthSnapshot(
+        getProject({ useCustomGithubRunner: true, nodeHeapSizeMb: 24576 })
+      )
+    )
+  ).toEqual("--max-old-space-size=24576");
+
+  // The override must apply on hosted runners too, not just custom ones.
+  expect(
+    heapOf(
+      synthSnapshot(
+        getProject({ useCustomGithubRunner: false, nodeHeapSizeMb: 4096 })
+      )
+    )
+  ).toEqual("--max-old-space-size=4096");
+});
+
+test("rejects a heap override Node could not parse", () => {
+  // Node validates --max-old-space-size before running any script, so a bad
+  // value here would not fail at synth -- it would break every task in the
+  // generated repo with an error pointing nowhere near this option. jsii
+  // exposes `number` to Python/Go/Java/.NET, so non-integers are reachable
+  // from those runtimes too, not just from a TypeScript typo.
+  for (const bad of [1.5, 0, -1, NaN, Infinity]) {
+    expect(() =>
+      synthSnapshot(getProject({ nodeHeapSizeMb: bad }))
+    ).toThrowError(/nodeHeapSizeMb must be a positive safe integer/);
+  }
+
+  // Boundary: the smallest legal value must still be accepted.
+  expect(() =>
+    synthSnapshot(getProject({ nodeHeapSizeMb: 1 }))
+  ).not.toThrowError();
+});
+
 test("jobs forced onto hosted runners never run a heavy jsii-pacmak task", () => {
   const snapshot = synthSnapshot(
     getProject({
@@ -272,7 +324,7 @@ test("jobs forced onto hosted runners never run a heavy jsii-pacmak task", () =>
   // runner's physical RAM, and V8 grows until the kernel OOM-kills it rather
   // than collecting. That is only tolerable for tasks that barely allocate.
   const tasks = JSON.parse(snapshot[".projen/tasks.json"]);
-  expect(tasks.env.NODE_OPTIONS).toEqual("--max-old-space-size=31744");
+  expect(tasks.env.NODE_OPTIONS).toEqual("--max-old-space-size=28672");
 
   const jobs = releaseJobs(snapshot[".github/workflows/release.yml"]);
   const hosted = Object.entries(jobs).filter(([, body]) =>
@@ -305,7 +357,7 @@ test("synths with pypi trusted publishing enabled", () => {
   expect(pypiJobSection).not.toEqual(expect.stringContaining("TWINE"));
   // PyPI does not restrict trusted publishing to GitHub-hosted runners, so the
   // job must stay on the custom runner. Moving it would strand package:python
-  // (a real jsii-pacmak transpile) with the 31GB heap ceiling that
+  // (a real jsii-pacmak transpile) with the 28GB heap ceiling that
   // useCustomGithubRunner writes into .projen/tasks.json, on a smaller box.
   expect(pypiJobSection).toEqual(
     expect.stringContaining("runs-on: depot-ubuntu-24.04-8")
