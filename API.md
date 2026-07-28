@@ -1587,6 +1587,7 @@ const cdktnProviderProjectOptions: CdktnProviderProjectOptions = { ... }
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenGroupId">mavenGroupId</a></code> | <code>string</code> | defaults to "io.${mavenOrg}". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.mavenOrg">mavenOrg</a></code> | <code>string</code> | defaults to "cdktn". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.namespace">namespace</a></code> | <code>string</code> | defaults to "cdktn". |
+| <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.nodeHeapSizeMb">nodeHeapSizeMb</a></code> | <code>number</code> | V8 heap ceiling in MiB, written as `--max-old-space-size` into the global `NODE_OPTIONS` in `.projen/tasks.json`. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.nugetOrg">nugetOrg</a></code> | <code>string</code> | defaults to "Io.Cdktn". |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.pypiTrustedPublishing">pypiTrustedPublishing</a></code> | <code>boolean</code> | Use trusted publishing for publishing to pypi.org Needs to be pre-configured on PyPI to work. |
 | <code><a href="#@cdktn/provider-project.CdktnProviderProjectOptions.property.useCustomGithubRunner">useCustomGithubRunner</a></code> | <code>boolean</code> | *No description.* |
@@ -4135,6 +4136,34 @@ public readonly namespace: string;
 - *Type:* string
 
 defaults to "cdktn".
+
+---
+
+##### `nodeHeapSizeMb`<sup>Optional</sup> <a name="nodeHeapSizeMb" id="@cdktn/provider-project.CdktnProviderProjectOptions.property.nodeHeapSizeMb"></a>
+
+```typescript
+public readonly nodeHeapSizeMb: number;
+```
+
+- *Type:* number
+- *Default:* DEFAULT_HEAP_MB_CUSTOM_RUNNER if `useCustomGithubRunner`, otherwise DEFAULT_HEAP_MB_HOSTED_RUNNER
+
+V8 heap ceiling in MiB, written as `--max-old-space-size` into the global `NODE_OPTIONS` in `.projen/tasks.json`.
+
+Must be a positive safe integer. Node refuses to start on a malformed
+value (`--max-old-space-size=1.5` and `=NaN` are both rejected before any
+script runs), and `0` restores V8's own default rather than applying a
+ceiling -- so an invalid value here would break every task in the
+generated repo, far from this call site. It is validated at synth time.
+
+Leave unset to take the default for the runner class:
+`DEFAULT_HEAP_MB_CUSTOM_RUNNER` (28672, on 32GB custom runners) or
+`DEFAULT_HEAP_MB_HOSTED_RUNNER` (6656, on 7GB GitHub-hosted runners).
+
+Set it only for a provider that still OOMs on that default.
+`--max-old-space-size` is a *ceiling*, not a reservation: lowering it
+cannot slow down providers that never approach it, it only makes V8
+collect harder instead of letting the kernel OOM-kill the process.
 
 ---
 

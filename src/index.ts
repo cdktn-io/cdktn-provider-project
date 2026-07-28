@@ -39,14 +39,26 @@ const MIN_MAJOR_VERSION = 1;
 export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
   readonly useCustomGithubRunner?: boolean;
   /**
-   * V8 heap ceiling in MB, written as `--max-old-space-size` into the global
-   * NODE_OPTIONS in `.projen/tasks.json`.
+   * V8 heap ceiling in MiB, written as `--max-old-space-size` into the global
+   * `NODE_OPTIONS` in `.projen/tasks.json`.
    *
-   * Leave unset to take the default for the runner class (see
-   * DEFAULT_HEAP_MB_*). Set it only for a provider that still OOMs on the
-   * default -- `--max-old-space-size` is a *ceiling*, not a reservation, so
-   * lowering it does not slow down providers that never approach it; it just
-   * makes V8 collect harder instead of letting the kernel OOM-kill the process.
+   * Must be a positive safe integer. Node refuses to start on a malformed
+   * value (`--max-old-space-size=1.5` and `=NaN` are both rejected before any
+   * script runs), and `0` restores V8's own default rather than applying a
+   * ceiling -- so an invalid value here would break every task in the
+   * generated repo, far from this call site. It is validated at synth time.
+   *
+   * Leave unset to take the default for the runner class:
+   * `DEFAULT_HEAP_MB_CUSTOM_RUNNER` (28672, on 32GB custom runners) or
+   * `DEFAULT_HEAP_MB_HOSTED_RUNNER` (6656, on 7GB GitHub-hosted runners).
+   *
+   * Set it only for a provider that still OOMs on that default.
+   * `--max-old-space-size` is a *ceiling*, not a reservation: lowering it
+   * cannot slow down providers that never approach it, it only makes V8
+   * collect harder instead of letting the kernel OOM-kill the process.
+   *
+   * @default - DEFAULT_HEAP_MB_CUSTOM_RUNNER if `useCustomGithubRunner`,
+   * otherwise DEFAULT_HEAP_MB_HOSTED_RUNNER
    */
   readonly nodeHeapSizeMb?: number;
   readonly terraformProvider: string;
@@ -420,6 +432,21 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     // providers that never approach it are unaffected.
     const DEFAULT_HEAP_MB_CUSTOM_RUNNER = 28672;
     const DEFAULT_HEAP_MB_HOSTED_RUNNER = 6656; // 6.5GB of 7GB
+
+    // `nodeHeapSizeMb` is public API and, via jsii, reachable from Python, Go,
+    // Java and .NET where `number` is even looser than TypeScript's. Node
+    // refuses to start on a malformed ceiling -- `--max-old-space-size=1.5`
+    // and `=NaN` are both rejected before any script runs -- and `0` silently
+    // restores V8's default instead of applying a limit. Interpolating an
+    // unchecked value would therefore break every task in the generated repo,
+    // surfacing as an inscrutable startup failure in CI rather than here.
+    assert(
+      options.nodeHeapSizeMb === undefined ||
+        (Number.isSafeInteger(options.nodeHeapSizeMb) &&
+          options.nodeHeapSizeMb > 0),
+      `nodeHeapSizeMb must be a positive safe integer (MiB), got ${options.nodeHeapSizeMb}`
+    );
+
     const maxOldSpaceSize = String(
       options.nodeHeapSizeMb ??
         (options.useCustomGithubRunner
