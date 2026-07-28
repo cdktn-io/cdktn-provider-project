@@ -249,6 +249,50 @@ const releaseJobs = (release: string): Record<string, string> => {
 
 // package:js only repacks the tarball the build job already produced; every
 // other package:* target is a real jsii-pacmak transpile that actually allocates.
+test("every workflow that runs pnpm also installs pnpm", () => {
+  // The pnpm migration switched the hand-built workflows (provider-upgrade,
+  // deprecate-packages) to `pnpm install` but did not add the "Setup pnpm"
+  // step projen injects into the workflows it generates itself. Result: exit
+  // 127 "pnpm: command not found" on every provider, every day, and it only
+  // surfaced once the first scheduled run fired after rollout -- snapshot
+  // tests never execute a workflow, so nothing caught it.
+  // Both variants are required: provider-upgrade.yml is only generated when the
+  // project is NOT deprecated, and the deprecate job only when it IS. Checking
+  // one snapshot silently skips the other workflow.
+  const variants = {
+    active: synthSnapshot(getProject()),
+    deprecated: synthSnapshot(
+      getProject({ isDeprecated: true, deprecationDate: "December 11, 2023" })
+    ),
+  };
+
+  const offenders: string[] = [];
+  const seen = new Set<string>();
+
+  for (const [variant, snapshot] of Object.entries(variants)) {
+    for (const file of Object.keys(snapshot).filter((f) =>
+      f.startsWith(".github/workflows/")
+    )) {
+      const body: string = snapshot[file];
+      if (!/^\s*(-\s*)?run:.*\bpnpm\b/m.test(body)) continue;
+      seen.add(file);
+      if (!body.includes("pnpm/action-setup")) {
+        offenders.push(`${variant}:${file}`);
+      }
+    }
+  }
+
+  // Guard the guard: if these two stop being generated the test would pass
+  // vacuously, which is exactly how the original bug slipped through.
+  expect([...seen]).toEqual(
+    expect.arrayContaining([
+      ".github/workflows/provider-upgrade.yml",
+      ".github/workflows/release.yml",
+    ])
+  );
+  expect(offenders).toEqual([]);
+});
+
 const HEAVY_PACKAGE_TASKS = [
   "package:python",
   "package:java",

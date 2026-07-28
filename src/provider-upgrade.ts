@@ -59,6 +59,18 @@ export class ProviderUpgrade {
           terraform_wrapper: false,
         },
       },
+      // This workflow is hand-built, so projen does not inject the "Setup pnpm"
+      // step it adds to the workflows it generates itself. Without it the pnpm
+      // migration left `pnpm install` below with no pnpm on PATH -- exit 127,
+      // every provider, every day. Keep it ahead of setup-node, matching the
+      // order projen emits.
+      {
+        name: "Setup pnpm",
+        uses: "pnpm/action-setup",
+        with: {
+          version: project.package.pnpmVersion,
+        },
+      },
       {
         name: "Setup Node.js",
         uses: "actions/setup-node",
