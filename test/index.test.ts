@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: MPL-2.0
  */
 
+import { parse as parseYaml } from "yaml";
 import { synthSnapshot } from "./util/synth";
 import { getProject } from "./util/test-project";
 
@@ -267,27 +268,44 @@ test("every workflow that runs pnpm also installs pnpm", () => {
   };
 
   const offenders: string[] = [];
-  const seen = new Set<string>();
+  const seen: string[] = [];
 
   for (const [variant, snapshot] of Object.entries(variants)) {
     for (const file of Object.keys(snapshot).filter((f) =>
       f.startsWith(".github/workflows/")
     )) {
-      const body: string = snapshot[file];
-      if (!/^\s*(-\s*)?run:.*\bpnpm\b/m.test(body)) continue;
-      seen.add(file);
-      if (!body.includes("pnpm/action-setup")) {
-        offenders.push(`${variant}:${file}`);
+      const workflow = parseYaml(snapshot[file]) as {
+        jobs?: Record<string, { steps?: { uses?: string; run?: string }[] }>;
+      };
+
+      for (const [jobId, job] of Object.entries(workflow.jobs ?? {})) {
+        const steps = job.steps ?? [];
+        const firstPnpmRun = steps.findIndex((s) =>
+          /\bpnpm\b/.test(s.run ?? "")
+        );
+        if (firstPnpmRun === -1) continue;
+
+        seen.push(`${variant}:${file}:${jobId}`);
+
+        // Scope the check to THIS job, and require the setup to come first.
+        // A file-level check is not enough: in the deprecated variant,
+        // release.yml already carries projen's own pnpm/action-setup in the
+        // regular release job, which masked the deprecate job missing it
+        // entirely -- the exact bug this test exists to catch.
+        const setupBefore = steps
+          .slice(0, firstPnpmRun)
+          .some((s) => (s.uses ?? "").startsWith("pnpm/action-setup"));
+        if (!setupBefore) offenders.push(`${variant}:${file}:${jobId}`);
       }
     }
   }
 
-  // Guard the guard: if these two stop being generated the test would pass
-  // vacuously, which is exactly how the original bug slipped through.
-  expect([...seen]).toEqual(
+  // Guard the guard: if these jobs stop being generated the test would pass
+  // vacuously, which is how the original bug slipped through twice.
+  expect(seen).toEqual(
     expect.arrayContaining([
-      ".github/workflows/provider-upgrade.yml",
-      ".github/workflows/release.yml",
+      "active:.github/workflows/provider-upgrade.yml:upgrade",
+      "deprecated:.github/workflows/release.yml:deprecate",
     ])
   );
   expect(offenders).toEqual([]);

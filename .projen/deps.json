@@ -124,6 +124,11 @@
       "type": "build"
     },
     {
+      "name": "yaml",
+      "version": "^2.9.0",
+      "type": "build"
+    },
+    {
       "name": "change-case",
       "type": "bundled"
     },
