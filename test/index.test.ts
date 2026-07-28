@@ -256,6 +256,40 @@ const HEAVY_PACKAGE_TASKS = [
   "package:go",
 ];
 
+test("heap ceiling leaves headroom and is overridable per provider", () => {
+  const heapOf = (snapshot: Record<string, any>) =>
+    JSON.parse(snapshot[".projen/tasks.json"]).env.NODE_OPTIONS;
+
+  // Custom runners are 32GB; hosted are 7GB. Both defaults must stay strictly
+  // under the physical RAM -- a ceiling at ~97% of RAM is what let jsii-pacmak
+  // get OOM-killed instead of collecting (see #34).
+  expect(heapOf(synthSnapshot(getProject({ useCustomGithubRunner: true })))).toEqual(
+    "--max-old-space-size=28672"
+  );
+  expect(
+    heapOf(synthSnapshot(getProject({ useCustomGithubRunner: false })))
+  ).toEqual("--max-old-space-size=6656");
+
+  // A provider that still OOMs on the default can dial it down without
+  // forcing every other provider off the shared default.
+  expect(
+    heapOf(
+      synthSnapshot(
+        getProject({ useCustomGithubRunner: true, nodeHeapSizeMb: 24576 })
+      )
+    )
+  ).toEqual("--max-old-space-size=24576");
+
+  // The override must apply on hosted runners too, not just custom ones.
+  expect(
+    heapOf(
+      synthSnapshot(
+        getProject({ useCustomGithubRunner: false, nodeHeapSizeMb: 4096 })
+      )
+    )
+  ).toEqual("--max-old-space-size=4096");
+});
+
 test("jobs forced onto hosted runners never run a heavy jsii-pacmak task", () => {
   const snapshot = synthSnapshot(
     getProject({
@@ -272,7 +306,7 @@ test("jobs forced onto hosted runners never run a heavy jsii-pacmak task", () =>
   // runner's physical RAM, and V8 grows until the kernel OOM-kills it rather
   // than collecting. That is only tolerable for tasks that barely allocate.
   const tasks = JSON.parse(snapshot[".projen/tasks.json"]);
-  expect(tasks.env.NODE_OPTIONS).toEqual("--max-old-space-size=31744");
+  expect(tasks.env.NODE_OPTIONS).toEqual("--max-old-space-size=28672");
 
   const jobs = releaseJobs(snapshot[".github/workflows/release.yml"]);
   const hosted = Object.entries(jobs).filter(([, body]) =>
