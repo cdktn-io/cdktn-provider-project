@@ -1466,7 +1466,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "rm -rf ./src && cdktn get && cp -R .gen/providers/random ./src && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -4196,7 +4196,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "rm -rf ./src && cdktn get && cp -R .gen/providers/random ./src && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -7304,7 +7304,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "rm -rf ./src && cdktn get && cp -R .gen/providers/random ./src && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -10412,7 +10412,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "rm -rf ./src && cdktn get && cp -R .gen/providers/random ./src && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -13521,7 +13521,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "rm -rf ./src && cdktn get && cp -R .gen/providers/random ./src && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -16629,7 +16629,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/random/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "rm -rf ./src && cdktn get && cp -R .gen/providers/random ./src && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"
@@ -19754,7 +19754,7 @@ scripts
       },
       "steps": [
         {
-          "exec": "mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/acme/* ./src/ && cp .gen/versions.json ./src/version.json"
+          "exec": "rm -rf ./src && cdktn get && cp -R .gen/providers/acme ./src && cp .gen/versions.json ./src/version.json"
         },
         {
           "spawn": "default"

@@ -63,7 +63,7 @@ export class CdktfConfig {
     }
 
     const fetchTask = project.addTask("fetch", {
-      exec: `mkdir -p src && rm -rf ./src/* && cdktn get && cp -R .gen/providers/${providerName}/* ./src/ && cp .gen/versions.json ./src/version.json`,
+      exec: `rm -rf ./src && cdktn get && cp -R .gen/providers/${providerName} ./src && cp .gen/versions.json ./src/version.json`,
       env: {
         CHECKPOINT_DISABLE: "1",
       },
