@@ -500,3 +500,42 @@ test("deprecated cdktfVersion option still works as alias for cdktnVersion", () 
   expect(packageJson.devDependencies).not.toHaveProperty("cdktf");
   expect(packageJson.devDependencies).not.toHaveProperty("cdktf-cli");
 });
+
+test("first-party packages are exempt from the upgrade cooldown", () => {
+  const snapshot = synthSnapshot(getProject());
+  const workspace = parseYaml(snapshot["pnpm-workspace.yaml"]);
+
+  // The cooldown reaches the upgrade task as a `pnpm update` flag; pnpm reads the
+  // exclusion list from pnpm-workspace.yaml, so both halves have to line up or a
+  // release of this template cannot reach provider repos for four days.
+  expect(
+    JSON.parse(snapshot[".projen/tasks.json"]).tasks.upgrade.steps
+  ).toEqual(
+    expect.arrayContaining([
+      {
+        execArgs: expect.arrayContaining([
+          "pnpm",
+          "update",
+          "--config.minimum-release-age=5760",
+        ]),
+      },
+    ])
+  );
+  expect(workspace.minimumReleaseAgeExclude).toEqual([
+    "@cdktn/provider-project",
+    "cdktn",
+    "cdktn-cli",
+  ]);
+
+  // The waiver is first-party only -- everything else still waits out the cooldown.
+  expect(workspace.minimumReleaseAgeExclude).not.toContain("projen");
+  expect(workspace.minimumReleaseAgeExclude).not.toContain("constructs");
+});
+
+test("the cooldown is moot for deprecated projects, which have no upgrade task", () => {
+  const snapshot = synthSnapshot(getProject({ isDeprecated: true }));
+
+  expect(JSON.parse(snapshot[".projen/tasks.json"]).tasks).not.toHaveProperty(
+    "upgrade"
+  );
+});
