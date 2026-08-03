@@ -36,6 +36,33 @@ import { generateRandomCron, Schedule } from "./util/random-cron";
 // ensure new projects start with 1.0.0 so that every following breaking change leads to an increased major version
 const MIN_MAJOR_VERSION = 1;
 
+/**
+ * First-party packages that are exempt from the dependency-upgrade cooldown.
+ *
+ * The `cooldown: 4` below reaches the generated upgrade task as
+ * `pnpm update --config.minimum-release-age=5760`, which gates *every* package
+ * -- including the ones we publish ourselves. That is backwards for those: a
+ * fix released here cannot reach the fleet for four days, which is exactly the
+ * window in which we need it to move. The cooldown exists to give a compromised
+ * third-party release time to be flagged; for packages published from repos we
+ * own, with trusted publishing and an audit gate on their own releases, it buys
+ * nothing that we do not already control.
+ *
+ * `cdktn` and `cdktn-cli` are here for the same reason: a provider repo has to
+ * be able to rebuild against a freshly released CDKTN, especially after a major
+ * one. They are also version-pinned together by `CdktfConfig`, so excluding one
+ * without the other would only half-apply.
+ *
+ * pnpm honours this from `pnpm-workspace.yaml` even though `minimumReleaseAge`
+ * itself arrives on the command line; it matches on package name and applies to
+ * every version of that package. Everything not listed here stays gated.
+ */
+const MINIMUM_RELEASE_AGE_EXCLUDE = [
+  "@cdktn/provider-project",
+  "cdktn",
+  "cdktn-cli",
+];
+
 export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
   readonly useCustomGithubRunner?: boolean;
   /**
@@ -347,10 +374,16 @@ export class CdktnProviderProject extends cdk.JsiiProject {
             // ^1.1.7. Dev tooling only; never shipped.
             ignoreGhsas: ["GHSA-mh99-v99m-4gvg"],
           },
+          // Let first-party releases skip the `cooldown` below -- see the note on
+          // the constant. Third-party deps are unaffected.
+          minimumReleaseAgeExclude: MINIMUM_RELEASE_AGE_EXCLUDE,
         },
       },
       depsUpgrade: !isDeprecated,
       depsUpgradeOptions: {
+        // Skip versions published in the last 4 days, so a compromised release has
+        // time to be flagged before an auto-merging upgrade PR pulls it in. Waived
+        // for the packages in MINIMUM_RELEASE_AGE_EXCLUDE.
         cooldown: 4,
         workflowOptions: {
           labels: ["automerge", "auto-approve", "dependencies"],
