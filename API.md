@@ -4157,7 +4157,7 @@ ceiling -- so an invalid value here would break every task in the
 generated repo, far from this call site. It is validated at synth time.
 
 Leave unset to take the default for the runner class:
-`DEFAULT_HEAP_MB_CUSTOM_RUNNER` (28672, on 32GB custom runners) or
+`DEFAULT_HEAP_MB_CUSTOM_RUNNER` (20480, on 32GB custom runners) or
 `DEFAULT_HEAP_MB_HOSTED_RUNNER` (6656, on 7GB GitHub-hosted runners).
 
 Set it only for a provider that still OOMs on that default.
