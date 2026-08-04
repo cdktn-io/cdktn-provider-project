@@ -1,14 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports */
 import assert = require("assert");
 import { pascalCase } from "change-case";
-import {
-  Component,
-  ObjectFile,
-  TextFile,
-  cdk,
-  github,
-  JsonPatch,
-} from "projen";
+import { Component, TextFile, cdk, github, JsonPatch } from "projen";
 import { JobStep } from "projen/lib/github/workflows-model";
 import {
   NodePackageManager,
@@ -256,6 +249,9 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         // In order to use the copywrite action, we need to rebuild the full pre-publish steps workflow unfortunately
         // If someone knows a better way to do this mutation with minimal custom code, please do so
         prePublishSteps: [
+          // NOTE: the "Setup pnpm" step this job needs is inserted by
+          // GoPublishJobPatch at synth time, not here -- it has to read
+          // `this.package.pnpmVersion`, which does not exist yet at super().
           {
             name: "Checkout",
             uses: "actions/checkout",
@@ -265,7 +261,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
           },
           {
             name: "Install Dependencies",
-            run: "cd .repo && yarn install --check-files --frozen-lockfile",
+            run: "cd .repo && pnpm install --frozen-lockfile",
           },
           {
             name: "Extract build artifact",
@@ -573,38 +569,14 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       pr.steps.splice(1, 0, setSafeDirectory);
     }
 
-    // release: Go — patch the release workflow's Go publish to use a GitHub
-    // App installation token.
-    const patchGoPublishToUseAppToken = (workflowFile?: ObjectFile) => {
-      if (!workflowFile) return;
-      const goPublishToken = github.GithubCredentials.fromApp({
-        appIdSecret: "PROJEN_APP_ID",
-        privateKeySecret: "PROJEN_APP_PRIVATE_KEY",
-        owner: "${{ github.repository_owner }}",
-        repositories: [
-          packageInfo.publishToGo?.moduleName?.split("/").pop() ?? "",
-        ],
-        permissions: { contents: github.workflows.AppPermission.WRITE },
-      });
-      workflowFile.patch(
-        JsonPatch.add(
-          "/jobs/release_golang/steps/16",
-          goPublishToken.setupSteps[0]
-        ),
-        JsonPatch.add(
-          "/jobs/release_golang/steps/17/env/GITHUB_TOKEN",
-          // GitHub App installation tokens (ghs_*) require the `x-access-token`
-          // username when used in HTTPS git URLs. publib renders this env var
-          // verbatim into `https://${GITHUB_TOKEN}@github.com/...`, so without
-          // the prefix the push 401s and falls back to a TTY password prompt.
-          `x-access-token:${goPublishToken.tokenRef}`
-        )
-      );
-    };
-
-    if (!isDeprecated) {
-      patchGoPublishToUseAppToken(releaseWorkflow);
-    }
+    // release: Go — complete the hand-built Go publish job. Deprecated projects
+    // still publish Go, so they still need the pnpm setup; only the App token is
+    // conditional, since they do not push new module versions.
+    new GoPublishJobPatch(this, {
+      appTokenRepository: isDeprecated
+        ? undefined
+        : packageInfo.publishToGo?.moduleName?.split("/").pop() ?? "",
+    });
 
     // Fix maven issue (https://github.com/cdklabs/publib/pull/777)
     //
@@ -861,6 +833,90 @@ class MavenOptsPatch extends Component {
       "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED";
     // This is no longer used.
     delete step.env.MAVEN_STAGING_PROFILE_ID;
+  }
+}
+
+/**
+ * Fixes up the hand-built Go publish job, which `publishToGo.prePublishSteps`
+ * has to declare before `super()` and therefore cannot build completely:
+ *
+ * - inserts the "Setup pnpm" step that projen injects into the workflows it
+ *   generates itself but not into hand-built ones, at the project's own pnpm
+ *   version rather than a copy of it. Applies to deprecated projects too: they
+ *   still run this job, so they still need pnpm on PATH;
+ * - pushes the module with a GitHub App installation token instead of the
+ *   default `GO_GITHUB_TOKEN` secret, when `appTokenRepository` is given.
+ *
+ * Runs in preSynthesize for two reasons: the publish jobs are added by Release
+ * during synthesis, so the job does not exist at construction time, and
+ * `this.package.pnpmVersion` is only readable after `super()`.
+ *
+ * Both steps are spliced in immediately before the step that needs them,
+ * resolved by what that step runs. Never by index: release_golang's indices
+ * shift whenever the job gains a step -- adding "Setup pnpm" is exactly what
+ * moved the old hardcoded /steps/17/env onto a step with no env at all.
+ */
+class GoPublishJobPatch extends Component {
+  private readonly appTokenRepository?: string;
+
+  constructor(
+    private readonly nodeProject: cdk.JsiiProject,
+    options: { appTokenRepository?: string }
+  ) {
+    super(nodeProject);
+    this.appTokenRepository = options.appTokenRepository;
+  }
+
+  public preSynthesize() {
+    const workflow = github.GitHub.of(this.project)?.tryFindWorkflow("release");
+    const steps: JobStep[] | undefined = (workflow as any)?.jobs?.release_golang
+      ?.steps;
+    assert(
+      steps,
+      "release_golang job not found, please check if the Go publish workarounds still work!"
+    );
+
+    // Without pnpm on PATH the install below exits 127. Before the pnpm
+    // migration reached this job it ran `yarn install`, which failed outright
+    // against a package.json declaring `packageManager: "pnpm@..."`.
+    const installIndex = steps.findIndex((s) =>
+      s.run?.includes("pnpm install")
+    );
+    assert(
+      installIndex >= 0,
+      "no pnpm install step in release_golang, please check if the Setup pnpm workaround still works!"
+    );
+    steps.splice(installIndex, 0, {
+      name: "Setup pnpm",
+      uses: "pnpm/action-setup",
+      with: { version: this.nodeProject.package.pnpmVersion },
+    });
+
+    if (!this.appTokenRepository) return;
+
+    const index = steps.findIndex((s) => s.run?.includes("publib-golang"));
+    const step = steps[index];
+    assert(
+      step?.env,
+      "no publib-golang step with an env block in release_golang, please check if the Go publish token workaround still works!"
+    );
+
+    const goPublishToken = github.GithubCredentials.fromApp({
+      appIdSecret: "PROJEN_APP_ID",
+      privateKeySecret: "PROJEN_APP_PRIVATE_KEY",
+      owner: "${{ github.repository_owner }}",
+      repositories: [this.appTokenRepository],
+      permissions: { contents: github.workflows.AppPermission.WRITE },
+    });
+
+    // Mutate the steps directly rather than JsonPatch-ing the rendered file, so
+    // the token-minting step stays anchored to the publish step it feeds.
+    steps.splice(index, 0, goPublishToken.setupSteps[0]);
+    // GitHub App installation tokens (ghs_*) require the `x-access-token`
+    // username when used in HTTPS git URLs. publib renders this env var
+    // verbatim into `https://${GITHUB_TOKEN}@github.com/...`, so without the
+    // prefix the push 401s and falls back to a TTY password prompt.
+    step.env.GITHUB_TOKEN = `x-access-token:${goPublishToken.tokenRef}`;
   }
 }
 

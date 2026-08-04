@@ -1004,8 +1004,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: .repo
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+        with:
+          version: 10.33.0
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -3592,8 +3596,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: .repo
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+        with:
+          version: 10.33.0
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -3622,7 +3630,7 @@ jobs:
         run: mv .repo/dist dist
       - name: Generate token
         id: generate_token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
         with:
           app-id: \${{ secrets.PROJEN_APP_ID }}
           private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
@@ -6704,8 +6712,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: .repo
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+        with:
+          version: 10.33.0
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -6734,7 +6746,7 @@ jobs:
         run: mv .repo/dist dist
       - name: Generate token
         id: generate_token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
         with:
           app-id: \${{ secrets.PROJEN_APP_ID }}
           private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
@@ -9816,8 +9828,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: .repo
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+        with:
+          version: 10.33.0
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -9846,7 +9862,7 @@ jobs:
         run: mv .repo/dist dist
       - name: Generate token
         id: generate_token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
         with:
           app-id: \${{ secrets.PROJEN_APP_ID }}
           private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
@@ -12929,8 +12945,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: .repo
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+        with:
+          version: 10.33.0
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -12959,7 +12979,7 @@ jobs:
         run: mv .repo/dist dist
       - name: Generate token
         id: generate_token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
         with:
           app-id: \${{ secrets.PROJEN_APP_ID }}
           private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
@@ -16041,8 +16061,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: .repo
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+        with:
+          version: 10.33.0
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -16071,7 +16095,7 @@ jobs:
         run: mv .repo/dist dist
       - name: Generate token
         id: generate_token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
         with:
           app-id: \${{ secrets.PROJEN_APP_ID }}
           private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
@@ -19165,8 +19189,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           path: .repo
+      - name: Setup pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320
+        with:
+          version: 10.33.0
       - name: Install Dependencies
-        run: cd .repo && yarn install --check-files --frozen-lockfile
+        run: cd .repo && pnpm install --frozen-lockfile
       - name: Extract build artifact
         run: tar --strip-components=1 -xzvf dist/js/*.tgz -C .repo
       - name: Move build artifact out of the way
@@ -19195,7 +19223,7 @@ jobs:
         run: mv .repo/dist dist
       - name: Generate token
         id: generate_token
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf
         with:
           app-id: \${{ secrets.PROJEN_APP_ID }}
           private-key: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
