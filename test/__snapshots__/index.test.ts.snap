@@ -6156,7 +6156,7 @@ jobs:
     env:
       PROJEN_APP_ID: \${{ secrets.PROJEN_APP_ID }}
       PROJEN_APP_PRIVATE_KEY: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
-      NODE_OPTIONS: --max-old-space-size=28672
+      NODE_OPTIONS: --max-old-space-size=20480
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -7149,7 +7149,7 @@ scripts
   "manifestVersion": 3,
   "env": {
     "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
-    "NODE_OPTIONS": "--max-old-space-size=28672",
+    "NODE_OPTIONS": "--max-old-space-size=20480",
     "CHECKPOINT_DISABLE": "1"
   },
   "tasks": {
@@ -15505,7 +15505,7 @@ jobs:
     env:
       PROJEN_APP_ID: \${{ secrets.PROJEN_APP_ID }}
       PROJEN_APP_PRIVATE_KEY: \${{ secrets.PROJEN_APP_PRIVATE_KEY }}
-      NODE_OPTIONS: --max-old-space-size=28672
+      NODE_OPTIONS: --max-old-space-size=20480
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -16498,7 +16498,7 @@ scripts
   "manifestVersion": 3,
   "env": {
     "PATH": "$(pnpm -c exec \\"node --print process.env.PATH\\")",
-    "NODE_OPTIONS": "--max-old-space-size=28672",
+    "NODE_OPTIONS": "--max-old-space-size=20480",
     "CHECKPOINT_DISABLE": "1"
   },
   "tasks": {

@@ -322,25 +322,29 @@ test("heap ceiling leaves headroom and is overridable per provider", () => {
   const heapOf = (snapshot: Record<string, any>) =>
     JSON.parse(snapshot[".projen/tasks.json"]).env.NODE_OPTIONS;
 
-  // Custom runners are 32GB; hosted are 7GB. Both defaults must stay strictly
-  // under the physical RAM -- a ceiling at ~97% of RAM is what let jsii-pacmak
-  // get OOM-killed instead of collecting (see #34).
+  // Hosted runners are 7GB. Custom runners advertise 32GB but only ~24GB is
+  // usable -- Depot reserves 8GB for the RAM-disk-backed disk accelerator. Both
+  // defaults must stay strictly under the memory a job can actually get: a
+  // ceiling above that is what let jsii-pacmak get OOM-killed instead of
+  // collecting, and it is why lowering 31744 -> 28672 (still >24GB) fixed
+  // nothing (see #34).
   expect(
     heapOf(synthSnapshot(getProject({ useCustomGithubRunner: true })))
-  ).toEqual("--max-old-space-size=28672");
+  ).toEqual("--max-old-space-size=20480");
   expect(
     heapOf(synthSnapshot(getProject({ useCustomGithubRunner: false })))
   ).toEqual("--max-old-space-size=6656");
 
   // A provider that still OOMs on the default can dial it down without
-  // forcing every other provider off the shared default.
+  // forcing every other provider off the shared default. 16384 is the value
+  // datadog's package:go was verified passing at.
   expect(
     heapOf(
       synthSnapshot(
-        getProject({ useCustomGithubRunner: true, nodeHeapSizeMb: 24576 })
+        getProject({ useCustomGithubRunner: true, nodeHeapSizeMb: 16384 })
       )
     )
-  ).toEqual("--max-old-space-size=24576");
+  ).toEqual("--max-old-space-size=16384");
 
   // The override must apply on hosted runners too, not just custom ones.
   expect(
@@ -386,7 +390,7 @@ test("jobs forced onto hosted runners never run a heavy jsii-pacmak task", () =>
   // runner's physical RAM, and V8 grows until the kernel OOM-kills it rather
   // than collecting. That is only tolerable for tasks that barely allocate.
   const tasks = JSON.parse(snapshot[".projen/tasks.json"]);
-  expect(tasks.env.NODE_OPTIONS).toEqual("--max-old-space-size=28672");
+  expect(tasks.env.NODE_OPTIONS).toEqual("--max-old-space-size=20480");
 
   const jobs = releaseJobs(snapshot[".github/workflows/release.yml"]);
   const hosted = Object.entries(jobs).filter(([, body]) =>
