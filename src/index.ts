@@ -69,7 +69,7 @@ export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
    * generated repo, far from this call site. It is validated at synth time.
    *
    * Leave unset to take the default for the runner class:
-   * `DEFAULT_HEAP_MB_CUSTOM_RUNNER` (28672, on 32GB custom runners) or
+   * `DEFAULT_HEAP_MB_CUSTOM_RUNNER` (20480, on 32GB custom runners) or
    * `DEFAULT_HEAP_MB_HOSTED_RUNNER` (6656, on 7GB GitHub-hosted runners).
    *
    * Set it only for a provider that still OOMs on that default.
@@ -449,17 +449,29 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     // Default memory is 7GB: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
     // Custom Runners we use have 32GB of memory.
     //
-    // The custom-runner ceiling used to be 31744 (31GB of 32GB, ~97% of RAM).
-    // That leaves nothing for the kernel, the runner agent, or the Go toolchain
-    // that jsii-pacmak shells out to, so a pacmak run that legitimately wants a
-    // lot of heap gets OOM-killed by the kernel instead of being told to collect.
-    // The signature is distinctive: the step sits in_progress with a null
-    // completedAt (killed process, not a non-zero exit) and the job burns ~12-13m
-    // instead of the ~4m a healthy run takes. See cdktn-provider-project#34.
+    // The custom-runner ceiling has to sit below the memory a job can ACTUALLY
+    // get, or V8 never feels pressure to collect and the kernel OOM-kills the
+    // process first. The signature is distinctive: the step sits in_progress with
+    // a null completedAt (killed process, not a non-zero exit) and the job burns
+    // ~12-13m instead of the ~4m a healthy run takes. See #34.
     //
-    // 28672 (28GB) keeps 4GB of headroom. This is a ceiling, not a reservation --
-    // providers that never approach it are unaffected.
-    const DEFAULT_HEAP_MB_CUSTOM_RUNNER = 28672;
+    // "Below available RAM" is not the same as "below the advertised RAM", which
+    // is what the first two attempts at this number got wrong. depot-ubuntu-24.04-8
+    // advertises 32GB, but Depot reserves 8GB of it for the in-memory disk
+    // accelerator ("a portion of the memory on the runner host for a disk
+    // accelerator, backed by a RAM disk"), leaving ~24GB usable -- and the
+    // workspace lives on that RAM disk, so the generated bindings squeeze the same
+    // pool pacmak is growing into. 31744 (~97% of 32GB) and then 28672 (~90%) both
+    // sat ABOVE that real ceiling, so lowering it the first time changed nothing:
+    // cdktn-provider-datadog died at 12m21s on 31744 and again at 12m23s/12m40s on
+    // 28672, same silent kill.
+    //
+    // Empirically: datadog's package:go, which had never once completed, finished
+    // its `Create go artifact` step in 3m01s at 16384 (run 30824787291). 20480
+    // keeps ~4GB below the ~24GB usable line while giving pacmak more room than the
+    // verified-good value. This is a ceiling, not a reservation -- providers that
+    // never approach it are unaffected, so it costs nothing to leave headroom here.
+    const DEFAULT_HEAP_MB_CUSTOM_RUNNER = 20480;
     const DEFAULT_HEAP_MB_HOSTED_RUNNER = 6656; // 6.5GB of 7GB
 
     // `nodeHeapSizeMb` is public API and, via jsii, reachable from Python, Go,
@@ -545,7 +557,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     // ACTIONS_ID_TOKEN_REQUEST_URL, which GitHub injects on any runner given
     // `id-token: write`, and PyPI's trust is bound to the workflow ref, not the
     // runner. Forcing this job onto a hosted runner would also strand it with the
-    // 28GB NODE_OPTIONS heap ceiling that useCustomGithubRunner writes into
+    // 20GB NODE_OPTIONS heap ceiling that useCustomGithubRunner writes into
     // .projen/tasks.json, on a box with far less RAM than that -- and unlike
     // package:js, package:python is a real jsii-pacmak transpile.
 

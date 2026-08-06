@@ -94,15 +94,23 @@ Determines if a release is needed by comparing `version.json` against the last g
 
 **Memory Management:**
 - Default GitHub runners: 7GB (heap limit 6656 MiB, ~6.5GB)
-- Custom runners: 32GB (heap limit 28672 MiB, 28GB)
+- Custom runners: 32GB advertised, but only **~24GB usable** -- Depot reserves 8GB
+  of `depot-ubuntu-24.04-8` for the in-memory disk accelerator (a RAM disk), and
+  the workspace itself lives on it. Size the heap against 24GB, not 32GB.
+- Custom-runner heap limit: 20480 MiB (20GB)
 - Set via `NODE_OPTIONS` environment variable: `--max-old-space-size`
 - Override per provider with the `nodeHeapSizeMb` option (positive integer,
   MiB). Only do this for a provider that has demonstrably OOMed on the default.
-- The custom-runner ceiling was 31744 MiB (~97% of RAM) until #38. That left no
-  headroom for the kernel, the runner agent, or the Go toolchain jsii-pacmak
-  shells out to, so a heap-hungry pacmak run was OOM-killed instead of being
-  made to collect. The signature is a step stuck `in_progress` with a null
-  `completedAt` and a job burning ~12-13m instead of ~4m. See #34.
+- The ceiling must sit below *usable* RAM or V8 never collects and the kernel
+  OOM-kills the job. The signature is a step stuck `in_progress` with a null
+  `completedAt`, no step reporting failure, and a job burning ~12-13m instead of
+  ~4m. See #34.
+- Two earlier values got this wrong by measuring against the advertised 32GB:
+  31744 MiB (~97%) until #38, then 28672 MiB (~90%). Both sat above the ~24GB
+  real ceiling, so the first reduction changed nothing -- datadog died at 12m21s
+  on 31744 and again at 12m23s/12m40s on 28672. datadog's `package:go` was
+  verified passing at 16384 (`Create go artifact` 3m01s, run 30824787291); 20480
+  is the shipped default.
 
 ## Important Configuration Details
 
