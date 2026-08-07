@@ -1698,6 +1698,11 @@ scripts
           "outputEnv": "LATEST_TAG"
         },
         {
+          "spawn": "bump:releasable-commits",
+          "outputEnv": "RELEASABLE_COMMITS",
+          "condition": "git rev-parse --verify --quiet \\"refs/tags/$LATEST_TAG\\""
+        },
+        {
           "builtin": "release/suggest-version-bump",
           "outputEnv": "SUGGESTED_BUMP"
         },
@@ -4442,6 +4447,11 @@ scripts
         {
           "builtin": "release/resolve-latest-tag",
           "outputEnv": "LATEST_TAG"
+        },
+        {
+          "spawn": "bump:releasable-commits",
+          "outputEnv": "RELEASABLE_COMMITS",
+          "condition": "git rev-parse --verify --quiet \\"refs/tags/$LATEST_TAG\\""
         },
         {
           "builtin": "release/suggest-version-bump",
@@ -7560,6 +7570,11 @@ scripts
           "outputEnv": "LATEST_TAG"
         },
         {
+          "spawn": "bump:releasable-commits",
+          "outputEnv": "RELEASABLE_COMMITS",
+          "condition": "git rev-parse --verify --quiet \\"refs/tags/$LATEST_TAG\\""
+        },
+        {
           "builtin": "release/suggest-version-bump",
           "outputEnv": "SUGGESTED_BUMP"
         },
@@ -10674,6 +10689,11 @@ scripts
         {
           "builtin": "release/resolve-latest-tag",
           "outputEnv": "LATEST_TAG"
+        },
+        {
+          "spawn": "bump:releasable-commits",
+          "outputEnv": "RELEASABLE_COMMITS",
+          "condition": "git rev-parse --verify --quiet \\"refs/tags/$LATEST_TAG\\""
         },
         {
           "builtin": "release/suggest-version-bump",
@@ -13793,6 +13813,11 @@ scripts
           "outputEnv": "LATEST_TAG"
         },
         {
+          "spawn": "bump:releasable-commits",
+          "outputEnv": "RELEASABLE_COMMITS",
+          "condition": "git rev-parse --verify --quiet \\"refs/tags/$LATEST_TAG\\""
+        },
+        {
           "builtin": "release/suggest-version-bump",
           "outputEnv": "SUGGESTED_BUMP"
         },
@@ -16907,6 +16932,11 @@ scripts
         {
           "builtin": "release/resolve-latest-tag",
           "outputEnv": "LATEST_TAG"
+        },
+        {
+          "spawn": "bump:releasable-commits",
+          "outputEnv": "RELEASABLE_COMMITS",
+          "condition": "git rev-parse --verify --quiet \\"refs/tags/$LATEST_TAG\\""
         },
         {
           "builtin": "release/suggest-version-bump",
@@ -20040,6 +20070,11 @@ scripts
         {
           "builtin": "release/resolve-latest-tag",
           "outputEnv": "LATEST_TAG"
+        },
+        {
+          "spawn": "bump:releasable-commits",
+          "outputEnv": "RELEASABLE_COMMITS",
+          "condition": "git rev-parse --verify --quiet \\"refs/tags/$LATEST_TAG\\""
         },
         {
           "builtin": "release/suggest-version-bump",
