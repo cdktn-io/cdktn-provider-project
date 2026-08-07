@@ -766,6 +766,18 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         // throws "neither BUMP_TYPE nor SUGGESTED_BUMP is set", so all three are
         // needed. Mirrors projen's own bump task (lib/version.js:128-144).
         { builtin: "release/resolve-latest-tag", outputEnv: "LATEST_TAG" },
+        // suggest-version-bump counts releasable commits *only* from
+        // $RELEASABLE_COMMITS. Without this spawn the count is 0, the suggested
+        // bump is "none", and apply-version-bump rewrites dist/releasetag.txt
+        // with the *previous* tag - which makes the release workflow think the
+        // version is already tagged and skip every publish job.
+        {
+          spawn: "bump:releasable-commits",
+          outputEnv: "RELEASABLE_COMMITS",
+          // On a first release the resolved tag is synthetic and does not exist,
+          // so there is nothing to diff against.
+          condition: 'git rev-parse --verify --quiet "refs/tags/$LATEST_TAG"',
+        },
         {
           builtin: "release/suggest-version-bump",
           outputEnv: "SUGGESTED_BUMP",
