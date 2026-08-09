@@ -22,6 +22,7 @@ import { GithubIssues } from "./github-issues";
 import { LockIssues } from "./lock-issues";
 import { PackageInfo } from "./package-info";
 import { ProviderUpgrade } from "./provider-upgrade";
+import { ApplySelfMutationPatchScriptFile } from "./scripts/apply-self-mutation-patch";
 import { CheckForUpgradesScriptFile } from "./scripts/check-for-upgrades";
 import { ShouldReleaseScriptFile } from "./scripts/should-release";
 import { generateRandomCron, Schedule } from "./util/random-cron";
@@ -804,6 +805,36 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       name: "Revert package.json version bump",
       run: "git checkout package.json",
     });
+
+    // projen's generated self-mutation "Apply patch" step runs a bare `git
+    // apply`, which has a hard ~1GiB input limit, and swallows any real
+    // failure behind `|| echo "Empty patch. Skipping."` -- so a patch that's
+    // merely too large is misreported as empty, and the next step (git
+    // commit/push) dies confusingly with "nothing to commit". Replace it with
+    // a script that falls back to a chunked apply on failure and always fails
+    // the job loudly on a genuine error. `GithubWorkflow.addJob`/`get jobs()`
+    // only shallow-copy the top level, so mutating the found step's `.run` in
+    // place here is picked up at synth -- no addOverride/JsonPatch needed.
+    const applyPatchScript = new ApplySelfMutationPatchScriptFile(this, {});
+    const selfMutationSteps: any[] = (this.buildWorkflow as any).workflow.jobs[
+      "self-mutation"
+    ].steps;
+    const applyPatchStep = selfMutationSteps.find(
+      (it: any) => it.name === "Apply patch"
+    );
+    assert(
+      applyPatchStep,
+      "Apply patch step not found in self-mutation job, please check if the workaround still works!"
+    );
+    assert(
+      typeof applyPatchStep.run === "string" &&
+        applyPatchStep.run.includes("git apply") &&
+        applyPatchStep.run.includes("${{ runner.temp }}/repo.patch"),
+      `Apply patch step no longer runs git apply on \${{ runner.temp }}/repo.patch, please check if the workaround still works! Got: ${JSON.stringify(
+        applyPatchStep.run
+      )}`
+    );
+    applyPatchStep.run = `bash ./${applyPatchScript.path} "\${{ runner.temp }}/repo.patch"`;
 
     new CopyrightHeaders(this);
     new DeprecatePackages(this, {
