@@ -834,7 +834,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         applyPatchStep.run
       )}`
     );
-    applyPatchStep.run = `bash ./${applyPatchScript.path} "\${{ runner.temp }}/repo.patch"`;
+    applyPatchStep.run = `node ./${applyPatchScript.path} "\${{ runner.temp }}/repo.patch"`;
 
     new CopyrightHeaders(this);
     new DeprecatePackages(this, {

@@ -16,88 +16,185 @@ export class ApplySelfMutationPatchScriptFile extends FileBase {
     project: NodeProject,
     options: ApplySelfMutationPatchScriptFileOptions
   ) {
-    super(project, "scripts/apply-self-mutation-patch.sh", options);
+    super(project, "scripts/apply-self-mutation-patch.js", options);
     this.options = options;
   }
 
   protected synthesizeContent(): string | undefined {
-    return `#!/usr/bin/env bash
-# Copyright (c) HashiCorp, Inc.
-# SPDX-License-Identifier: MPL-2.0
-#
-# Applies the self-mutation patch produced by the build job. A plain
-# \`git apply\` is tried first; it fails deterministically once the patch
-# exceeds git's hard ~1GiB input limit (e.g. a birth-commit docs/ tree with
-# tens of thousands of files), so on failure we fall back to splitting the
-# patch into chunks -- only on lines starting with "diff --git " so no
-# individual file diff is ever cut in half -- and applying them sequentially.
-# Any real failure must fail the job loudly: never fall through to the
-# "empty patch" message on a genuine apply error.
-set -euo pipefail
+    return `
+/**
+ * Copyright (c) HashiCorp, Inc.
+ * SPDX-License-Identifier: MPL-2.0
+ */
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
+const { spawnSync } = require("child_process");
 
-PATCH_FILE="\$1"
-CHUNK_MAX_BYTES=536870912 # 512MiB, comfortably under git's ~1GiB apply limit
+// git apply has a hard ~1GiB input limit, so a patch above it (e.g. a birth
+// commit with tens of thousands of docs files) can only be applied in pieces.
+// 512MiB keeps every chunk comfortably below that limit; the env var override
+// exists so tests can exercise the chunked path without multi-GiB fixtures.
+const CHUNK_MAX_BYTES =
+  Number.parseInt(process.env.APPLY_PATCH_CHUNK_MAX_BYTES || "", 10) ||
+  536870912;
 
-if [ ! -s "\$PATCH_FILE" ]; then
-  echo "Empty patch. Skipping."
-  exit 0
-fi
+// A chunk boundary is a "diff --git " marker at the start of a line, so an
+// individual file diff is never cut in half.
+const BOUNDARY = Buffer.from("\\ndiff --git ");
+const READ_SIZE = 1024 * 1024;
 
-if git apply "\$PATCH_FILE" 2>/tmp/apply-self-mutation-patch.err; then
-  cat /tmp/apply-self-mutation-patch.err >&2
-  exit 0
-fi
+const patchFile = process.argv[2];
+if (!patchFile) {
+  console.error("Usage: apply-self-mutation-patch.js <patch-file>");
+  process.exit(1);
+}
 
-echo "Plain 'git apply' failed, falling back to chunked apply:"
-cat /tmp/apply-self-mutation-patch.err
+// A nonexistent patch file is a deliberate skip (matching the previous
+// \`[ ! -s ]\` behavior); a missing argv above is a hard error. Any other
+// stat failure must fail loudly rather than masquerade as an empty patch.
+let patchSize = 0;
+try {
+  patchSize = fs.statSync(patchFile).size;
+} catch (e) {
+  if (e.code !== "ENOENT") {
+    throw e;
+  }
+  patchSize = 0;
+}
+if (patchSize === 0) {
+  console.log("Empty patch. Skipping.");
+  process.exit(0);
+}
 
-CHUNK_DIR="\$(mktemp -d)"
-trap 'rm -rf "\$CHUNK_DIR"' EXIT
+const plain = gitApply(patchFile);
+if (plain.ok) {
+  process.stderr.write(plain.stderr);
+  process.exit(0);
+}
 
-python3 - "\$PATCH_FILE" "\$CHUNK_DIR" "\$CHUNK_MAX_BYTES" <<'PYEOF'
-import sys
+console.log("Plain 'git apply' failed, falling back to chunked apply:");
+process.stderr.write(plain.stderr);
+process.exit(chunkedApply(patchFile, patchSize));
 
-patch_file, chunk_dir, chunk_max_bytes = sys.argv[1], sys.argv[2], int(sys.argv[3])
+// Any real failure must fail the job loudly: never fall through to the
+// "empty patch" message on a genuine apply error.
+function chunkedApply(file, size) {
+  const chunkDir = fs.mkdtempSync(
+    path.join(os.tmpdir(), "apply-self-mutation-patch-")
+  );
+  try {
+    const chunks = writeChunks(file, size, chunkDir);
+    if (chunks.length === 0) {
+      console.error(
+        "Chunking produced no output for a non-empty patch -- treating as a real failure."
+      );
+      return 1;
+    }
+    console.log("Applying " + chunks.length + " chunk(s) sequentially...");
+    for (const chunk of chunks) {
+      const res = gitApply(chunk);
+      process.stderr.write(res.stderr);
+      if (!res.ok) {
+        console.error("Failed to apply chunk: " + chunk);
+        return 1;
+      }
+    }
+    return 0;
+  } finally {
+    fs.rmSync(chunkDir, { recursive: true, force: true });
+  }
+}
 
-# Binary mode end to end: the patch may contain non-UTF-8 bytes, and text
-# mode's newline translation would corrupt CRLF content. Lines are streamed
-# straight into the open chunk file so memory stays flat regardless of size.
-out = None
-out_bytes = 0
-chunk_index = 0
-with open(patch_file, "rb") as f:
-    for line in f:
-        if out is None or (
-            line.startswith(b"diff --git ") and out_bytes + len(line) > chunk_max_bytes
-        ):
-            if out:
-                out.close()
-            out = open(f"{chunk_dir}/{chunk_index:04d}.patch", "wb")
-            chunk_index += 1
-            out_bytes = 0
-        out.write(line)
-        out_bytes += len(line)
-if out:
-    out.close()
-PYEOF
+function gitApply(file) {
+  const res = spawnSync("git", ["apply", file], {
+    stdio: ["ignore", "inherit", "pipe"],
+  });
+  const stderr = res.stderr || Buffer.alloc(0);
+  if (res.error) {
+    return {
+      ok: false,
+      stderr: Buffer.concat([stderr, Buffer.from(String(res.error) + "\\n")]),
+    };
+  }
+  return { ok: res.status === 0, stderr };
+}
 
-shopt -s nullglob
-chunks=("\$CHUNK_DIR"/*.patch)
-shopt -u nullglob
+function writeChunks(file, size, chunkDir) {
+  const fd = fs.openSync(file, "r");
+  try {
+    // Greedy: fill a chunk with whole file diffs until the next one would push
+    // it past the limit. A single file diff larger than the limit stays whole.
+    const bounds = findFileDiffStarts(fd, size).concat([size]);
+    const chunks = [];
+    let start = 0;
+    for (let i = 1; i < bounds.length; i++) {
+      if (bounds[i] - start > CHUNK_MAX_BYTES && bounds[i - 1] > start) {
+        const end = bounds[i - 1];
+        chunks.push(writeRange(fd, start, end, chunkDir, chunks.length));
+        start = end;
+      }
+    }
+    chunks.push(writeRange(fd, start, size, chunkDir, chunks.length));
+    return chunks;
+  } finally {
+    fs.closeSync(fd);
+  }
+}
 
-if [ \${#chunks[@]} -eq 0 ]; then
-  echo "Chunking produced no output for a non-empty patch -- treating as a real failure."
-  exit 1
-fi
+// Raw bytes end to end -- no readline, no string decoding of patch content:
+// Node strings are UTF-8 lossy (a latin-1 0xe9 would round-trip as U+FFFD) and
+// would mangle lone surrogates, while the patch must be reproduced byte-exact.
+function findFileDiffStarts(fd, size) {
+  const starts = [0];
+  const overlap = BOUNDARY.length - 1;
+  const buf = Buffer.allocUnsafe(READ_SIZE + overlap);
+  let carry = 0; // bytes kept from the previous read at buf[0..carry)
+  let bufStart = 0; // absolute file offset of buf[0]
+  let pos = 0;
+  while (pos < size) {
+    const read = fs.readSync(fd, buf, carry, READ_SIZE, pos);
+    if (read === 0) break;
+    pos += read;
+    const len = carry + read;
+    const hay = buf.subarray(0, len);
+    let from = 0;
+    for (;;) {
+      const found = hay.indexOf(BOUNDARY, from);
+      if (found === -1) break;
+      starts.push(bufStart + found + 1); // the marker itself, not the newline
+      from = found + 1;
+    }
+    // Carry the last BOUNDARY.length - 1 bytes so a marker split across two
+    // reads is still found exactly once.
+    const keep = Math.min(len, overlap);
+    buf.copy(buf, 0, len - keep, len);
+    bufStart += len - keep;
+    carry = keep;
+  }
+  return starts;
+}
 
-echo "Applying \${#chunks[@]} chunk(s) sequentially..."
-for chunk in "\${chunks[@]}"; do
-  if ! git apply "\$chunk" 2>/tmp/apply-self-mutation-patch.err; then
-    echo "Failed to apply chunk: \$chunk"
-    cat /tmp/apply-self-mutation-patch.err
-    exit 1
-  fi
-done
+function writeRange(fd, start, end, chunkDir, index) {
+  const file = path.join(chunkDir, String(index).padStart(4, "0") + ".patch");
+  const out = fs.openSync(file, "w");
+  try {
+    const buf = Buffer.allocUnsafe(READ_SIZE);
+    let pos = start;
+    while (pos < end) {
+      const read = fs.readSync(fd, buf, 0, Math.min(READ_SIZE, end - pos), pos);
+      if (read === 0) break;
+      let written = 0;
+      while (written < read) {
+        written += fs.writeSync(out, buf, written, read - written);
+      }
+      pos += read;
+    }
+  } finally {
+    fs.closeSync(out);
+  }
+  return file;
+}
 `;
   }
 }
