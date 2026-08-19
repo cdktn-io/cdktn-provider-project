@@ -536,6 +536,29 @@ test("first-party packages are exempt from the upgrade cooldown", () => {
   expect(workspace.minimumReleaseAgeExclude).not.toContain("constructs");
 });
 
+test("projen's own range leaves room for the cooldown to resolve", () => {
+  const snapshot = synthSnapshot(getProject());
+  const range: string = JSON.parse(snapshot["package.json"]).devDependencies
+    .projen;
+
+  // Unset, projen pins itself at `^<exact version that synthed the repo>`, which
+  // admits one version. Bootstrap within four days of a projen release and
+  // `pnpm update` has nothing in range that clears the cooldown -- the whole task
+  // dies with ERR_PNPM_NO_MATURE_MATCHING_VERSION, as awscc's did on 2026-08-10.
+  expect(range).not.toBe("*");
+  expect(range).toMatch(/^>=\d+\.\d+\.0 <\d+\.0\.0$/);
+
+  // The upper bound matters as much as the floor: setting `projenVersion` takes
+  // projen out of the ncu `--target=minor` step, which only rewrites deps
+  // recorded as `*`, so the range must permit minor moves or the fleet freezes.
+  const ncuStep = JSON.parse(snapshot[".projen/tasks.json"])
+    .tasks.upgrade.steps.map(
+      (step: { execArgs?: string[] }) => step.execArgs ?? []
+    )
+    .find((args: string[]) => args.includes("npm-check-updates@20"));
+  expect(ncuStep.join(" ")).not.toContain("projen");
+});
+
 test("a failed upgrade run opens an issue instead of failing silently", () => {
   const snapshot = synthSnapshot(getProject());
   const upgradeJob = parseYaml(snapshot[".github/workflows/upgrade-main.yml"])
