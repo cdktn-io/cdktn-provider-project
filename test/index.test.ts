@@ -585,6 +585,25 @@ test("deprecated projects get no transitive upgrade, having no upgrade task", ()
   ).toBeUndefined();
 });
 
+test("a failed upgrade run opens an issue instead of failing silently", () => {
+  const snapshot = synthSnapshot(getProject());
+  const upgradeJob = parseYaml(snapshot[".github/workflows/upgrade-main.yml"])
+    .jobs.upgrade;
+
+  // Weekly cadence is only tolerable if a failure is noticed -- otherwise one
+  // silent break costs a week of dependency movement, as it did for awscc.
+  expect(upgradeJob.permissions.issues).toBe("write");
+
+  const failureStep = upgradeJob.steps.find(
+    (step: { name?: string }) => step.name === "Create issue on failure"
+  );
+  expect(failureStep).toBeDefined();
+  expect(failureStep.if).toContain("failure()");
+  // Deduplicated on the label, so a persistent failure files one issue.
+  expect(failureStep.run).toContain("gh issue list --label failed-upgrade");
+  expect(failureStep.run).toContain("gh issue create");
+});
+
 test("the cooldown is moot for deprecated projects, which have no upgrade task", () => {
   const snapshot = synthSnapshot(getProject({ isDeprecated: true }));
 
