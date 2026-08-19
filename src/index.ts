@@ -56,6 +56,31 @@ const MINIMUM_RELEASE_AGE_EXCLUDE = [
   "cdktn-cli",
 ];
 
+/**
+ * The `projen` range written into a generated provider's `package.json`.
+ *
+ * Unset, projen resolves its own dep to `^<exact version that synthed>`. That
+ * one-version floor plus `cooldown: 4` means a repo synthed within four days of
+ * a projen release has nothing installable in range, and the whole upgrade task
+ * dies with ERR_PNPM_NO_MATURE_MATCHING_VERSION -- cdktn-provider-awscc, bootstrapped
+ * ten hours after projen 0.101.31 shipped. Only a bootstrap can plant such a
+ * floor; the upgrade path installs matured versions by construction.
+ *
+ * Starting the range at the installed minor always leaves matured versions in
+ * range, and relaxes nothing -- the cooldown still decides which one lands. The
+ * upper bound is load-bearing: setting `projenVersion` at all drops projen from
+ * the `--target=minor` ncu step, which only rewrites deps recorded as `*`, so a
+ * caret would freeze the fleet on one projen minor. This range allows what ncu
+ * did -- minors within the major, never across -- and ratchets forward on its
+ * own, since the upgrade task runs `pnpm exec projen` after `pnpm update`.
+ */
+function defaultProjenVersion(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { version } = require("projen/package.json") as { version: string };
+  const [major, minor] = version.split(".");
+  return `>=${major}.${minor}.0 <${Number(major) + 1}.0.0`;
+}
+
 export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
   readonly useCustomGithubRunner?: boolean;
   /**
@@ -328,6 +353,8 @@ export class CdktnProviderProject extends cdk.JsiiProject {
 
     super({
       ...options,
+      // Off the exact synth-time patch; a caller that pins deliberately wins.
+      projenVersion: options.projenVersion ?? defaultProjenVersion(),
       authorAddress,
       authorName,
       minNodeVersion,
