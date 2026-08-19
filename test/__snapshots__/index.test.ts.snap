@@ -3706,6 +3706,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
     outputs:
       patch_created: \${{ steps.create_patch.outputs.patch_created }}
     steps:
@@ -3737,6 +3738,16 @@ jobs:
           name: repo.patch
           path: repo.patch
           overwrite: true
+      - name: Create issue on failure
+        if: \${{ failure() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+        run: |-
+          gh label create failed-upgrade --color B60205 --description 'A scheduled dependency upgrade run failed' --force
+          if [ "$(gh issue list --label failed-upgrade --state open --limit 1 --json number --jq length)" = "0" ]; then
+            gh issue create --label failed-upgrade --title "Dependency upgrade failed" --body "The scheduled dependency upgrade run failed: $RUN_URL"
+          fi
   pr:
     name: Create Pull Request
     needs: upgrade
@@ -6827,6 +6838,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
     outputs:
       patch_created: \${{ steps.create_patch.outputs.patch_created }}
     steps:
@@ -6858,6 +6870,16 @@ jobs:
           name: repo.patch
           path: repo.patch
           overwrite: true
+      - name: Create issue on failure
+        if: \${{ failure() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+        run: |-
+          gh label create failed-upgrade --color B60205 --description 'A scheduled dependency upgrade run failed' --force
+          if [ "$(gh issue list --label failed-upgrade --state open --limit 1 --json number --jq length)" = "0" ]; then
+            gh issue create --label failed-upgrade --title "Dependency upgrade failed" --body "The scheduled dependency upgrade run failed: $RUN_URL"
+          fi
   pr:
     name: Create Pull Request
     needs: upgrade
@@ -9948,6 +9970,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
     outputs:
       patch_created: \${{ steps.create_patch.outputs.patch_created }}
     steps:
@@ -9979,6 +10002,16 @@ jobs:
           name: repo.patch
           path: repo.patch
           overwrite: true
+      - name: Create issue on failure
+        if: \${{ failure() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+        run: |-
+          gh label create failed-upgrade --color B60205 --description 'A scheduled dependency upgrade run failed' --force
+          if [ "$(gh issue list --label failed-upgrade --state open --limit 1 --json number --jq length)" = "0" ]; then
+            gh issue create --label failed-upgrade --title "Dependency upgrade failed" --body "The scheduled dependency upgrade run failed: $RUN_URL"
+          fi
   pr:
     name: Create Pull Request
     needs: upgrade
@@ -13070,6 +13103,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
     outputs:
       patch_created: \${{ steps.create_patch.outputs.patch_created }}
     steps:
@@ -13101,6 +13135,16 @@ jobs:
           name: repo.patch
           path: repo.patch
           overwrite: true
+      - name: Create issue on failure
+        if: \${{ failure() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+        run: |-
+          gh label create failed-upgrade --color B60205 --description 'A scheduled dependency upgrade run failed' --force
+          if [ "$(gh issue list --label failed-upgrade --state open --limit 1 --json number --jq length)" = "0" ]; then
+            gh issue create --label failed-upgrade --title "Dependency upgrade failed" --body "The scheduled dependency upgrade run failed: $RUN_URL"
+          fi
   pr:
     name: Create Pull Request
     needs: upgrade
@@ -16191,6 +16235,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
     outputs:
       patch_created: \${{ steps.create_patch.outputs.patch_created }}
     steps:
@@ -16222,6 +16267,16 @@ jobs:
           name: repo.patch
           path: repo.patch
           overwrite: true
+      - name: Create issue on failure
+        if: \${{ failure() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+        run: |-
+          gh label create failed-upgrade --color B60205 --description 'A scheduled dependency upgrade run failed' --force
+          if [ "$(gh issue list --label failed-upgrade --state open --limit 1 --json number --jq length)" = "0" ]; then
+            gh issue create --label failed-upgrade --title "Dependency upgrade failed" --body "The scheduled dependency upgrade run failed: $RUN_URL"
+          fi
   pr:
     name: Create Pull Request
     needs: upgrade
@@ -19324,6 +19379,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      issues: write
     outputs:
       patch_created: \${{ steps.create_patch.outputs.patch_created }}
     steps:
@@ -19360,6 +19416,16 @@ jobs:
           name: repo.patch
           path: repo.patch
           overwrite: true
+      - name: Create issue on failure
+        if: \${{ failure() && github.event_name == 'schedule' }}
+        env:
+          GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+          RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
+        run: |-
+          gh label create failed-upgrade --color B60205 --description 'A scheduled dependency upgrade run failed' --force
+          if [ "$(gh issue list --label failed-upgrade --state open --limit 1 --json number --jq length)" = "0" ]; then
+            gh issue create --label failed-upgrade --title "Dependency upgrade failed" --body "The scheduled dependency upgrade run failed: $RUN_URL"
+          fi
   pr:
     name: Create Pull Request
     needs: upgrade

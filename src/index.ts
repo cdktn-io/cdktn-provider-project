@@ -719,6 +719,34 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       },
     ]);
 
+    // A failed upgrade run is otherwise silent -- `releaseFailureIssue` covers only
+    // the release workflow -- and on a weekly cron each one costs a full week of
+    // dependency movement. Nothing flagged cdktn-provider-awscc's break on
+    // 2026-08-10, or this repo's three consecutive failures that July.
+    //
+    // Deduplicated on the label so a persistent failure files one issue, not one
+    // per run. The label is created here because repo labels are provisioned
+    // out-of-band by cdktn-repository-manager and `gh issue create` rejects an
+    // unknown one.
+    upgradeWorkflow?.patch(
+      JsonPatch.add("/jobs/upgrade/permissions/issues", "write"),
+      JsonPatch.add("/jobs/upgrade/steps/-", {
+        name: "Create issue on failure",
+        if: "${{ failure() && github.event_name == 'schedule' }}",
+        env: {
+          GH_TOKEN: "${{ secrets.GITHUB_TOKEN }}",
+          RUN_URL:
+            "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+        },
+        run: [
+          "gh label create failed-upgrade --color B60205 --description 'A scheduled dependency upgrade run failed' --force",
+          'if [ "$(gh issue list --label failed-upgrade --state open --limit 1 --json number --jq length)" = "0" ]; then',
+          '  gh issue create --label failed-upgrade --title "Dependency upgrade failed" --body "The scheduled dependency upgrade run failed: $RUN_URL"',
+          "fi",
+        ].join("\n"),
+      })
+    );
+
     // Submodule documentation generation
     this.gitignore.exclude("API.md"); // ignore the old file, we now generate it in the docs folder
     this.addDevDeps("jsii-docgen@^10.2.3");
