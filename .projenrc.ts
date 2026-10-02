@@ -15,6 +15,7 @@ import { AutoApprove } from "./src/auto-approve";
 import { Automerge } from "./src/automerge";
 import { CustomizedLicense } from "./src/customized-license";
 import { LockIssues } from "./src/lock-issues";
+import { UpgradeVulnerableTransitivesScriptFile } from "./src/scripts/upgrade-vulnerable-transitives";
 import { generateRandomCron, Schedule } from "./src/util/random-cron";
 
 // Remember that this is the list used by this repo (cdktn-provider-project) ONLY.
@@ -282,5 +283,16 @@ upgradeWorkflow?.addOverride("on.schedule", [
     }),
   },
 ]);
+
+// This repo runs the same audit gate and cooldown it generates for provider repos,
+// so it has the same hole: `pnpm update` names direct deps only, and a transitive
+// advisory then reddens the build with no automated way out. js-yaml needed a
+// hand-written PR (#48) for exactly this; @xmldom/xmldom and brace-expansion
+// followed. Reuses the component rather than reimplementing it.
+const transitivesScript = new UpgradeVulnerableTransitivesScriptFile(project, {
+  minimumReleaseAgeMinutes: 4 * 24 * 60,
+  auditLevel: "high",
+});
+project.tasks.tryFind("post-upgrade")?.exec(`node ./${transitivesScript.path}`);
 
 project.synth();

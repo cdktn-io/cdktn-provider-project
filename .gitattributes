@@ -27,5 +27,6 @@
 /pnpm-lock.yaml linguist-generated
 /pnpm-workspace.yaml linguist-generated
 /projenrc/tsconfig.json linguist-generated linguist-language=JSON-with-Comments
+/scripts/upgrade-vulnerable-transitives.js linguist-generated
 /test/tsconfig.json linguist-generated linguist-language=JSON-with-Comments
 /tsconfig.json linguist-generated

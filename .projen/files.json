@@ -19,6 +19,7 @@
     ".projen/tasks.json",
     "LICENSE",
     "projenrc/tsconfig.json",
+    "scripts/upgrade-vulnerable-transitives.js",
     "test/tsconfig.json",
     "tsconfig.json"
   ],
