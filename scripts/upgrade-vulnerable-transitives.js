@@ -17,6 +17,8 @@ function pnpm(args, opts = {}) {
   });
 }
 
+// A clean audit still returns an empty advisories object and exit 0, so a missing
+// one means the audit itself did not run -- not that nothing is flagged.
 function vulnerablePackages() {
   let raw;
   try {
@@ -25,49 +27,62 @@ function vulnerablePackages() {
     // audit exits non-zero exactly when it finds something; stdout still has it.
     raw = e.stdout;
   }
-  if (!raw) return [];
+  let advisories;
   try {
-    const advisories = JSON.parse(raw).advisories ?? {};
-    return [
-      ...new Set(
-        Object.values(advisories)
-          .map((a) => a.module_name)
-          .filter(Boolean)
-      ),
-    ].sort();
+    advisories = JSON.parse(raw).advisories;
   } catch {
-    // Never take the upgrade down; the audit gate still reports the advisory.
-    console.error("could not parse 'pnpm audit --json' output; skipping");
-    return [];
+    advisories = undefined;
+  }
+  if (typeof advisories !== "object" || advisories === null) {
+    // Surfaced, not swallowed -- but not fatal either, or one unreadable audit
+    // would cost every other bump in the run. The audit gate still fails the build.
+    console.error(
+      "::warning::could not read 'pnpm audit --json'; flagged transitives were NOT refreshed"
+    );
+    return undefined;
+  }
+  return [
+    ...new Set(
+      Object.values(advisories)
+        .map((a) => a.module_name)
+        .filter(Boolean)
+    ),
+  ].sort();
+}
+
+function main() {
+  const names = vulnerablePackages();
+  // undefined means the audit was unreadable, which is not the same as clean and
+  // has already been warned about.
+  if (names === undefined) return;
+  if (names.length === 0) {
+    console.log("no " + AUDIT_LEVEL + "+ advisories to resolve");
+    return;
+  }
+
+  console.log("attempting to resolve advisories in: " + names.join(", "));
+  try {
+    // --depth Infinity is what lets a transitive package be named at all.
+    pnpm(
+      [
+        "update",
+        ...names,
+        "--depth",
+        "Infinity",
+        "--config.minimum-release-age=" + MINIMUM_RELEASE_AGE,
+      ],
+      { stdio: "inherit" }
+    );
+  } catch {
+    // The only patch may still be inside the cooldown (pnpm raises
+    // ERR_PNPM_NO_MATURE_MATCHING_VERSION). That is the cooldown working -- do not
+    // fail the upgrade and lose every other bump with it.
+    console.error(
+      "::warning::could not upgrade " +
+        names.join(", ") +
+        " within the cooldown; lockfile unchanged"
+    );
   }
 }
 
-const names = vulnerablePackages();
-if (names.length === 0) {
-  console.log("no " + AUDIT_LEVEL + "+ advisories to resolve");
-  process.exit(0);
-}
-
-console.log("attempting to resolve advisories in: " + names.join(", "));
-try {
-  // --depth Infinity is what lets a transitive package be named at all.
-  pnpm(
-    [
-      "update",
-      ...names,
-      "--depth",
-      "Infinity",
-      "--config.minimum-release-age=" + MINIMUM_RELEASE_AGE,
-    ],
-    { stdio: "inherit" }
-  );
-} catch {
-  // The only patch may still be inside the cooldown (pnpm raises
-  // ERR_PNPM_NO_MATURE_MATCHING_VERSION). That is the cooldown working -- do not
-  // fail the upgrade and lose every other bump with it.
-  console.error(
-    "could not upgrade " +
-      names.join(", ") +
-      " within the cooldown; leaving the lockfile alone"
-  );
-}
+main();
