@@ -251,7 +251,12 @@
     },
     "post-upgrade": {
       "name": "post-upgrade",
-      "description": "Runs after upgrading dependencies"
+      "description": "Runs after upgrading dependencies",
+      "steps": [
+        {
+          "exec": "node ./scripts/upgrade-vulnerable-transitives.js"
+        }
+      ]
     },
     "pre-compile": {
       "name": "pre-compile",
