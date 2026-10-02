@@ -649,9 +649,8 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       });
       new Dependabot(this);
 
-      // `pnpm update` only re-resolves the packages it is named, and the upgrade
-      // task names direct deps only -- so a transitive package with an advisory
-      // stays pinned while `auditDeps` fails every build on it. See the component.
+      // Transitive advisories never move otherwise, and `auditDeps` fails the
+      // build on them. See the component.
       const transitivesScript = new UpgradeVulnerableTransitivesScriptFile(
         this,
         {
@@ -659,8 +658,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
           auditLevel: AUDIT_LEVEL,
         }
       );
-      // post-upgrade, so it runs after `pnpm exec projen` has normalised
-      // package.json; this step only ever moves the lockfile.
+      // post-upgrade: runs after `pnpm exec projen`, and only moves the lockfile.
       this.tasks
         .tryFind("post-upgrade")
         ?.exec(`node ./${transitivesScript.path}`);
