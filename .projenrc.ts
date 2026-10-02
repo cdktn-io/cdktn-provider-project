@@ -284,11 +284,8 @@ upgradeWorkflow?.addOverride("on.schedule", [
   },
 ]);
 
-// This repo runs the same audit gate and cooldown it generates for provider repos,
-// so it has the same hole: `pnpm update` names direct deps only, and a transitive
-// advisory then reddens the build with no automated way out. js-yaml needed a
-// hand-written PR (#48) for exactly this; @xmldom/xmldom and brace-expansion
-// followed. Reuses the component rather than reimplementing it.
+// Same gate and cooldown as the provider repos, so the same hole: js-yaml needed a
+// hand-written #48 for this, then @xmldom/xmldom and brace-expansion followed.
 const transitivesScript = new UpgradeVulnerableTransitivesScriptFile(project, {
   minimumReleaseAgeMinutes: 4 * 24 * 60,
   auditLevel: "high",

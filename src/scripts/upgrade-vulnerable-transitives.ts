@@ -17,20 +17,13 @@ export interface UpgradeVulnerableTransitivesScriptFileOptions
 /**
  * Bumps transitive packages that carry an advisory.
  *
- * `pnpm update` only re-resolves the packages it is given, and the generated
+ * `pnpm update` only re-resolves the packages it is named, and the generated
  * upgrade task names direct dependencies only -- so a transitive package stays
- * pinned in the lockfile forever, even with a patch in range. Naming the direct
- * parent does not help, and neither does `--depth Infinity` on that list: the
- * vulnerable package has to be named itself.
- *
- * Meanwhile `auditDeps` fails the build on exactly those advisories, so a
- * transitive CVE turns every build in the fleet red with no automated way out.
- * undici GHSA-rfgv-xxqx-mfg5 did that to all 31 provider repos; brace-expansion
- * did it before that, and was patched by hand in cdktn-repository-manager.
- *
- * This asks the audit which packages are implicated and names those, which keeps
- * `package.json` untouched -- a bare `pnpm update` would rewrite declared ranges,
- * including turning the deliberate `constructs` upper bound into a caret.
+ * pinned even with a patch in range, while `auditDeps` reddens every build on it
+ * (undici GHSA-rfgv-xxqx-mfg5, all 31 repos). Naming the direct parent does not
+ * help, and nor does `--depth Infinity` on that list: the vulnerable package has
+ * to be named itself. Taking the names from the audit keeps `package.json`
+ * untouched, which a bare `pnpm update` would not.
  */
 export class UpgradeVulnerableTransitivesScriptFile extends FileBase {
   protected readonly options: UpgradeVulnerableTransitivesScriptFileOptions;
@@ -72,8 +65,7 @@ function vulnerablePackages() {
   try {
     raw = pnpm(["audit", "--audit-level", AUDIT_LEVEL, "--json"]);
   } catch (e) {
-    // pnpm audit exits non-zero precisely when it finds something, so the
-    // payload we want is on stdout of the "failure".
+    // audit exits non-zero exactly when it finds something; stdout still has it.
     raw = e.stdout;
   }
   if (!raw) return [];
@@ -87,8 +79,7 @@ function vulnerablePackages() {
       ),
     ].sort();
   } catch {
-    // A pnpm that cannot produce the JSON shape we expect must not take the
-    // whole upgrade down -- the audit gate will still report the advisory.
+    // Never take the upgrade down; the audit gate still reports the advisory.
     console.error("could not parse 'pnpm audit --json' output; skipping");
     return [];
   }
@@ -114,9 +105,9 @@ try {
     { stdio: "inherit" }
   );
 } catch {
-  // The only patched version may still be inside the cooldown, which pnpm
-  // reports as ERR_PNPM_NO_MATURE_MATCHING_VERSION. That is the cooldown doing
-  // its job, not a reason to fail the upgrade and lose every other bump with it.
+  // The only patch may still be inside the cooldown (pnpm raises
+  // ERR_PNPM_NO_MATURE_MATCHING_VERSION). That is the cooldown working -- do not
+  // fail the upgrade and lose every other bump with it.
   console.error(
     "could not upgrade " +
       names.join(", ") +

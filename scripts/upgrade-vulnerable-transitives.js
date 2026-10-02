@@ -22,8 +22,7 @@ function vulnerablePackages() {
   try {
     raw = pnpm(["audit", "--audit-level", AUDIT_LEVEL, "--json"]);
   } catch (e) {
-    // pnpm audit exits non-zero precisely when it finds something, so the
-    // payload we want is on stdout of the "failure".
+    // audit exits non-zero exactly when it finds something; stdout still has it.
     raw = e.stdout;
   }
   if (!raw) return [];
@@ -37,8 +36,7 @@ function vulnerablePackages() {
       ),
     ].sort();
   } catch {
-    // A pnpm that cannot produce the JSON shape we expect must not take the
-    // whole upgrade down -- the audit gate will still report the advisory.
+    // Never take the upgrade down; the audit gate still reports the advisory.
     console.error("could not parse 'pnpm audit --json' output; skipping");
     return [];
   }
@@ -64,9 +62,9 @@ try {
     { stdio: "inherit" }
   );
 } catch {
-  // The only patched version may still be inside the cooldown, which pnpm
-  // reports as ERR_PNPM_NO_MATURE_MATCHING_VERSION. That is the cooldown doing
-  // its job, not a reason to fail the upgrade and lose every other bump with it.
+  // The only patch may still be inside the cooldown (pnpm raises
+  // ERR_PNPM_NO_MATURE_MATCHING_VERSION). That is the cooldown working -- do not
+  // fail the upgrade and lose every other bump with it.
   console.error(
     "could not upgrade " +
       names.join(", ") +
