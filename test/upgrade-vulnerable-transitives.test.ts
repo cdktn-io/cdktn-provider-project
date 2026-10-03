@@ -11,6 +11,7 @@ import {
   chmodSync,
   mkdirSync,
   openSync,
+  rmSync,
 } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -30,7 +31,12 @@ const SCRIPT = "scripts/upgrade-vulnerable-transitives.js";
 /** A pnpm whose `audit` prints `auditOutput` and whose `update` records argv. */
 function fakePnpm(
   dir: string,
-  opts: { auditOutput: string; auditExit?: number; updateExit?: number }
+  opts: {
+    auditOutput: string;
+    auditExit?: number;
+    updateExit?: number;
+    updateStderr?: string;
+  }
 ) {
   const bin = join(dir, "bin");
   mkdirSync(bin, { recursive: true });
@@ -45,6 +51,7 @@ function fakePnpm(
       "fi",
       `if [ "$1" = "update" ]; then`,
       `  printf '%s\\n' "$*" >> ${JSON.stringify(argsLog)}`,
+      `  printf '%s' ${JSON.stringify(opts.updateStderr ?? "")} >&2`,
       `  exit ${opts.updateExit ?? 0}`,
       "fi",
       "exit 0",
@@ -59,8 +66,25 @@ function runScript(opts: {
   auditOutput: string;
   auditExit?: number;
   updateExit?: number;
+  updateStderr?: string;
 }) {
   const dir = mkdtempSync(join(tmpdir(), "transitives-"));
+  try {
+    return runIn(dir, opts);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+function runIn(
+  dir: string,
+  opts: {
+    auditOutput: string;
+    auditExit?: number;
+    updateExit?: number;
+    updateStderr?: string;
+  }
+) {
   mkdirSync(join(dir, "scripts"), { recursive: true });
   writeFileSync(join(dir, SCRIPT), synthSnapshot(getProject())[SCRIPT]);
 
@@ -148,6 +172,7 @@ test("exits cleanly when the only patch is still inside the cooldown", () => {
   const { updateArgs } = runScript({
     auditOutput: advisory(["undici"]),
     updateExit: 1,
+    updateStderr: "ERR_PNPM_NO_MATURE_MATCHING_VERSION undici",
   });
 
   // It still tried -- the tolerance is in how the failure is handled, not in
@@ -159,11 +184,28 @@ test("a cooldown refusal is distinguishable from an unreadable audit", () => {
   const cooldown = runScript({
     auditOutput: advisory(["undici"]),
     updateExit: 1,
+    updateStderr: "ERR_PNPM_NO_MATURE_MATCHING_VERSION undici",
   });
   const unreadable = runScript({ auditOutput: "not json at all" });
 
-  expect(cooldown.stderr).toContain("within the cooldown");
+  expect(cooldown.stderr).toContain("no patch older than the cooldown");
   expect(cooldown.stderr).not.toContain("were NOT refreshed");
   expect(unreadable.stderr).toContain("were NOT refreshed");
-  expect(unreadable.stderr).not.toContain("within the cooldown");
+  expect(unreadable.stderr).not.toContain("older than the cooldown");
+});
+
+test("an update failure that is not a cooldown refusal is not reported as one", () => {
+  // Registry, auth and config failures throw from the same call. Calling all of
+  // them "cooldown" would send whoever reads the annotation to the wrong place.
+  const { stderr } = runScript({
+    auditOutput: advisory(["undici"]),
+    updateExit: 1,
+    updateStderr:
+      "ERR_PNPM_FETCH_401 Unauthorized GET https://registry.npmjs.org",
+  });
+
+  expect(stderr).toContain("::warning::");
+  expect(stderr).not.toContain("cooldown");
+  // and the pnpm output is echoed so the real cause is visible
+  expect(stderr).toContain("ERR_PNPM_FETCH_401");
 });
