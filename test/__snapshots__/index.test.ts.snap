@@ -2345,6 +2345,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
 auditConfig:
   ignoreGhsas:
     - GHSA-mh99-v99m-4gvg
+    - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
   - "@cdktn/provider-project"
@@ -5215,6 +5216,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 auditConfig:
   ignoreGhsas:
     - GHSA-mh99-v99m-4gvg
+    - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
   - "@cdktn/provider-project"
@@ -8336,6 +8338,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 auditConfig:
   ignoreGhsas:
     - GHSA-mh99-v99m-4gvg
+    - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
   - "@cdktn/provider-project"
@@ -11457,6 +11460,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 auditConfig:
   ignoreGhsas:
     - GHSA-mh99-v99m-4gvg
+    - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
   - "@cdktn/provider-project"
@@ -14579,6 +14583,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 auditConfig:
   ignoreGhsas:
     - GHSA-mh99-v99m-4gvg
+    - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
   - "@cdktn/provider-project"
@@ -17700,6 +17705,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 auditConfig:
   ignoreGhsas:
     - GHSA-mh99-v99m-4gvg
+    - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
   - "@cdktn/provider-project"
@@ -20841,6 +20847,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
 auditConfig:
   ignoreGhsas:
     - GHSA-mh99-v99m-4gvg
+    - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
   - "@cdktn/provider-project"
