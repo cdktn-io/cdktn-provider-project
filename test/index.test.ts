@@ -536,6 +536,55 @@ test("first-party packages are exempt from the upgrade cooldown", () => {
   expect(workspace.minimumReleaseAgeExclude).not.toContain("constructs");
 });
 
+test("transitive packages with advisories get upgraded after a dep upgrade", () => {
+  const snapshot = synthSnapshot(getProject());
+  const tasks = JSON.parse(snapshot[".projen/tasks.json"]).tasks;
+
+  // `pnpm update` only re-resolves what it is named, and the upgrade task names
+  // direct deps only -- so a transitive package stays pinned in the lockfile even
+  // with a patch in range, while `auditDeps` fails every build on it. undici
+  // GHSA-rfgv-xxqx-mfg5 did that to all 31 provider repos.
+  expect(tasks["post-upgrade"].steps).toEqual([
+    { exec: "node ./scripts/upgrade-vulnerable-transitives.js" },
+  ]);
+
+  const script = snapshot["scripts/upgrade-vulnerable-transitives.js"];
+  expect(script).toBeDefined();
+  // --depth Infinity is the part that lets a transitive package be named at all;
+  // without it the update silently does nothing.
+  expect(script).toContain('"--depth"');
+  expect(script).toContain("Infinity");
+});
+
+test("the transitive upgrade matches the gate and cooldown it exists to satisfy", () => {
+  const snapshot = synthSnapshot(getProject());
+  const script = snapshot["scripts/upgrade-vulnerable-transitives.js"];
+
+  // If these drift from auditDepsOptions.level / the `pnpm update` cooldown, the
+  // script either misses advisories the gate fails on or installs versions the
+  // cooldown forbids.
+  expect(script).toContain('const AUDIT_LEVEL = "high"');
+  expect(script).toContain('const MINIMUM_RELEASE_AGE = "5760"');
+  expect(
+    JSON.parse(snapshot[".projen/tasks.json"]).tasks.upgrade.steps
+  ).toEqual(
+    expect.arrayContaining([
+      {
+        execArgs: expect.arrayContaining(["--config.minimum-release-age=5760"]),
+      },
+    ])
+  );
+});
+
+test("deprecated projects get no transitive upgrade, having no upgrade task", () => {
+  const snapshot = synthSnapshot(getProject({ isDeprecated: true }));
+
+  expect(snapshot["scripts/upgrade-vulnerable-transitives.js"]).toBeUndefined();
+  expect(
+    JSON.parse(snapshot[".projen/tasks.json"]).tasks["post-upgrade"]?.steps
+  ).toBeUndefined();
+});
+
 test("the cooldown is moot for deprecated projects, which have no upgrade task", () => {
   const snapshot = synthSnapshot(getProject({ isDeprecated: true }));
 

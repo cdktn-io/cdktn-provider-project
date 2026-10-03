@@ -15,6 +15,7 @@ import { AutoApprove } from "./src/auto-approve";
 import { Automerge } from "./src/automerge";
 import { CustomizedLicense } from "./src/customized-license";
 import { LockIssues } from "./src/lock-issues";
+import { UpgradeVulnerableTransitivesScriptFile } from "./src/scripts/upgrade-vulnerable-transitives";
 import { generateRandomCron, Schedule } from "./src/util/random-cron";
 
 // Remember that this is the list used by this repo (cdktn-provider-project) ONLY.
@@ -73,7 +74,12 @@ const project = new cdk.JsiiProject({
         // would break minimatch@3, which requires ^1.1.7. Dev tooling only: it is not
         // in `deps`/`bundledDeps` and so never ships. Revisit when those pull a
         // minimatch that has moved off brace-expansion@1.
-        ignoreGhsas: ["GHSA-mh99-v99m-4gvg"],
+        // GHSA-vfj7-8cjw-p6xm (braces stack exhaustion) has no patched version at
+        // all -- affected is "<=3.0.3" and 3.0.3 is the newest release. Reached via
+        // @types/jest > expect > jest-message-util > micromatch, so dev tooling only
+        // and never shipped. Revisit when braces ships a fix or micromatch moves off
+        // it.
+        ignoreGhsas: ["GHSA-mh99-v99m-4gvg", "GHSA-vfj7-8cjw-p6xm"],
       },
     },
   },
@@ -284,5 +290,13 @@ upgradeWorkflow?.addOverride("on.schedule", [
     }),
   },
 ]);
+
+// Same gate and cooldown as the provider repos, so the same hole: js-yaml needed a
+// hand-written #48 for this, then @xmldom/xmldom and brace-expansion followed.
+const transitivesScript = new UpgradeVulnerableTransitivesScriptFile(project, {
+  minimumReleaseAgeMinutes: 4 * 24 * 60,
+  auditLevel: "high",
+});
+project.tasks.tryFind("post-upgrade")?.exec(`node ./${transitivesScript.path}`);
 
 project.synth();
