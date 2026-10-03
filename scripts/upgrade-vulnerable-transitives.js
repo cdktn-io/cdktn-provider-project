@@ -62,7 +62,9 @@ function main() {
 
   console.log("attempting to resolve advisories in: " + names.join(", "));
   try {
-    // --depth Infinity is what lets a transitive package be named at all.
+    // --depth Infinity is what lets a transitive package be named at all. stderr is
+    // captured rather than inherited so the failure below can be classified; it is
+    // echoed back out on failure, and stdout still streams live.
     pnpm(
       [
         "update",
@@ -71,16 +73,22 @@ function main() {
         "Infinity",
         "--config.minimum-release-age=" + MINIMUM_RELEASE_AGE,
       ],
-      { stdio: "inherit" }
+      { stdio: ["ignore", "inherit", "pipe"] }
     );
-  } catch {
-    // The only patch may still be inside the cooldown (pnpm raises
-    // ERR_PNPM_NO_MATURE_MATCHING_VERSION). That is the cooldown working -- do not
-    // fail the upgrade and lose every other bump with it.
+  } catch (e) {
+    // Non-fatal either way: failing here would cost every other bump in the run.
+    // But registry, auth and config failures throw too, so only call it a cooldown
+    // refusal when pnpm actually said so.
+    const stderr = String((e && e.stderr) || "");
+    if (stderr) console.error(stderr);
     console.error(
-      "::warning::could not upgrade " +
-        names.join(", ") +
-        " within the cooldown; lockfile unchanged"
+      stderr.indexOf("ERR_PNPM_NO_MATURE_MATCHING_VERSION") !== -1
+        ? "::warning::" +
+            names.join(", ") +
+            " has no patch older than the cooldown; lockfile unchanged"
+        : "::warning::could not upgrade " +
+            names.join(", ") +
+            "; lockfile unchanged -- see the pnpm output above"
     );
   }
 }
