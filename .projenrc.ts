@@ -73,7 +73,12 @@ const project = new cdk.JsiiProject({
         // would break minimatch@3, which requires ^1.1.7. Dev tooling only: it is not
         // in `deps`/`bundledDeps` and so never ships. Revisit when those pull a
         // minimatch that has moved off brace-expansion@1.
-        ignoreGhsas: ["GHSA-mh99-v99m-4gvg"],
+        // GHSA-vfj7-8cjw-p6xm (braces stack exhaustion) has no patched version at
+        // all -- affected is "<=3.0.3" and 3.0.3 is the newest release. Reached via
+        // @types/jest > expect > jest-message-util > micromatch, so dev tooling only
+        // and never shipped. Revisit when braces ships a fix or micromatch moves off
+        // it.
+        ignoreGhsas: ["GHSA-mh99-v99m-4gvg", "GHSA-vfj7-8cjw-p6xm"],
       },
     },
   },
