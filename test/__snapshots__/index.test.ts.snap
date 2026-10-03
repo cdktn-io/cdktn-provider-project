@@ -1254,6 +1254,7 @@ scripts
     },
     {
       "name": "projen",
+      "version": ">=0.101.0 <1.0.0",
       "type": "build"
     },
     {
@@ -2223,7 +2224,7 @@ You can also visit a hosted version of the documentation on [constructs.dev](htt
     "jsii-docgen": "^10.2.3",
     "jsii-pacmak": "*",
     "jsii-rosetta": "~5.2.0",
-    "projen": "*",
+    "projen": ">=0.101.0 <1.0.0",
     "typescript": "~5.2.0"
   },
   "peerDependencies": {
@@ -3987,6 +3988,7 @@ scripts
     },
     {
       "name": "projen",
+      "version": ">=0.101.0 <1.0.0",
       "type": "build"
     },
     {
@@ -4523,7 +4525,7 @@ scripts
             "--peer",
             "--no-deprecated",
             "--dep=dev,prod,peer,optional",
-            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak"
           ]
         },
         {
@@ -5110,7 +5112,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "jsii-docgen": "^10.2.3",
     "jsii-pacmak": "*",
     "jsii-rosetta": "~5.2.0",
-    "projen": "*",
+    "projen": ">=0.101.0 <1.0.0",
     "semver": "^7.5.3",
     "typescript": "~5.2.0"
   },
@@ -7126,6 +7128,7 @@ scripts
     },
     {
       "name": "projen",
+      "version": ">=0.101.0 <1.0.0",
       "type": "build"
     },
     {
@@ -7662,7 +7665,7 @@ scripts
             "--peer",
             "--no-deprecated",
             "--dep=dev,prod,peer,optional",
-            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak"
           ]
         },
         {
@@ -8249,7 +8252,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "jsii-docgen": "^10.2.3",
     "jsii-pacmak": "*",
     "jsii-rosetta": "~5.2.0",
-    "projen": "*",
+    "projen": ">=0.101.0 <1.0.0",
     "semver": "^7.5.3",
     "typescript": "~5.2.0"
   },
@@ -10265,6 +10268,7 @@ scripts
     },
     {
       "name": "projen",
+      "version": ">=0.101.0 <1.0.0",
       "type": "build"
     },
     {
@@ -10801,7 +10805,7 @@ scripts
             "--peer",
             "--no-deprecated",
             "--dep=dev,prod,peer,optional",
-            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak"
           ]
         },
         {
@@ -11388,7 +11392,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "jsii-docgen": "^10.2.3",
     "jsii-pacmak": "*",
     "jsii-rosetta": "~5.2.0",
-    "projen": "*",
+    "projen": ">=0.101.0 <1.0.0",
     "semver": "^7.5.3",
     "typescript": "~5.2.0"
   },
@@ -13405,6 +13409,7 @@ scripts
     },
     {
       "name": "projen",
+      "version": ">=0.101.0 <1.0.0",
       "type": "build"
     },
     {
@@ -13941,7 +13946,7 @@ scripts
             "--peer",
             "--no-deprecated",
             "--dep=dev,prod,peer,optional",
-            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak"
           ]
         },
         {
@@ -14528,7 +14533,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "jsii-docgen": "^10.2.3",
     "jsii-pacmak": "*",
     "jsii-rosetta": "~5.2.0",
-    "projen": "*",
+    "projen": ">=0.101.0 <1.0.0",
     "semver": "^7.5.3",
     "typescript": "~5.2.0"
   },
@@ -16544,6 +16549,7 @@ scripts
     },
     {
       "name": "projen",
+      "version": ">=0.101.0 <1.0.0",
       "type": "build"
     },
     {
@@ -17080,7 +17086,7 @@ scripts
             "--peer",
             "--no-deprecated",
             "--dep=dev,prod,peer,optional",
-            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak"
           ]
         },
         {
@@ -17667,7 +17673,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "jsii-docgen": "^10.2.3",
     "jsii-pacmak": "*",
     "jsii-rosetta": "~5.2.0",
-    "projen": "*",
+    "projen": ">=0.101.0 <1.0.0",
     "semver": "^7.5.3",
     "typescript": "~5.2.0"
   },
@@ -19700,6 +19706,7 @@ scripts
     },
     {
       "name": "projen",
+      "version": ">=0.101.0 <1.0.0",
       "type": "build"
     },
     {
@@ -20236,7 +20243,7 @@ scripts
             "--peer",
             "--no-deprecated",
             "--dep=dev,prod,peer,optional",
-            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak,projen"
+            "--filter=@action-validator/cli,@action-validator/core,jsii-diff,jsii-pacmak"
           ]
         },
         {
@@ -20823,7 +20830,7 @@ The repository is managed by [CDKTN Repository Manager](https://github.com/cdktn
     "jsii-docgen": "^10.2.3",
     "jsii-pacmak": "*",
     "jsii-rosetta": "~5.3.0",
-    "projen": "*",
+    "projen": ">=0.101.0 <1.0.0",
     "semver": "^7.5.3",
     "typescript": "~5.3.0"
   },
