@@ -66,19 +66,12 @@ const project = new cdk.JsiiProject({
     workspaceYamlOptions: {
       nodeLinker: PnpmWorkspaceYamlSchemaNodeLinker.HOISTED,
       auditConfig: {
-        // GHSA-mh99-v99m-4gvg (brace-expansion DoS) declares a flat affected range
-        // of "<=5.0.7", which naively matches the 1.x line. We resolve 1.1.16 -- the
-        // newest 1.x there is -- via minimatch@3 under eslint and
-        // commit-and-tag-version, so there is nothing to upgrade to. Forcing 5.0.8
-        // would break minimatch@3, which requires ^1.1.7. Dev tooling only: it is not
-        // in `deps`/`bundledDeps` and so never ships. Revisit when those pull a
-        // minimatch that has moved off brace-expansion@1.
         // GHSA-vfj7-8cjw-p6xm (braces stack exhaustion) has no patched version at
         // all -- affected is "<=3.0.3" and 3.0.3 is the newest release. Reached via
         // @types/jest > expect > jest-message-util > micromatch, so dev tooling only
         // and never shipped. Revisit when braces ships a fix or micromatch moves off
         // it.
-        ignoreGhsas: ["GHSA-mh99-v99m-4gvg", "GHSA-vfj7-8cjw-p6xm"],
+        ignoreGhsas: ["GHSA-vfj7-8cjw-p6xm"],
       },
     },
   },
