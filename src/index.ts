@@ -24,15 +24,26 @@ import { PackageInfo } from "./package-info";
 import { ProviderUpgrade } from "./provider-upgrade";
 import { CheckForUpgradesScriptFile } from "./scripts/check-for-upgrades";
 import { ShouldReleaseScriptFile } from "./scripts/should-release";
+import { UpgradeVulnerableTransitivesScriptFile } from "./scripts/upgrade-vulnerable-transitives";
 import { generateRandomCron, Schedule } from "./util/random-cron";
 
 // ensure new projects start with 1.0.0 so that every following breaking change leads to an increased major version
 const MIN_MAJOR_VERSION = 1;
 
 /**
+ * Days a release must age before an upgrade may install it, so a compromised
+ * version has time to be flagged before an auto-merging PR pulls it in. Waived
+ * for MINIMUM_RELEASE_AGE_EXCLUDE.
+ */
+const COOLDOWN_DAYS = 4;
+
+/** Severity floor for the `auditDeps` build gate. */
+const AUDIT_LEVEL = "high";
+
+/**
  * First-party packages that are exempt from the dependency-upgrade cooldown.
  *
- * The `cooldown: 4` below reaches the generated upgrade task as
+ * `COOLDOWN_DAYS` below reaches the generated upgrade task as
  * `pnpm update --config.minimum-release-age=5760`, which gates *every* package
  * -- including the ones we publish ourselves. That is backwards for those: a
  * fix released here cannot reach the fleet for four days, which is exactly the
@@ -374,10 +385,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       },
       depsUpgrade: !isDeprecated,
       depsUpgradeOptions: {
-        // Skip versions published in the last 4 days, so a compromised release has
-        // time to be flagged before an auto-merging upgrade PR pulls it in. Waived
-        // for the packages in MINIMUM_RELEASE_AGE_EXCLUDE.
-        cooldown: 4,
+        cooldown: COOLDOWN_DAYS,
         workflowOptions: {
           labels: ["automerge", "auto-approve", "dependencies"],
           schedule: UpgradeDependenciesSchedule.WEEKLY,
@@ -385,7 +393,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
       },
       auditDeps: !isDeprecated,
       auditDepsOptions: {
-        level: "high",
+        level: AUDIT_LEVEL,
         runOn: "build",
       },
       publishToPypi: packageInfo.python,
@@ -634,6 +642,20 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         repository,
       });
       new Dependabot(this);
+
+      // Transitive advisories never move otherwise, and `auditDeps` fails the
+      // build on them. See the component.
+      const transitivesScript = new UpgradeVulnerableTransitivesScriptFile(
+        this,
+        {
+          minimumReleaseAgeMinutes: COOLDOWN_DAYS * 24 * 60,
+          auditLevel: AUDIT_LEVEL,
+        }
+      );
+      // post-upgrade: runs after `pnpm exec projen`, and only moves the lockfile.
+      this.tasks
+        .tryFind("post-upgrade")
+        ?.exec(`node ./${transitivesScript.path}`);
     }
 
     new TextFile(this, ".github/CODEOWNERS", {

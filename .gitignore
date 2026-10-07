@@ -56,4 +56,5 @@ junit.xml
 !/.github/workflows/automerge.yml
 !/.github/workflows/upgrade-jsii-typescript.yml
 !/.github/workflows/upgrade-node.yml
+!/scripts/upgrade-vulnerable-transitives.js
 !/.projenrc.ts
