@@ -198,7 +198,12 @@ describeOnPosix(SCRIPT_PATH, () => {
     const res = run([path.join(workdir, "corrupt.patch")]);
     expect(res.status).toBe(1);
     expect(res.stdout).not.toContain("Empty patch. Skipping.");
-    expect(res.stderr).toContain("unrecognized input");
+    // Assert that git's diagnostics came through, not their exact wording:
+    // git 2.34 says "unrecognized input" where newer git says "No valid
+    // patches in input". Matching only git's diagnostic prefix keeps the
+    // property under test (git's reason is never swallowed) without pinning
+    // the test to one git version's phrasing.
+    expect(res.stderr).toMatch(/^(error|fatal):/m);
   });
 
   // Below the chunk limit the packer provably emits one chunk identical to the
@@ -278,6 +283,9 @@ describeOnPosix(SCRIPT_PATH, () => {
 
     expect(res.status).toBe(1);
     expect(res.stdout).not.toContain("Empty patch. Skipping.");
-    expect(res.stderr).toContain("already exists");
+    // Our own message plus evidence that git's reason reached the log, without
+    // depending on how this git version words the conflict.
+    expect(res.stderr).toContain("Failed to apply chunk");
+    expect(res.stderr).toMatch(/^(error|fatal):/m);
   });
 });
