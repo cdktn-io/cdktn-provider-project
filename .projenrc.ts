@@ -16,6 +16,7 @@ import { Automerge } from "./src/automerge";
 import { CustomizedLicense } from "./src/customized-license";
 import { LockIssues } from "./src/lock-issues";
 import { UpgradeVulnerableTransitivesScriptFile } from "./src/scripts/upgrade-vulnerable-transitives";
+import { UpgradeFailureIssue } from "./src/upgrade-failure-issue";
 import { generateRandomCron, Schedule } from "./src/util/random-cron";
 
 // Remember that this is the list used by this repo (cdktn-provider-project) ONLY.
@@ -291,5 +292,10 @@ const transitivesScript = new UpgradeVulnerableTransitivesScriptFile(project, {
   auditLevel: "high",
 });
 project.tasks.tryFind("post-upgrade")?.exec(`node ./${transitivesScript.path}`);
+
+// The same silent-failure hole the generated repos had: nothing reports a failed
+// upgrade run here either, and this is the repo that ate three consecutive weekly
+// failures in July unnoticed.
+new UpgradeFailureIssue(project);
 
 project.synth();
