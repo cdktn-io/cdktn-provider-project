@@ -585,6 +585,45 @@ test("deprecated projects get no transitive upgrade, having no upgrade task", ()
   ).toBeUndefined();
 });
 
+test("a failed upgrade run opens an issue instead of failing silently", () => {
+  const snapshot = synthSnapshot(getProject());
+  const workflow = parseYaml(snapshot[".github/workflows/upgrade-main.yml"]);
+  const job = workflow.jobs.upgrade_failure_issue;
+
+  // Weekly cadence is only tolerable if a failure is noticed -- otherwise one
+  // silent break costs a week of dependency movement, as it did for awscc.
+  expect(job).toBeDefined();
+  expect(job.needs).toBe("upgrade");
+  // always(), or a failed `upgrade` would skip this along with it.
+  expect(job.if).toContain("always()");
+  expect(job.if).toContain("needs.upgrade.result == 'failure'");
+
+  const step = job.steps[0];
+  // No checkout: `gh` has no remote to infer the repo from, and a checkout
+  // failure is one of the failures this has to be able to report.
+  expect(step.env.GH_REPO).toBe("${{ github.repository }}");
+  // Deduplicated on the label, so a persistent failure files one issue.
+  expect(step.run).toContain("gh issue list --label failed-upgrade");
+  expect(step.run).toContain("gh issue create");
+});
+
+test("the notification job cannot reach the upgrade job's privileges", () => {
+  const snapshot = synthSnapshot(getProject());
+  const jobs = parseYaml(snapshot[".github/workflows/upgrade-main.yml"]).jobs;
+
+  // Permissions are job-wide. Granting `issues: write` on `upgrade` would expose
+  // that scope to the persisted checkout credential while dependency lifecycle
+  // scripts and `projen upgrade` run, so it belongs on a job that checks nothing
+  // out and runs no repository code.
+  expect(jobs.upgrade.permissions.issues).toBeUndefined();
+  expect(jobs.upgrade_failure_issue.permissions).toEqual({ issues: "write" });
+
+  const steps = jobs.upgrade_failure_issue.steps;
+  expect(steps).toHaveLength(1);
+  expect(JSON.stringify(steps)).not.toContain("actions/checkout");
+  expect(JSON.stringify(steps)).not.toContain("pnpm");
+});
+
 test("the cooldown is moot for deprecated projects, which have no upgrade task", () => {
   const snapshot = synthSnapshot(getProject({ isDeprecated: true }));
 
