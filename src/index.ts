@@ -908,9 +908,13 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     // only shallow-copy the top level, so mutating the found step's `.run` in
     // place here is picked up at synth -- no addOverride/JsonPatch needed.
     const applyPatchScript = new ApplySelfMutationPatchScriptFile(this, {});
-    const selfMutationSteps: any[] = (this.buildWorkflow as any).workflow.jobs[
-      "self-mutation"
-    ].steps;
+    const selfMutationWorkflow = (this.buildWorkflow as any).workflow;
+    const selfMutationJob = selfMutationWorkflow.jobs["self-mutation"];
+    assert(
+      selfMutationJob,
+      "self-mutation job not found in the build workflow, please check if the workaround still works!"
+    );
+    const selfMutationSteps: any[] = selfMutationJob.steps;
     const applyPatchStep = selfMutationSteps.find(
       (it: any) => it.name === "Apply patch"
     );
@@ -926,7 +930,20 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         applyPatchStep.run
       )}`
     );
-    applyPatchStep.run = `node ./${applyPatchScript.path} "\${{ runner.temp }}/repo.patch"`;
+    const applyPatchRun = `node ./${applyPatchScript.path} "\${{ runner.temp }}/repo.patch"`;
+    applyPatchStep.run = applyPatchRun;
+    // `get jobs()` is documented as returning "a read-only copy"; it happens to
+    // be a shallow one today, which is why mutating the step above lands. If a
+    // future projen deep-copies or freezes it, the asserts above would still
+    // pass while the step silently kept its original `git apply` -- exactly the
+    // drift those asserts exist to catch. Re-read through the getter to prove
+    // the mutation took.
+    assert(
+      selfMutationWorkflow.jobs["self-mutation"].steps.some(
+        (it: any) => it.run === applyPatchRun
+      ),
+      "Mutating the Apply patch step in place no longer affects the synthesized workflow, please check if the workaround still works!"
+    );
 
     new CopyrightHeaders(this);
     new DeprecatePackages(this, {

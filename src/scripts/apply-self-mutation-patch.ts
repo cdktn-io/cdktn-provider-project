@@ -27,7 +27,6 @@ export class ApplySelfMutationPatchScriptFile extends FileBase {
  * SPDX-License-Identifier: MPL-2.0
  */
 const fs = require("fs");
-const os = require("os");
 const path = require("path");
 const { spawnSync } = require("child_process");
 
@@ -44,44 +43,70 @@ const CHUNK_MAX_BYTES =
 const BOUNDARY = Buffer.from("\\ndiff --git ");
 const READ_SIZE = 1024 * 1024;
 
-const patchFile = process.argv[2];
-if (!patchFile) {
-  console.error("Usage: apply-self-mutation-patch.js <patch-file>");
-  process.exit(1);
-}
+// Sets the exit code and returns rather than calling process.exit(): git's
+// diagnostics for a huge patch run to megabytes, and process.exit() discards
+// whatever is still buffered on a pipe -- only ~140KB of a 2MB write survives,
+// silently truncating the very output this script exists to preserve. Returning
+// lets node flush stdio before it exits on its own.
+process.exitCode = main();
 
-// A nonexistent patch file is a deliberate skip (matching the previous
-// \`[ ! -s ]\` behavior); a missing argv above is a hard error. Any other
-// stat failure must fail loudly rather than masquerade as an empty patch.
-let patchSize = 0;
-try {
-  patchSize = fs.statSync(patchFile).size;
-} catch (e) {
-  if (e.code !== "ENOENT") {
-    throw e;
+function main() {
+  const patchFile = process.argv[2];
+  if (!patchFile) {
+    console.error("Usage: apply-self-mutation-patch.js <patch-file>");
+    return 1;
   }
-  patchSize = 0;
-}
-if (patchSize === 0) {
-  console.log("Empty patch. Skipping.");
-  process.exit(0);
-}
 
-const plain = gitApply(patchFile);
-if (plain.ok) {
+  // A nonexistent patch file is a deliberate skip (matching the previous
+  // \`[ ! -s ]\` behavior); a missing argv above is a hard error. Any other
+  // stat failure must fail loudly rather than masquerade as an empty patch.
+  let patchSize = 0;
+  try {
+    patchSize = fs.statSync(patchFile).size;
+  } catch (e) {
+    if (e.code !== "ENOENT") {
+      throw e;
+    }
+    patchSize = 0;
+  }
+  if (patchSize === 0) {
+    console.log("Empty patch. Skipping.");
+    return 0;
+  }
+
+  const plain = gitApply(patchFile);
   process.stderr.write(plain.stderr);
-  process.exit(0);
-}
+  if (plain.ok) {
+    return 0;
+  }
 
-console.log("Plain 'git apply' failed, falling back to chunked apply:");
-process.stderr.write(plain.stderr);
-process.exit(chunkedApply(patchFile, patchSize));
+  // Chunking only ever helps when the patch overran git's input limit. At or
+  // below the chunk limit the packer provably emits a single chunk
+  // byte-identical to the input, so falling back would just re-run the same
+  // failing apply -- and above it, for a genuine conflict, it would re-do
+  // multi-GB work only to fail again, leaving the tree half-applied on the way.
+  if (patchSize <= CHUNK_MAX_BYTES) {
+    console.error(
+      "'git apply' failed on a " +
+        patchSize +
+        " byte patch, which is within git's input limit; chunking cannot help " +
+        "with that, see the error above."
+    );
+    return 1;
+  }
+
+  console.log("Plain 'git apply' failed, falling back to chunked apply:");
+  return chunkedApply(patchFile, patchSize);
+}
 
 // Any real failure must fail the job loudly: never fall through to the
 // "empty patch" message on a genuine apply error.
 function chunkedApply(file, size) {
+  // Next to the patch (i.e. \${{ runner.temp }}), not os.tmpdir(): the chunks
+  // duplicate the entire patch, so they belong on the volume that already
+  // proved it can hold it rather than on whatever /tmp happens to be.
   const chunkDir = fs.mkdtempSync(
-    path.join(os.tmpdir(), "apply-self-mutation-patch-")
+    path.join(path.dirname(file), "apply-self-mutation-patch-")
   );
   try {
     const chunks = writeChunks(file, size, chunkDir);
@@ -109,6 +134,11 @@ function chunkedApply(file, size) {
 function gitApply(file) {
   const res = spawnSync("git", ["apply", file], {
     stdio: ["ignore", "inherit", "pipe"],
+    // Node's 1MiB default would SIGTERM git part-way through and truncate the
+    // diagnostics mid-line: a 20k-file rejection writes ~1.8MB to stderr, and
+    // the real exit status is replaced by a spurious ENOBUFS. Keeping git's
+    // error output intact is the whole point of this script.
+    maxBuffer: Infinity,
   });
   const stderr = res.stderr || Buffer.alloc(0);
   if (res.error) {
