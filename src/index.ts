@@ -362,13 +362,10 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         workspaceYamlOptions: {
           nodeLinker: PnpmWorkspaceYamlSchemaNodeLinker.HOISTED,
           auditConfig: {
-            // Same flat-range artifact this project ignores for itself:
-            // GHSA-mh99-v99m-4gvg declares affected "<=5.0.7", which naively matches
-            // the 1.x line. Provider repos reach brace-expansion@1 via
-            // cdktn-cli > @cdktn/hcl2cdk > glob > minimatch@3, and there is no fixed
-            // 1.x to move to -- forcing 5.0.8 would break minimatch@3, which requires
-            // ^1.1.7. Dev tooling only; never shipped.
-            ignoreGhsas: ["GHSA-mh99-v99m-4gvg"],
+            // GHSA-vfj7-8cjw-p6xm (braces stack exhaustion) has no patched version
+            // at all -- affected is "<=3.0.3" and 3.0.3 is the newest release. Reached
+            // via jsii-docgen > fast-glob > micromatch; dev tooling, never shipped.
+            ignoreGhsas: ["GHSA-vfj7-8cjw-p6xm"],
           },
           // Let first-party releases skip the `cooldown` below -- see the note on
           // the constant. Third-party deps are unaffected.
