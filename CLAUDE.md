@@ -64,7 +64,6 @@ Each file in `src/` adds specific functionality to generated provider projects:
 - **`readme.ts`**: Generates comprehensive README with package installation instructions for all languages
 - **`auto-approve.ts` / `automerge.ts`**: GitHub workflows for automated PR approval/merging
 - **`copyright-headers.ts`**: Adds HashiCorp copyright headers using the `copywrite` tool
-- **`deprecate-packages.ts`**: Handles deprecation notices when `isDeprecated: true`
 - **`lock-issues.ts`**: Auto-locks resolved issues after 90 days
 - **`github-issues.ts`**: Issue templates and bot configurations
 
@@ -140,8 +139,8 @@ When `isDeprecated: true`:
 - Disables dependency upgrades
 - Skips provider upgrade workflow
 - Adds deprecation notice to README
-- Release workflow includes deprecation step for package managers
-- Go packages get deprecation comment in generated code
+- Go packages get a `// Deprecated:` comment prepended to `go.mod` during the Go publish job
+- npm, PyPI, Maven and NuGet deprecation is a manual maintainer step (see the README runbook); the automated `deprecate` job was removed because provider repos hold no `NPM_TOKEN` (npm publishes via OIDC, which cannot authorize `npm deprecate`)
 
 ## Testing Strategy
 
@@ -177,7 +176,7 @@ This fork (cdktn.io) continues development after HashiCorp's sunset. With a Phas
 ## Common Gotchas
 
 - **Don't manually edit workflow YAML files** - Modify the Projen components in `src/` instead
-- **Provider repos need secrets** - NPM_TOKEN, TWINE_*, MAVEN_*, GH_TOKEN for publishing (this is managed by a separate project called the "cdktn-repository-manager")
+- **Provider repos need secrets** - MAVEN_*, NUGET_API_KEY, GH_TOKEN and the GitHub App credentials for publishing; npm and PyPI publish via OIDC trusted publishing, so NPM_TOKEN / TWINE_* exist only when `npmTrustedPublishing` / `pypiTrustedPublishing` are off (all managed by a separate project called the "cdktn-repository-manager")
 - **Fetch nukes src/ directory** - Copyright headers must be re-added after `cdktf get`
 - **version.json has exactly one entry** - Multi-provider projects are not supported
 - **Release task is conditional** - Controlled by `should-release.js`, use `unconditional-release` to force

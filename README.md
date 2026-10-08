@@ -74,7 +74,7 @@ Deprecating published versions is a manual, maintainer-driven step. The release 
   ```
 
   e.g. `npm deprecate @cdktn/provider-random@"<12.0.0" "See https://cdktn.io/docs/concepts/providers#import-providers for how to generate the bindings locally."`. An empty message (`""`) un-deprecates.
-- **PyPI**: there is no deprecation; yank the affected releases through the project's web UI on pypi.org instead.
+- **PyPI**: there is no deprecation mechanism ([pypi/warehouse#345](https://github.com/pypi/warehouse/issues/345)). Leave published releases alone. Do not yank them, because pip then skips them for any requirement that isn't an exact `==` pin. The deprecation notice in the README (rendered on the PyPI project page) is the signal.
 - **Go**: still automated -- a provider marked `isDeprecated` gets a `// Deprecated:` comment prepended to its `go.mod` during the Go publish job.
 - **Maven / NuGet**: no automated path; NuGet supports deprecation only via the nuget.org web UI.
 
