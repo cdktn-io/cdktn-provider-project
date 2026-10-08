@@ -16,7 +16,6 @@ import { CdktfConfig } from "./cdktf-config";
 import { CopyrightHeaders } from "./copyright-headers";
 import { CustomizedLicense } from "./customized-license";
 import { Dependabot } from "./dependabot";
-import { DeprecatePackages } from "./deprecate-packages";
 import { ForceRelease } from "./force-release";
 import { GithubIssues } from "./github-issues";
 import { LockIssues } from "./lock-issues";
@@ -183,6 +182,29 @@ export interface CdktnProviderProjectOptions extends cdk.JsiiProjectOptions {
    */
   readonly pypiTrustedPublishing?: boolean;
 }
+
+// To deprecate npm, PyPI, Maven and NuGet releases see the README.
+
+/**
+ * Prepends the Go `// Deprecated:` comment to every go.mod of a deprecated
+ * provider, so `go get` warns.
+ *
+ * @see https://github.com/golang/go/issues/40357
+ */
+const goModuleDeprecationStep = (providerName: string): JobStep => {
+  const deprecationMessageForGo = [
+    `// Deprecated: The CDK Terrain Team is no longer publishing new versions of the prebuilt provider for ${providerName}.`,
+    `// Previously-published versions of this prebuilt provider will still continue to be available as installable Go modules,`,
+    `// but these will not be compatible with newer versions of CDK Terrain and are not eligible for support.`,
+    `// You can continue to use the ${providerName} provider in your CDK Terrain projects with newer versions of cdktn,`,
+    `// but you will need to generate the bindings locally. See https://cdktn.io/docs/concepts/providers#import-providers for details.`,
+    ``,
+  ].join("\\n");
+  return {
+    name: "Mark the Go module as deprecated",
+    run: `find '.repo/dist/go' -mindepth 2 -maxdepth 4 -type f -name 'go.mod' | xargs sed -i '1s|^|${deprecationMessageForGo}|'`,
+  };
+};
 
 const getMavenName = (providerName: string): string => {
   return ["null", "random"].includes(providerName)
@@ -352,6 +374,7 @@ export class CdktnProviderProject extends cdk.JsiiProject {
             name: "Copy the README file to the parent directory",
             run: "cp .repo/dist/go/*/README.md .repo/dist/go/README.md",
           },
+          ...(isDeprecated ? [goModuleDeprecationStep(providerName)] : []),
           {
             name: "Collect go Artifact",
             run: "mv .repo/dist dist",
@@ -903,11 +926,6 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     );
 
     new CopyrightHeaders(this);
-    new DeprecatePackages(this, {
-      providerName,
-      packageInfo,
-      isDeprecated: !!isDeprecated,
-    });
     if (!isDeprecated) {
       // Folds the manual force-release behaviour into release.yml behind a
       // workflow_dispatch trigger, so npm/PyPI OIDC trusts a single workflow.
