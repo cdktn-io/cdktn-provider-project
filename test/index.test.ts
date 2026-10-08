@@ -133,11 +133,9 @@ test("has a custom workflow and README if the project is deprecated", () => {
   );
 
   const release = snapshot[".github/workflows/release.yml"];
-  expect(release).toEqual(
-    expect.stringContaining(
-      "Deprecate the package in package managers if needed"
-    )
-  );
+  // Registry deprecation is a manual runbook now (see README) -- provider repos
+  // hold no NPM_TOKEN, so release.yml must not carry a job that needs one.
+  expect(Object.keys(parseYaml(release).jobs)).not.toContain("deprecate");
 
   const releaseLines = release.split("\n");
   const releaseGoLineIndex = releaseLines.findIndex((line: string) =>
@@ -252,14 +250,15 @@ const releaseJobs = (release: string): Record<string, string> => {
 // other package:* target is a real jsii-pacmak transpile that actually allocates.
 test("every workflow that runs pnpm also installs pnpm", () => {
   // The pnpm migration switched the hand-built workflows (provider-upgrade,
-  // deprecate-packages) to `pnpm install` but did not add the "Setup pnpm"
+  // the since-removed deprecate job) to `pnpm install` but did not add the "Setup pnpm"
   // step projen injects into the workflows it generates itself. Result: exit
   // 127 "pnpm: command not found" on every provider, every day, and it only
   // surfaced once the first scheduled run fired after rollout -- snapshot
   // tests never execute a workflow, so nothing caught it.
   // Both variants are required: provider-upgrade.yml is only generated when the
-  // project is NOT deprecated, and the deprecate job only when it IS. Checking
-  // one snapshot silently skips the other workflow.
+  // project is NOT deprecated, and a deprecated project's release.yml differs
+  // (its Go job still runs the hand-built `pnpm install` pre-publish steps).
+  // Checking one snapshot silently skips the other workflow.
   const variants = {
     active: synthSnapshot(getProject()),
     deprecated: synthSnapshot(
@@ -288,10 +287,10 @@ test("every workflow that runs pnpm also installs pnpm", () => {
         seen.push(`${variant}:${file}:${jobId}`);
 
         // Scope the check to THIS job, and require the setup to come first.
-        // A file-level check is not enough: in the deprecated variant,
-        // release.yml already carries projen's own pnpm/action-setup in the
-        // regular release job, which masked the deprecate job missing it
-        // entirely -- the exact bug this test exists to catch.
+        // A file-level check is not enough: release.yml already carries
+        // projen's own pnpm/action-setup in the regular release job, which
+        // once masked a hand-built job (the since-removed deprecate job)
+        // missing it entirely -- the exact bug this test exists to catch.
         const setupBefore = steps
           .slice(0, firstPnpmRun)
           .some((s) => (s.uses ?? "").startsWith("pnpm/action-setup"));
@@ -305,7 +304,7 @@ test("every workflow that runs pnpm also installs pnpm", () => {
   expect(seen).toEqual(
     expect.arrayContaining([
       "active:.github/workflows/provider-upgrade.yml:upgrade",
-      "deprecated:.github/workflows/release.yml:deprecate",
+      "deprecated:.github/workflows/release.yml:release_golang",
     ])
   );
   expect(offenders).toEqual([]);
@@ -453,23 +452,50 @@ test("pypi release stays on the custom runner when trusted publishing is off", (
   expect(pypiJobSection).not.toEqual(expect.stringContaining("ubuntu-latest"));
 });
 
-test("deprecated project with trusted publishing uses NPM_TOKEN fallback for deprecation", () => {
-  const snapshot = synthSnapshot(
-    getProject({
-      isDeprecated: true,
-      deprecationDate: "December 11, 2023",
-      npmTrustedPublishing: true,
-    })
-  );
+test.each([
+  ["active", {}],
+  ["deprecated", { isDeprecated: true, deprecationDate: "December 11, 2023" }],
+])(
+  "%s project with npm trusted publishing has no deprecate job and no NPM_TOKEN",
+  (_variant, extra) => {
+    const snapshot = synthSnapshot(
+      getProject({ ...extra, npmTrustedPublishing: true })
+    );
 
-  const release = snapshot[".github/workflows/release.yml"];
-  // Deprecation step should still reference NPM_TOKEN (fallback)
-  const releaseLines = release.split("\n");
-  const deprecateJobStart = releaseLines.findIndex((line: string) =>
-    line.includes("deprecate:")
-  );
-  const deprecateSection = releaseLines.slice(deprecateJobStart).join("\n");
-  expect(deprecateSection).toEqual(expect.stringContaining("NPM_TOKEN"));
+    const release = snapshot[".github/workflows/release.yml"];
+    // The automated npm-deprecate job was the last NPM_TOKEN consumer once npm
+    // publishing moved to OIDC; deprecation is a manual runbook now (README).
+    expect(Object.keys(parseYaml(release).jobs)).not.toContain("deprecate");
+    expect(release).not.toEqual(expect.stringContaining("NPM_TOKEN"));
+  }
+);
+
+// cdktn-repository-manager puts the fleet's publishing jobs behind a GitHub
+// deployment environment by passing projen's own `releaseEnvironment` through
+// .projenrc.js; nothing in this class may swallow it on the way to super().
+test("projen's releaseEnvironment reaches every publishing job", () => {
+  const jobs = parseYaml(
+    synthSnapshot(getProject({ releaseEnvironment: "release" }))[
+      ".github/workflows/release.yml"
+    ]
+  ).jobs as Record<string, { environment?: unknown }>;
+
+  const publishJobs = [
+    "release_npm",
+    "release_pypi",
+    "release_maven",
+    "release_nuget",
+    "release_golang",
+    "release_github",
+  ];
+  // Guard the guard: a job that stopped being generated would pass vacuously.
+  expect(Object.keys(jobs)).toEqual(expect.arrayContaining(publishJobs));
+  for (const name of publishJobs) {
+    expect([name, jobs[name].environment]).toEqual([name, "release"]);
+  }
+  // The build job only uploads an artifact; it stays outside the environment
+  // so a run that cannot enter it still builds.
+  expect(jobs.release.environment).toBeUndefined();
 });
 
 test("with minNodeVersion", () => {

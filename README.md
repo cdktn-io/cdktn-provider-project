@@ -44,9 +44,8 @@ pnpm install
 
 This will generate an entire repository ready to be published, including Github Workflows for publishing NPM, Pypi and maven packages. The only thing which is needed to be set manually are the tokens for these registries:
 
-- `NPM_TOKEN`
-- `TWINE_PASSWORD`
-- `TWINE_USERNAME`
+- `NPM_TOKEN` (only when `npmTrustedPublishing` is false; the cdktn-io provider repositories publish via OIDC and hold no npm token)
+- `TWINE_PASSWORD` / `TWINE_USERNAME` (only when `pypiTrustedPublishing` is false)
 - `MAVEN_GPG_PRIVATE_KEY`
 - `MAVEN_GPG_PRIVATE_KEY_PASSPHRASE`
 - `MAVEN_PASSWORD`
@@ -63,6 +62,21 @@ pnpm install
 ```
 
 Commit, push and check for the auto-released version.
+
+### Deprecating old package versions
+
+Deprecating published versions is a manual, maintainer-driven step. The release workflow used to carry an automated `deprecate` job that ran `npm deprecate` after each release of a deprecated provider; it was removed because provider repositories no longer hold an `NPM_TOKEN` (npm publishing uses OIDC trusted publishing, which cannot authorize `npm deprecate`).
+
+- **npm**: a maintainer with publish rights on the package runs, locally:
+
+  ```
+  npm deprecate <pkg>@"<range>" "<message>"
+  ```
+
+  e.g. `npm deprecate @cdktn/provider-random@"<12.0.0" "See https://cdktn.io/docs/concepts/providers#import-providers for how to generate the bindings locally."`. An empty message (`""`) un-deprecates.
+- **PyPI**: there is no deprecation; yank the affected releases through the project's web UI on pypi.org instead.
+- **Go**: still automated -- a provider marked `isDeprecated` gets a `// Deprecated:` comment prepended to its `go.mod` during the Go publish job.
+- **Maven / NuGet**: no automated path; NuGet supports deprecation only via the nuget.org web UI.
 
 ## Development
 

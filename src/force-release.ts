@@ -136,12 +136,6 @@ export class ForceRelease extends Component {
       artifactGuard;
     releaseSteps.find((s) => s.name === "Upload artifact").if = artifactGuard;
 
-    // --- deprecate job: skip on manual dispatch ---------------------------
-    const deprecate = wf.getJob("deprecate");
-    if (deprecate) {
-      deprecate.if = NOT_DISPATCH;
-    }
-
     // --- GitHub release job ----------------------------------------------
     const githubJob = wf.getJob("release_github");
     if (githubJob) {
