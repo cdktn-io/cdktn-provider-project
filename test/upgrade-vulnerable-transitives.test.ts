@@ -219,10 +219,11 @@ test("an update failure that is not a cooldown refusal is not reported as one", 
 });
 
 test("says so when an upgrade leaves the package still flagged", () => {
-  // A parent pinning the flagged package exactly means pnpm has nothing in range:
-  // `pnpm update` exits 0 and changes nothing, which used to look identical to a
-  // fix. follow-redirects GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that
-  // way, because @cdktn/commons pins it at exactly 1.16.0.
+  // When nothing an upstream range admits is patched, pnpm has nowhere to move to:
+  // the update exits 0 and changes nothing, which used to look identical to a fix.
+  // follow-redirects GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way --
+  // the published @cdktn/commons@0.24.0 requires exactly 1.16.0, and its source has
+  // since moved to a caret but no release carries that yet.
   const { stderr, updateArgs } = runScript({
     auditOutput: advisory(["follow-redirects"]),
     auditOutputAfter: advisory(["follow-redirects"]),
@@ -231,7 +232,7 @@ test("says so when an upgrade leaves the package still flagged", () => {
   expect(updateArgs).toHaveLength(1);
   expect(stderr).toContain("::warning::still flagged after upgrading");
   expect(stderr).toContain("follow-redirects");
-  expect(stderr).toContain("needs that parent released");
+  expect(stderr).toContain("needs the upstream package released");
 });
 
 test("confirms resolution when the upgrade actually works", () => {
