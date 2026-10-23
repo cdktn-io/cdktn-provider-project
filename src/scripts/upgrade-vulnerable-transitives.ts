@@ -104,6 +104,7 @@ function main() {
   }
 
   console.log("attempting to resolve advisories in: " + names.join(", "));
+  let attempted = true;
   try {
     // --depth Infinity is what lets a transitive package be named at all. stderr is
     // captured rather than inherited so the failure below can be classified; it is
@@ -133,6 +134,32 @@ function main() {
             names.join(", ") +
             "; lockfile unchanged -- see the pnpm output above"
     );
+    attempted = false;
+  }
+
+  // A successful update does not mean the advisory went away. If nothing an
+  // upstream range admits is patched, pnpm has nowhere to move to, exits 0 and
+  // changes nothing -- indistinguishable from a fix in the log. follow-redirects
+  // GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way: the published
+  // @cdktn/commons@0.24.0 requires exactly 1.16.0, and while its source has since
+  // moved to a caret, no release carries that yet.
+  //
+  // Re-audit and say so. Still non-fatal -- the audit gate is what blocks the
+  // build; this exists to name the cause, because no lockfile refresh can fix a
+  // constraint that lives in a published upstream package.
+  if (!attempted) return;
+  const remaining = vulnerablePackages();
+  if (remaining === undefined) return;
+  const stuck = names.filter((n) => remaining.indexOf(n) !== -1);
+  if (stuck.length > 0) {
+    console.error(
+      "::warning::still flagged after upgrading: " +
+        stuck.join(", ") +
+        "; no version an upstream range admits is patched, so this needs the" +
+        " upstream package released rather than another lockfile refresh"
+    );
+  } else {
+    console.log("resolved: " + names.join(", "));
   }
 }
 

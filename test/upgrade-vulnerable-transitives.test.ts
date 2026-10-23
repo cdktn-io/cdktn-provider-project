@@ -36,6 +36,8 @@ function fakePnpm(
     auditExit?: number;
     updateExit?: number;
     updateStderr?: string;
+    /** Audit output for the post-update re-audit; defaults to a clean result. */
+    auditOutputAfter?: string;
   }
 ) {
   const bin = join(dir, "bin");
@@ -46,6 +48,11 @@ function fakePnpm(
     [
       "#!/usr/bin/env bash",
       'if [ "$1" = "audit" ]; then',
+      `  if [ -f ${JSON.stringify(join(dir, "audited"))} ]; then`,
+      `    cat <<'JSON'\n${opts.auditOutputAfter ?? '{"advisories":{}}'}\nJSON`,
+      "    exit 0",
+      "  fi",
+      `  touch ${JSON.stringify(join(dir, "audited"))}`,
       `  cat <<'JSON'\n${opts.auditOutput}\nJSON`,
       `  exit ${opts.auditExit ?? 1}`,
       "fi",
@@ -83,6 +90,7 @@ function runIn(
     auditExit?: number;
     updateExit?: number;
     updateStderr?: string;
+    auditOutputAfter?: string;
   }
 ) {
   mkdirSync(join(dir, "scripts"), { recursive: true });
@@ -208,4 +216,45 @@ test("an update failure that is not a cooldown refusal is not reported as one", 
   expect(stderr).not.toContain("cooldown");
   // and the pnpm output is echoed so the real cause is visible
   expect(stderr).toContain("ERR_PNPM_FETCH_401");
+});
+
+test("says so when an upgrade leaves the package still flagged", () => {
+  // When nothing an upstream range admits is patched, pnpm has nowhere to move to:
+  // the update exits 0 and changes nothing, which used to look identical to a fix.
+  // follow-redirects GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way --
+  // the published @cdktn/commons@0.24.0 requires exactly 1.16.0, and its source has
+  // since moved to a caret but no release carries that yet.
+  const { stderr, updateArgs } = runScript({
+    auditOutput: advisory(["follow-redirects"]),
+    auditOutputAfter: advisory(["follow-redirects"]),
+  });
+
+  expect(updateArgs).toHaveLength(1);
+  expect(stderr).toContain("::warning::still flagged after upgrading");
+  expect(stderr).toContain("follow-redirects");
+  expect(stderr).toContain("needs the upstream package released");
+});
+
+test("confirms resolution when the upgrade actually works", () => {
+  const { stdout, stderr } = runScript({
+    auditOutput: advisory(["undici"]),
+    auditOutputAfter: JSON.stringify({ advisories: {} }),
+  });
+
+  expect(stdout).toContain("resolved: undici");
+  expect(stderr).not.toContain("still flagged");
+});
+
+test("does not re-audit when the upgrade itself failed", () => {
+  // The cooldown refusal already explains itself; a second audit would only add a
+  // misleading "still flagged" on top of it.
+  const { stderr } = runScript({
+    auditOutput: advisory(["undici"]),
+    updateExit: 1,
+    updateStderr: "ERR_PNPM_NO_MATURE_MATCHING_VERSION undici",
+    auditOutputAfter: advisory(["undici"]),
+  });
+
+  expect(stderr).toContain("no patch older than the cooldown");
+  expect(stderr).not.toContain("still flagged");
 });
