@@ -104,6 +104,7 @@ function main() {
   }
 
   console.log("attempting to resolve advisories in: " + names.join(", "));
+  let attempted = true;
   try {
     // --depth Infinity is what lets a transitive package be named at all. stderr is
     // captured rather than inherited so the failure below can be classified; it is
@@ -133,6 +134,30 @@ function main() {
             names.join(", ") +
             "; lockfile unchanged -- see the pnpm output above"
     );
+    attempted = false;
+  }
+
+  // A successful update does not mean the advisory went away. If a parent pins the
+  // flagged package exactly, pnpm has nothing in range to move to, exits 0 and
+  // changes nothing -- indistinguishable from a fix in the log. That is how
+  // follow-redirects GHSA-q3jh-wrc6-jgq8 sat on the whole fleet while this script
+  // reported success: @cdktn/commons pins follow-redirects at exactly 1.16.0.
+  //
+  // Re-audit and say so. Still non-fatal -- the audit gate is what blocks the
+  // build; this exists to name the cause, because a patch that exists but is
+  // pinned by a parent needs that parent released, not another lockfile refresh.
+  if (!attempted) return;
+  const remaining = vulnerablePackages();
+  if (remaining === undefined) return;
+  const stuck = names.filter((n) => remaining.indexOf(n) !== -1);
+  if (stuck.length > 0) {
+    console.error(
+      "::warning::still flagged after upgrading: " +
+        stuck.join(", ") +
+        " -- a parent likely pins it exactly, which needs that parent released"
+    );
+  } else {
+    console.log("resolved: " + names.join(", "));
   }
 }
 
