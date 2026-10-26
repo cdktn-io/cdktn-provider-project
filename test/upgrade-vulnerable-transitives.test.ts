@@ -26,20 +26,20 @@ import { getProject } from "./util/test-project";
  * and assert on the arguments it actually receives.
  */
 
+/** Options shared by fakePnpm, runScript and runIn -- one contract, no drift. */
+interface FakeOpts {
+  auditOutput: string;
+  auditExit?: number;
+  updateExit?: number;
+  updateStderr?: string;
+  /** Audit output for the post-update re-audit; defaults to a clean result. */
+  auditOutputAfter?: string;
+}
+
 const SCRIPT = "scripts/upgrade-vulnerable-transitives.js";
 
 /** A pnpm whose `audit` prints `auditOutput` and whose `update` records argv. */
-function fakePnpm(
-  dir: string,
-  opts: {
-    auditOutput: string;
-    auditExit?: number;
-    updateExit?: number;
-    updateStderr?: string;
-    /** Audit output for the post-update re-audit; defaults to a clean result. */
-    auditOutputAfter?: string;
-  }
-) {
+function fakePnpm(dir: string, opts: FakeOpts) {
   const bin = join(dir, "bin");
   mkdirSync(bin, { recursive: true });
   const argsLog = join(dir, "update-args.txt");
@@ -69,12 +69,7 @@ function fakePnpm(
   return { bin, argsLog };
 }
 
-function runScript(opts: {
-  auditOutput: string;
-  auditExit?: number;
-  updateExit?: number;
-  updateStderr?: string;
-}) {
+function runScript(opts: FakeOpts) {
   const dir = mkdtempSync(join(tmpdir(), "transitives-"));
   try {
     return runIn(dir, opts);
@@ -83,16 +78,7 @@ function runScript(opts: {
   }
 }
 
-function runIn(
-  dir: string,
-  opts: {
-    auditOutput: string;
-    auditExit?: number;
-    updateExit?: number;
-    updateStderr?: string;
-    auditOutputAfter?: string;
-  }
-) {
+function runIn(dir: string, opts: FakeOpts) {
   mkdirSync(join(dir, "scripts"), { recursive: true });
   writeFileSync(join(dir, SCRIPT), synthSnapshot(getProject())[SCRIPT]);
 
@@ -118,10 +104,23 @@ function runIn(
   return { stdout, stderr, updateArgs };
 }
 
-const advisory = (modules: string[]) =>
+const advisory = (
+  modules: string[],
+  opts: { id?: string; version?: string } = {}
+) =>
   JSON.stringify({
     advisories: Object.fromEntries(
-      modules.map((m, i) => [String(i), { module_name: m, severity: "high" }])
+      modules.map((m, i) => [
+        String(i),
+        {
+          module_name: m,
+          severity: "high",
+          github_advisory_id: opts.id ?? `GHSA-fake-${m}`,
+          findings: [
+            { version: opts.version ?? "1.0.0", paths: [`.>parent>${m}`] },
+          ],
+        },
+      ])
     ),
   });
 
@@ -218,21 +217,67 @@ test("an update failure that is not a cooldown refusal is not reported as one", 
   expect(stderr).toContain("ERR_PNPM_FETCH_401");
 });
 
-test("says so when an upgrade leaves the package still flagged", () => {
-  // When nothing an upstream range admits is patched, pnpm has nowhere to move to:
-  // the update exits 0 and changes nothing, which used to look identical to a fix.
-  // follow-redirects GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way --
-  // the published @cdktn/commons@0.24.0 requires exactly 1.16.0, and its source has
-  // since moved to a caret but no release carries that yet.
+test("says so when the same advisory survives the upgrade", () => {
+  // pnpm exits 0 having changed nothing whenever it has nowhere in range to move
+  // to, which used to look identical to a fix. follow-redirects
+  // GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way.
+  const same = advisory(["follow-redirects"], {
+    id: "GHSA-q3jh-wrc6-jgq8",
+    version: "1.16.0",
+  });
   const { stderr, updateArgs } = runScript({
-    auditOutput: advisory(["follow-redirects"]),
-    auditOutputAfter: advisory(["follow-redirects"]),
+    auditOutput: same,
+    auditOutputAfter: same,
   });
 
   expect(updateArgs).toHaveLength(1);
   expect(stderr).toContain("::warning::still flagged after upgrading");
-  expect(stderr).toContain("follow-redirects");
-  expect(stderr).toContain("needs the upstream package released");
+  // Correlated on advisory and installed version, not just the package name, and
+  // the path is quoted so the reader can see which copy survived.
+  expect(stderr).toContain("follow-redirects@1.16.0");
+  expect(stderr).toContain("GHSA-q3jh-wrc6-jgq8");
+  expect(stderr).toContain("via .>parent>follow-redirects");
+});
+
+test("does not guess why the upgrade failed to move it", () => {
+  // The audit shows which advisory, version and path survived -- not whether a
+  // stale published range, an override or a second installed copy is responsible.
+  // Asserting a cause here previously pointed readers at the wrong remediation.
+  const same = advisory(["follow-redirects"], { version: "1.16.0" });
+  const { stderr } = runScript({ auditOutput: same, auditOutputAfter: same });
+
+  expect(stderr).not.toContain("pins");
+  expect(stderr).not.toContain("released");
+  expect(stderr).toContain("inspect the advisory and dependency path");
+});
+
+test("a surviving advisory is distinguished from a different one on the same package", () => {
+  // One advisory resolving while another appears for the same package is not the
+  // same as "still stuck", and must not be reported as it.
+  const { stderr } = runScript({
+    auditOutput: advisory(["undici"], { id: "GHSA-old", version: "6.28.0" }),
+    auditOutputAfter: advisory(["undici"], {
+      id: "GHSA-new",
+      version: "6.29.0",
+    }),
+  });
+
+  expect(stderr).toContain("::warning::newly flagged after upgrading");
+  expect(stderr).toContain("GHSA-new");
+  expect(stderr).not.toContain("still flagged");
+});
+
+test("an unverifiable post-update audit is not reported as a failed refresh", () => {
+  // "NOT refreshed" is true before the upgrade and false after it -- once the
+  // update has run, an unreadable audit means the outcome is simply unknown.
+  const { stderr } = runScript({
+    auditOutput: advisory(["undici"]),
+    auditOutputAfter: "not json at all",
+  });
+
+  expect(stderr).toContain("after upgrading");
+  expect(stderr).toContain("unverified");
+  expect(stderr).not.toContain("were NOT refreshed");
 });
 
 test("confirms resolution when the upgrade actually works", () => {

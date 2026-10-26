@@ -61,8 +61,10 @@ function pnpm(args, opts = {}) {
 }
 
 // A clean audit still returns an empty advisories object and exit 0, so a missing
-// one means the audit itself did not run -- not that nothing is flagged.
-function vulnerablePackages() {
+// one means the audit itself did not run. One row per (advisory, installed
+// version) so the check after the upgrade can tell a surviving advisory from a
+// different one that merely shares a package name.
+function auditRows(phase) {
   let raw;
   try {
     raw = pnpm(["audit", "--audit-level", AUDIT_LEVEL, "--json"]);
@@ -77,27 +79,54 @@ function vulnerablePackages() {
     advisories = undefined;
   }
   if (typeof advisories !== "object" || advisories === null) {
-    // Surfaced, not swallowed -- but not fatal either, or one unreadable audit
-    // would cost every other bump in the run. The audit gate still fails the build.
+    // Surfaced, not swallowed -- but not fatal, or one unreadable audit would cost
+    // every other bump in the run. The audit gate still fails the build. What an
+    // unreadable audit means differs by phase: before the upgrade nothing was
+    // refreshed, after it the outcome is simply unknown.
     console.error(
-      "::warning::could not read 'pnpm audit --json'; flagged transitives were NOT refreshed"
+      phase === "verify"
+        ? "::warning::could not read 'pnpm audit --json' after upgrading; whether the advisories were resolved is unverified"
+        : "::warning::could not read 'pnpm audit --json'; flagged transitives were NOT refreshed"
     );
     return undefined;
   }
-  return [
-    ...new Set(
-      Object.values(advisories)
-        .map((a) => a.module_name)
-        .filter(Boolean)
-    ),
-  ].sort();
+  const rows = [];
+  for (const a of Object.values(advisories)) {
+    if (!a || !a.module_name) continue;
+    const id = a.github_advisory_id || a.url || String(a.id);
+    const findings = a.findings && a.findings.length ? a.findings : [{}];
+    for (const f of findings) {
+      rows.push({
+        name: a.module_name,
+        id: id,
+        version: f.version || "",
+        path: (f.paths || [])[0] || "",
+      });
+    }
+  }
+  return rows;
+}
+
+function rowKey(r) {
+  return r.name + "@" + r.version + " " + r.id;
+}
+
+function describe(r) {
+  return (
+    r.name +
+    (r.version ? "@" + r.version : "") +
+    " " +
+    r.id +
+    (r.path ? " via " + r.path : "")
+  );
 }
 
 function main() {
-  const names = vulnerablePackages();
+  const before = auditRows("initial");
   // undefined means the audit was unreadable, which is not the same as clean and
   // has already been warned about.
-  if (names === undefined) return;
+  if (before === undefined) return;
+  const names = Array.from(new Set(before.map((r) => r.name))).sort();
   if (names.length === 0) {
     console.log("no " + AUDIT_LEVEL + "+ advisories to resolve");
     return;
@@ -137,30 +166,41 @@ function main() {
     attempted = false;
   }
 
-  // A successful update does not mean the advisory went away. If nothing an
-  // upstream range admits is patched, pnpm has nowhere to move to, exits 0 and
-  // changes nothing -- indistinguishable from a fix in the log. follow-redirects
-  // GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way: the published
-  // @cdktn/commons@0.24.0 requires exactly 1.16.0, and while its source has since
-  // moved to a caret, no release carries that yet.
+  // A zero exit from the upgrade does not mean the advisory went away -- pnpm exits
+  // 0 having changed nothing whenever it has nowhere in range to move to, which is
+  // indistinguishable from a fix in the log. follow-redirects
+  // GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way.
   //
-  // Re-audit and say so. Still non-fatal -- the audit gate is what blocks the
-  // build; this exists to name the cause, because no lockfile refresh can fix a
-  // constraint that lives in a published upstream package.
+  // Re-audit and report only what the audit shows. Deliberately no root cause: the
+  // audit says which advisory, version and path survived, not why the solver kept
+  // it, and guessing between a stale published range, an override and a second
+  // installed copy would send whoever reads this to the wrong place.
   if (!attempted) return;
-  const remaining = vulnerablePackages();
-  if (remaining === undefined) return;
-  const stuck = names.filter((n) => remaining.indexOf(n) !== -1);
+  const after = auditRows("verify");
+  if (after === undefined) return;
+
+  const wasSeen = new Set(before.map(rowKey));
+  const stuck = after.filter((r) => wasSeen.has(rowKey(r)));
   if (stuck.length > 0) {
+    for (const r of stuck) {
+      console.error("::warning::still flagged after upgrading: " + describe(r));
+    }
     console.error(
-      "::warning::still flagged after upgrading: " +
-        stuck.join(", ") +
-        "; no version an upstream range admits is patched, so this needs the" +
-        " upstream package released rather than another lockfile refresh"
+      "the upgrade did not move the above; inspect the advisory and dependency path"
     );
-  } else {
-    console.log("resolved: " + names.join(", "));
+    return;
   }
+
+  // Everything found at the start is gone -- but a *different* advisory may have
+  // been reported for the same package, which is not the same as resolved.
+  const fresh = after.filter((r) => names.indexOf(r.name) !== -1);
+  if (fresh.length > 0) {
+    for (const r of fresh) {
+      console.error("::warning::newly flagged after upgrading: " + describe(r));
+    }
+    return;
+  }
+  console.log("resolved: " + names.join(", "));
 }
 
 main();
