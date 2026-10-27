@@ -104,25 +104,34 @@ function runIn(dir: string, opts: FakeOpts) {
   return { stdout, stderr, updateArgs };
 }
 
-const advisory = (
-  modules: string[],
-  opts: { id?: string; version?: string } = {}
-) =>
+interface Adv {
+  name: string;
+  id?: string;
+  version?: string;
+}
+
+/** Build an audit document from explicit (package, advisory, version) rows. */
+const audit = (rows: Adv[]) =>
   JSON.stringify({
     advisories: Object.fromEntries(
-      modules.map((m, i) => [
+      rows.map((r, i) => [
         String(i),
         {
-          module_name: m,
+          module_name: r.name,
           severity: "high",
-          github_advisory_id: opts.id ?? `GHSA-fake-${m}`,
+          github_advisory_id: r.id ?? `GHSA-fake-${r.name}`,
           findings: [
-            { version: opts.version ?? "1.0.0", paths: [`.>parent>${m}`] },
+            { version: r.version ?? "1.0.0", paths: [`.>parent>${r.name}`] },
           ],
         },
       ])
     ),
   });
+
+const advisory = (
+  modules: string[],
+  opts: { id?: string; version?: string } = {}
+) => audit(modules.map((m) => ({ name: m, ...opts })));
 
 test("names the flagged packages and passes depth and cooldown through", () => {
   const { stdout, updateArgs } = runScript({
@@ -231,7 +240,7 @@ test("says so when the same advisory survives the upgrade", () => {
   });
 
   expect(updateArgs).toHaveLength(1);
-  expect(stderr).toContain("::warning::still flagged after upgrading");
+  expect(stderr).toContain("::warning::still flagged, not moved");
   // Correlated on advisory and installed version, not just the package name, and
   // the path is quoted so the reader can see which copy survived.
   expect(stderr).toContain("follow-redirects@1.16.0");
@@ -248,7 +257,7 @@ test("does not guess why the upgrade failed to move it", () => {
 
   expect(stderr).not.toContain("pins");
   expect(stderr).not.toContain("released");
-  expect(stderr).toContain("inspect the advisory and dependency path");
+  expect(stderr).toContain("inspect the advisories and dependency paths");
 });
 
 test("a surviving advisory is distinguished from a different one on the same package", () => {
@@ -302,4 +311,58 @@ test("does not re-audit when the upgrade itself failed", () => {
 
   expect(stderr).toContain("no patch older than the cooldown");
   expect(stderr).not.toContain("still flagged");
+});
+
+test("the same advisory at a newer still-vulnerable version counts as moved", () => {
+  // Keying on the installed version made this read as "newly flagged", but the
+  // advisory never went away -- only the version under it changed.
+  const { stderr } = runScript({
+    auditOutput: audit([{ name: "pkg", id: "GHSA-same", version: "1.0.0" }]),
+    auditOutputAfter: audit([
+      { name: "pkg", id: "GHSA-same", version: "1.1.0" },
+    ]),
+  });
+
+  expect(stderr).toContain("::warning::still flagged after moving from 1.0.0");
+  expect(stderr).toContain("pkg@1.1.0");
+  expect(stderr).toContain("GHSA-same");
+  expect(stderr).not.toContain("newly flagged");
+  expect(stderr).not.toContain("not moved");
+});
+
+test("a surviving advisory does not hide a genuinely new one", () => {
+  // The stuck branch used to return early, so anything new in the same audit went
+  // unreported. Every applicable category has to be reported.
+  const { stderr } = runScript({
+    auditOutput: audit([{ name: "a", id: "GHSA-a", version: "1.0.0" }]),
+    auditOutputAfter: audit([
+      { name: "a", id: "GHSA-a", version: "1.0.0" },
+      { name: "b", id: "GHSA-b", version: "2.0.0" },
+    ]),
+  });
+
+  expect(stderr).toContain("::warning::still flagged, not moved");
+  expect(stderr).toContain("a@1.0.0");
+  expect(stderr).toContain("::warning::newly flagged after upgrading");
+  expect(stderr).toContain("b@2.0.0");
+});
+
+test("unmoved, moved and new advisories are all reported together", () => {
+  const { stderr } = runScript({
+    auditOutput: audit([
+      { name: "stay", id: "GHSA-stay", version: "1.0.0" },
+      { name: "shift", id: "GHSA-shift", version: "1.0.0" },
+    ]),
+    auditOutputAfter: audit([
+      { name: "stay", id: "GHSA-stay", version: "1.0.0" },
+      { name: "shift", id: "GHSA-shift", version: "1.2.0" },
+      { name: "extra", id: "GHSA-extra", version: "3.0.0" },
+    ]),
+  });
+
+  expect(stderr).toContain("still flagged, not moved: stay@1.0.0");
+  expect(stderr).toContain(
+    "still flagged after moving from 1.0.0: shift@1.2.0"
+  );
+  expect(stderr).toContain("newly flagged after upgrading: extra@3.0.0");
 });

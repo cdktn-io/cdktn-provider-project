@@ -64,8 +64,8 @@ function auditRows(phase) {
   return rows;
 }
 
-function rowKey(r) {
-  return r.name + "@" + r.version + " " + r.id;
+function advisoryKey(r) {
+  return r.name + " " + r.id;
 }
 
 function describe(r) {
@@ -136,25 +136,44 @@ function main() {
   const after = auditRows("verify");
   if (after === undefined) return;
 
-  const wasSeen = new Set(before.map(rowKey));
-  const stuck = after.filter((r) => wasSeen.has(rowKey(r)));
-  if (stuck.length > 0) {
-    for (const r of stuck) {
-      console.error("::warning::still flagged after upgrading: " + describe(r));
-    }
-    console.error(
-      "the upgrade did not move the above; inspect the advisory and dependency path"
-    );
-    return;
+  // Classify on advisory identity -- package plus advisory -- and treat the
+  // installed version as movement rather than identity. The same advisory reported
+  // against a newer but still-vulnerable version has not been resolved, it has
+  // moved, and calling that "newly flagged" would be wrong. All three categories
+  // are reported: a surviving advisory does not hide a genuinely new one.
+  const versionsBefore = new Map();
+  for (const r of before) {
+    const k = advisoryKey(r);
+    if (!versionsBefore.has(k)) versionsBefore.set(k, new Set());
+    versionsBefore.get(k).add(r.version);
   }
 
-  // Everything found at the start is gone -- but a *different* advisory may have
-  // been reported for the same package, which is not the same as resolved.
-  const fresh = after.filter((r) => names.indexOf(r.name) !== -1);
-  if (fresh.length > 0) {
-    for (const r of fresh) {
-      console.error("::warning::newly flagged after upgrading: " + describe(r));
-    }
+  const unmoved = [];
+  const moved = [];
+  const fresh = [];
+  for (const r of after) {
+    const seen = versionsBefore.get(advisoryKey(r));
+    if (!seen) fresh.push(r);
+    else if (seen.has(r.version)) unmoved.push(r);
+    else moved.push({ row: r, from: Array.from(seen).sort().join(", ") });
+  }
+
+  for (const r of unmoved) {
+    console.error("::warning::still flagged, not moved: " + describe(r));
+  }
+  for (const m of moved) {
+    console.error(
+      "::warning::still flagged after moving from " +
+        m.from +
+        ": " +
+        describe(m.row)
+    );
+  }
+  for (const r of fresh) {
+    console.error("::warning::newly flagged after upgrading: " + describe(r));
+  }
+  if (unmoved.length + moved.length + fresh.length > 0) {
+    console.error("inspect the advisories and dependency paths above");
     return;
   }
   console.log("resolved: " + names.join(", "));
