@@ -498,6 +498,24 @@ test("projen's releaseEnvironment reaches every publishing job", () => {
   expect(jobs.release.environment).toBeUndefined();
 });
 
+// publib >= 0.3.9 adds the `x-access-token:` username itself, and the job runs
+// `publib@latest`; a second prefix here makes every Go push fail auth.
+test("Go publish passes publib the bare App token", () => {
+  const jobs = parseYaml(
+    synthSnapshot(getProject())[".github/workflows/release.yml"]
+  ).jobs as Record<
+    string,
+    { steps: { run?: string; env?: Record<string, string> }[] }
+  >;
+
+  const publish = jobs.release_golang.steps.find((s) =>
+    s.run?.includes("publib-golang")
+  );
+  expect(publish?.env?.GITHUB_TOKEN).toEqual(
+    "${{ steps.generate_token.outputs.token }}"
+  );
+});
+
 test("with minNodeVersion", () => {
   const snapshot = synthSnapshot(
     getProject({
