@@ -1051,11 +1051,13 @@ class GoPublishJobPatch extends Component {
     // Mutate the steps directly rather than JsonPatch-ing the rendered file, so
     // the token-minting step stays anchored to the publish step it feeds.
     steps.splice(index, 0, goPublishToken.setupSteps[0]);
-    // GitHub App installation tokens (ghs_*) require the `x-access-token`
-    // username when used in HTTPS git URLs. publib renders this env var
-    // verbatim into `https://${GITHUB_TOKEN}@github.com/...`, so without the
-    // prefix the push 401s and falls back to a TTY password prompt.
-    step.env.GITHUB_TOKEN = `x-access-token:${goPublishToken.tokenRef}`;
+    // Pass the bare token. publib >= 0.3.9 renders it as
+    // `https://x-access-token:${GITHUB_TOKEN}@github.com/...` itself; the job
+    // runs `publib@latest`, so prefixing it here as well (needed while publib
+    // rendered the var verbatim) doubles the username and the push is
+    // rejected with "Invalid username or token". The clone still succeeds
+    // because the -go repos are public, so only the push shows it.
+    step.env.GITHUB_TOKEN = goPublishToken.tokenRef;
   }
 }
 
