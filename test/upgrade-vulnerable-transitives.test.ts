@@ -26,18 +26,20 @@ import { getProject } from "./util/test-project";
  * and assert on the arguments it actually receives.
  */
 
+/** Options shared by fakePnpm, runScript and runIn -- one contract, no drift. */
+interface FakeOpts {
+  auditOutput: string;
+  auditExit?: number;
+  updateExit?: number;
+  updateStderr?: string;
+  /** Audit output for the post-update re-audit; defaults to a clean result. */
+  auditOutputAfter?: string;
+}
+
 const SCRIPT = "scripts/upgrade-vulnerable-transitives.js";
 
 /** A pnpm whose `audit` prints `auditOutput` and whose `update` records argv. */
-function fakePnpm(
-  dir: string,
-  opts: {
-    auditOutput: string;
-    auditExit?: number;
-    updateExit?: number;
-    updateStderr?: string;
-  }
-) {
+function fakePnpm(dir: string, opts: FakeOpts) {
   const bin = join(dir, "bin");
   mkdirSync(bin, { recursive: true });
   const argsLog = join(dir, "update-args.txt");
@@ -46,6 +48,11 @@ function fakePnpm(
     [
       "#!/usr/bin/env bash",
       'if [ "$1" = "audit" ]; then',
+      `  if [ -f ${JSON.stringify(join(dir, "audited"))} ]; then`,
+      `    cat <<'JSON'\n${opts.auditOutputAfter ?? '{"advisories":{}}'}\nJSON`,
+      "    exit 0",
+      "  fi",
+      `  touch ${JSON.stringify(join(dir, "audited"))}`,
       `  cat <<'JSON'\n${opts.auditOutput}\nJSON`,
       `  exit ${opts.auditExit ?? 1}`,
       "fi",
@@ -62,12 +69,7 @@ function fakePnpm(
   return { bin, argsLog };
 }
 
-function runScript(opts: {
-  auditOutput: string;
-  auditExit?: number;
-  updateExit?: number;
-  updateStderr?: string;
-}) {
+function runScript(opts: FakeOpts) {
   const dir = mkdtempSync(join(tmpdir(), "transitives-"));
   try {
     return runIn(dir, opts);
@@ -76,15 +78,7 @@ function runScript(opts: {
   }
 }
 
-function runIn(
-  dir: string,
-  opts: {
-    auditOutput: string;
-    auditExit?: number;
-    updateExit?: number;
-    updateStderr?: string;
-  }
-) {
+function runIn(dir: string, opts: FakeOpts) {
   mkdirSync(join(dir, "scripts"), { recursive: true });
   writeFileSync(join(dir, SCRIPT), synthSnapshot(getProject())[SCRIPT]);
 
@@ -110,12 +104,34 @@ function runIn(
   return { stdout, stderr, updateArgs };
 }
 
-const advisory = (modules: string[]) =>
+interface Adv {
+  name: string;
+  id?: string;
+  version?: string;
+}
+
+/** Build an audit document from explicit (package, advisory, version) rows. */
+const audit = (rows: Adv[]) =>
   JSON.stringify({
     advisories: Object.fromEntries(
-      modules.map((m, i) => [String(i), { module_name: m, severity: "high" }])
+      rows.map((r, i) => [
+        String(i),
+        {
+          module_name: r.name,
+          severity: "high",
+          github_advisory_id: r.id ?? `GHSA-fake-${r.name}`,
+          findings: [
+            { version: r.version ?? "1.0.0", paths: [`.>parent>${r.name}`] },
+          ],
+        },
+      ])
     ),
   });
+
+const advisory = (
+  modules: string[],
+  opts: { id?: string; version?: string } = {}
+) => audit(modules.map((m) => ({ name: m, ...opts })));
 
 test("names the flagged packages and passes depth and cooldown through", () => {
   const { stdout, updateArgs } = runScript({
@@ -208,4 +224,145 @@ test("an update failure that is not a cooldown refusal is not reported as one", 
   expect(stderr).not.toContain("cooldown");
   // and the pnpm output is echoed so the real cause is visible
   expect(stderr).toContain("ERR_PNPM_FETCH_401");
+});
+
+test("says so when the same advisory survives the upgrade", () => {
+  // pnpm exits 0 having changed nothing whenever it has nowhere in range to move
+  // to, which used to look identical to a fix. follow-redirects
+  // GHSA-q3jh-wrc6-jgq8 sat on all 32 provider repos that way.
+  const same = advisory(["follow-redirects"], {
+    id: "GHSA-q3jh-wrc6-jgq8",
+    version: "1.16.0",
+  });
+  const { stderr, updateArgs } = runScript({
+    auditOutput: same,
+    auditOutputAfter: same,
+  });
+
+  expect(updateArgs).toHaveLength(1);
+  expect(stderr).toContain("::warning::still flagged, not moved");
+  // Correlated on advisory and installed version, not just the package name, and
+  // the path is quoted so the reader can see which copy survived.
+  expect(stderr).toContain("follow-redirects@1.16.0");
+  expect(stderr).toContain("GHSA-q3jh-wrc6-jgq8");
+  expect(stderr).toContain("via .>parent>follow-redirects");
+});
+
+test("does not guess why the upgrade failed to move it", () => {
+  // The audit shows which advisory, version and path survived -- not whether a
+  // stale published range, an override or a second installed copy is responsible.
+  // Asserting a cause here previously pointed readers at the wrong remediation.
+  const same = advisory(["follow-redirects"], { version: "1.16.0" });
+  const { stderr } = runScript({ auditOutput: same, auditOutputAfter: same });
+
+  expect(stderr).not.toContain("pins");
+  expect(stderr).not.toContain("released");
+  expect(stderr).toContain("inspect the advisories and dependency paths");
+});
+
+test("a surviving advisory is distinguished from a different one on the same package", () => {
+  // One advisory resolving while another appears for the same package is not the
+  // same as "still stuck", and must not be reported as it.
+  const { stderr } = runScript({
+    auditOutput: advisory(["undici"], { id: "GHSA-old", version: "6.28.0" }),
+    auditOutputAfter: advisory(["undici"], {
+      id: "GHSA-new",
+      version: "6.29.0",
+    }),
+  });
+
+  expect(stderr).toContain("::warning::newly flagged after upgrading");
+  expect(stderr).toContain("GHSA-new");
+  expect(stderr).not.toContain("still flagged");
+});
+
+test("an unverifiable post-update audit is not reported as a failed refresh", () => {
+  // "NOT refreshed" is true before the upgrade and false after it -- once the
+  // update has run, an unreadable audit means the outcome is simply unknown.
+  const { stderr } = runScript({
+    auditOutput: advisory(["undici"]),
+    auditOutputAfter: "not json at all",
+  });
+
+  expect(stderr).toContain("after upgrading");
+  expect(stderr).toContain("unverified");
+  expect(stderr).not.toContain("were NOT refreshed");
+});
+
+test("confirms resolution when the upgrade actually works", () => {
+  const { stdout, stderr } = runScript({
+    auditOutput: advisory(["undici"]),
+    auditOutputAfter: JSON.stringify({ advisories: {} }),
+  });
+
+  expect(stdout).toContain("resolved: undici");
+  expect(stderr).not.toContain("still flagged");
+});
+
+test("does not re-audit when the upgrade itself failed", () => {
+  // The cooldown refusal already explains itself; a second audit would only add a
+  // misleading "still flagged" on top of it.
+  const { stderr } = runScript({
+    auditOutput: advisory(["undici"]),
+    updateExit: 1,
+    updateStderr: "ERR_PNPM_NO_MATURE_MATCHING_VERSION undici",
+    auditOutputAfter: advisory(["undici"]),
+  });
+
+  expect(stderr).toContain("no patch older than the cooldown");
+  expect(stderr).not.toContain("still flagged");
+});
+
+test("the same advisory at a newer still-vulnerable version counts as moved", () => {
+  // Keying on the installed version made this read as "newly flagged", but the
+  // advisory never went away -- only the version under it changed.
+  const { stderr } = runScript({
+    auditOutput: audit([{ name: "pkg", id: "GHSA-same", version: "1.0.0" }]),
+    auditOutputAfter: audit([
+      { name: "pkg", id: "GHSA-same", version: "1.1.0" },
+    ]),
+  });
+
+  expect(stderr).toContain("::warning::still flagged after moving from 1.0.0");
+  expect(stderr).toContain("pkg@1.1.0");
+  expect(stderr).toContain("GHSA-same");
+  expect(stderr).not.toContain("newly flagged");
+  expect(stderr).not.toContain("not moved");
+});
+
+test("a surviving advisory does not hide a genuinely new one", () => {
+  // The stuck branch used to return early, so anything new in the same audit went
+  // unreported. Every applicable category has to be reported.
+  const { stderr } = runScript({
+    auditOutput: audit([{ name: "a", id: "GHSA-a", version: "1.0.0" }]),
+    auditOutputAfter: audit([
+      { name: "a", id: "GHSA-a", version: "1.0.0" },
+      { name: "b", id: "GHSA-b", version: "2.0.0" },
+    ]),
+  });
+
+  expect(stderr).toContain("::warning::still flagged, not moved");
+  expect(stderr).toContain("a@1.0.0");
+  expect(stderr).toContain("::warning::newly flagged after upgrading");
+  expect(stderr).toContain("b@2.0.0");
+});
+
+test("unmoved, moved and new advisories are all reported together", () => {
+  const { stderr } = runScript({
+    auditOutput: audit([
+      { name: "stay", id: "GHSA-stay", version: "1.0.0" },
+      { name: "shift", id: "GHSA-shift", version: "1.0.0" },
+    ]),
+    auditOutputAfter: audit([
+      { name: "stay", id: "GHSA-stay", version: "1.0.0" },
+      { name: "shift", id: "GHSA-shift", version: "1.2.0" },
+      { name: "extra", id: "GHSA-extra", version: "3.0.0" },
+    ]),
+  });
+
+  expect(stderr).toContain("still flagged, not moved: stay@1.0.0");
+  expect(stderr).toContain(
+    "still flagged after moving from 1.0.0: shift@1.2.0"
+  );
+  expect(stderr).toContain("newly flagged after upgrading: extra@3.0.0");
 });
