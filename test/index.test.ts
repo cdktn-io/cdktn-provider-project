@@ -516,6 +516,57 @@ test("Go publish passes publib the bare App token", () => {
   );
 });
 
+// The publish jobs check out into `.repo` and move the artifact to `dist.old`,
+// so as projen generates it the failed-release issue never opens.
+test("every publish job can open its failed-release issue", () => {
+  const jobs = parseYaml(
+    synthSnapshot(getProject())[".github/workflows/release.yml"]
+  ).jobs as Record<
+    string,
+    {
+      steps: {
+        id?: string;
+        name?: string;
+        run?: string;
+        env?: Record<string, string>;
+      }[];
+    }
+  >;
+
+  const publishJobs = [
+    "release_npm",
+    "release_pypi",
+    "release_maven",
+    "release_nuget",
+    "release_golang",
+    "release_github",
+  ];
+  for (const name of publishJobs) {
+    const steps = jobs[name].steps;
+    const extractVersion = steps.find((s) => s.id === "extract-version");
+    const createIssue = steps.find((s) => s.name === "Create Issue");
+
+    expect([name, extractVersion?.run]).toEqual([
+      name,
+      'echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT',
+    ]);
+    expect([name, createIssue?.env?.GH_REPO]).toEqual([
+      name,
+      "${{ github.repository }}",
+    ]);
+    // The label has to exist before `gh issue create` will accept it.
+    const [labelCreate, issueCreate] = createIssue!.run!.split("\n");
+    expect([name, labelCreate]).toEqual([
+      name,
+      expect.stringMatching(/^gh label create "failed-release" .*--force$/),
+    ]);
+    expect([name, issueCreate]).toEqual([
+      name,
+      expect.stringContaining('gh issue create --title "Publishing v$VERSION'),
+    ]);
+  }
+});
+
 test("with minNodeVersion", () => {
   const snapshot = synthSnapshot(
     getProject({

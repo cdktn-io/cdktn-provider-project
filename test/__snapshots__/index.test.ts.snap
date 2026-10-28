@@ -690,7 +690,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() }}
@@ -698,7 +698,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
   release_npm:
     name: Publish to npm
     needs: release
@@ -748,7 +751,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() }}
@@ -756,7 +759,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -813,7 +819,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() }}
@@ -821,7 +827,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -873,7 +882,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() }}
@@ -881,7 +890,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -933,7 +945,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() }}
@@ -941,7 +953,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -1015,7 +1030,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() }}
@@ -1023,7 +1038,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -3462,7 +3480,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -3470,7 +3488,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
   release_npm:
     name: Publish to npm
     needs: release
@@ -3520,7 +3541,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -3528,7 +3549,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -3585,7 +3609,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -3593,7 +3617,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -3645,7 +3672,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -3653,7 +3680,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -3705,7 +3735,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -3713,7 +3743,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -3794,7 +3827,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -3802,7 +3835,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -6880,7 +6916,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -6888,7 +6924,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
   release_npm:
     name: Publish to npm
     needs: release
@@ -6938,7 +6977,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -6946,7 +6985,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -7003,7 +7045,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -7011,7 +7053,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -7063,7 +7108,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -7071,7 +7116,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -7123,7 +7171,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -7131,7 +7179,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -7212,7 +7263,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -7220,7 +7271,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -10298,7 +10352,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -10306,7 +10360,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
   release_npm:
     name: Publish to npm
     needs: release
@@ -10356,7 +10413,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -10364,7 +10421,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -10421,7 +10481,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -10429,7 +10489,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -10481,7 +10544,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -10489,7 +10552,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -10541,7 +10607,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -10549,7 +10615,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -10630,7 +10699,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -10638,7 +10707,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -13716,7 +13788,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -13724,7 +13796,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
   release_npm:
     name: Publish to npm
     needs: release
@@ -13775,7 +13850,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -13783,7 +13858,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -13840,7 +13918,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -13848,7 +13926,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -13900,7 +13981,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -13908,7 +13989,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -13960,7 +14044,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -13968,7 +14052,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -14049,7 +14136,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -14057,7 +14144,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -17135,7 +17225,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -17143,7 +17233,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
   release_npm:
     name: Publish to npm
     needs: release
@@ -17193,7 +17286,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -17201,7 +17294,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -17258,7 +17354,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -17266,7 +17362,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -17318,7 +17417,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -17326,7 +17425,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -17378,7 +17480,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -17386,7 +17488,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -17467,7 +17572,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -17475,7 +17580,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -20564,7 +20672,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -20572,7 +20680,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
   release_npm:
     name: Publish to npm
     needs: release
@@ -20622,7 +20733,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -20630,7 +20741,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -20687,7 +20801,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -20695,7 +20809,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -20747,7 +20864,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -20755,7 +20872,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -20807,7 +20927,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -20815,7 +20935,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -20896,7 +21019,7 @@ jobs:
       - name: Extract Version
         id: extract-version
         if: \${{ failure() }}
-        run: echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT
+        run: echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT
         shell: bash
       - name: Create Issue
         if: \${{ failure() && github.event_name != 'workflow_dispatch' }}
@@ -20904,7 +21027,10 @@ jobs:
           GH_TOKEN: \${{ secrets.GITHUB_TOKEN }}
           VERSION: \${{ steps.extract-version.outputs.VERSION }}
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
-        run: gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          GH_REPO: \${{ github.repository }}
+        run: |-
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
