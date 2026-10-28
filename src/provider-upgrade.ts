@@ -11,6 +11,13 @@ interface ProviderUpgradeOptions {
   checkForUpgradesScriptPath: string;
   workflowRunsOn: string[];
   nodeHeapSize: string;
+  /**
+   * Node version the job runs on: the project's resolved workflowNodeVersion,
+   * NOT minNodeVersion. minNodeVersion is the engines floor published to
+   * consumers; this job runs `cdktn get`, a toolchain step bound by the CLI's
+   * own engines range.
+   */
+  nodeVersion?: string;
 }
 /**
  * Checks for new versions of the given provider and creates a PR with an upgrade change if there are changes.
@@ -75,7 +82,7 @@ export class ProviderUpgrade {
         name: "Setup Node.js",
         uses: "actions/setup-node",
         with: {
-          "node-version": project.minNodeVersion,
+          "node-version": options.nodeVersion,
         },
       },
       {
