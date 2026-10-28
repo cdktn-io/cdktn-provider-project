@@ -310,6 +310,38 @@ test("every workflow that runs pnpm also installs pnpm", () => {
   expect(offenders).toEqual([]);
 });
 
+test("provider-upgrade runs on workflowNodeVersion, not the engines floor", () => {
+  // provider-upgrade.yml is hand-built and used to read minNodeVersion, so it
+  // ran `cdktn get` on the consumer floor (22.11.0) while every projen-built
+  // workflow ran workflowNodeVersion. cdktn-cli 0.25.0 needs a newer Node
+  // (it calls zlib.createZstdDecompress, absent before 22.15) and crashed with
+  // "Cannot read properties of undefined (reading 'bind')" on the first
+  // provider that actually had an upgrade to fetch.
+  const nodeVersionOf = (snapshot: Record<string, any>) => {
+    const workflow = parseYaml(
+      snapshot[".github/workflows/provider-upgrade.yml"]
+    ) as { jobs: { upgrade: { steps: { uses?: string; with?: any }[] } } };
+    return workflow.jobs.upgrade.steps.find((s) =>
+      (s.uses ?? "").startsWith("actions/setup-node")
+    )?.with?.["node-version"];
+  };
+
+  expect(
+    nodeVersionOf(
+      synthSnapshot(
+        getProject({
+          minNodeVersion: "22.11.0",
+          workflowNodeVersion: "24.18.0",
+        })
+      )
+    )
+  ).toBe("24.18.0");
+  // Without an explicit workflowNodeVersion, match projen's own fallback.
+  expect(
+    nodeVersionOf(synthSnapshot(getProject({ minNodeVersion: "22.11.0" })))
+  ).toBe("22.11.0");
+});
+
 const HEAVY_PACKAGE_TASKS = [
   "package:python",
   "package:java",
