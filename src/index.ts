@@ -688,6 +688,9 @@ export class CdktnProviderProject extends cdk.JsiiProject {
         checkForUpgradesScriptPath: upgradeScript.path,
         workflowRunsOn,
         nodeHeapSize: maxOldSpaceSize,
+        // projen's own resolution (workflowNodeVersion ?? minNodeVersion), so
+        // this hand-built workflow matches the ones projen generates.
+        nodeVersion: this.nodeVersion,
       });
       new AlertOpenPrs(this, {
         slackWebhookUrl: "${{ secrets.ALERT_PRS_SLACK_WEBHOOK_URL }}",
