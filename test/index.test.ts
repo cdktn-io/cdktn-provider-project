@@ -516,6 +516,46 @@ test("Go publish passes publib the bare App token", () => {
   );
 });
 
+// NuGet.org expired the long-lived API keys on 2026-11-01, so the job mints a
+// short-lived one per run. publib's own trusted-publisher mode is not used: it
+// installs its OIDC helper with `pip install --user`, which PEP 668 refuses.
+test("NuGet publish mints a short-lived key instead of reading a secret", () => {
+  const release = synthSnapshot(getProject())[
+    ".github/workflows/release.yml"
+  ] as string;
+  const nuget = parseYaml(release).jobs.release_nuget as {
+    permissions: Record<string, string>;
+    steps: {
+      id?: string;
+      uses?: string;
+      with?: Record<string, string>;
+      run?: string;
+      env?: Record<string, string>;
+    }[];
+  };
+
+  // Without this the runner has no token endpoint to mint from.
+  expect(nuget.permissions["id-token"]).toEqual("write");
+
+  const login = nuget.steps.find((s) => s.uses?.startsWith("NuGet/login"));
+  // The nuget.org username of whoever created the trust policy, which only a
+  // secret can carry -- it is not the owning org, nor `nugetOrg`.
+  expect(login?.with?.user).toEqual("${{ secrets.NUGET_USERNAME }}");
+  // Pinned by SHA, like every other action this project emits.
+  expect(login?.uses).toMatch(/^NuGet\/login@[0-9a-f]{40}$/);
+
+  const publish = nuget.steps.find((s) => s.run?.includes("publib-nuget"));
+  expect(publish?.env?.NUGET_API_KEY).toEqual(
+    "${{ steps.nuget_login.outputs.NUGET_API_KEY }}"
+  );
+  // The key has to be minted before the publish that spends it.
+  expect(nuget.steps.indexOf(login!)).toBeLessThan(
+    nuget.steps.indexOf(publish!)
+  );
+  // No job may still reach for the expired key.
+  expect(release).not.toContain("secrets.NUGET_API_KEY");
+});
+
 test("with minNodeVersion", () => {
   const snapshot = synthSnapshot(
     getProject({
