@@ -700,8 +700,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL"
   release_npm:
     name: Publish to npm
     needs: release
@@ -761,8 +763,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -829,8 +833,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -892,8 +898,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -961,8 +969,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -1046,8 +1056,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -3496,8 +3508,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL"
   release_npm:
     name: Publish to npm
     needs: release
@@ -3557,8 +3571,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -3625,8 +3641,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -3688,8 +3706,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -3757,8 +3777,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -3849,8 +3871,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -7062,8 +7086,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL"
   release_npm:
     name: Publish to npm
     needs: release
@@ -7123,8 +7149,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -7191,8 +7219,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -7254,8 +7284,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -7323,8 +7355,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -7415,8 +7449,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -10628,8 +10664,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL"
   release_npm:
     name: Publish to npm
     needs: release
@@ -10689,8 +10727,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -10757,8 +10797,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -10820,8 +10862,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -10889,8 +10933,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -10981,8 +11027,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -14194,8 +14242,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL"
   release_npm:
     name: Publish to npm
     needs: release
@@ -14256,8 +14306,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -14324,8 +14376,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -14387,8 +14441,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -14456,8 +14512,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -14548,8 +14606,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -17761,8 +17821,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL"
   release_npm:
     name: Publish to npm
     needs: release
@@ -17822,8 +17884,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -17890,8 +17954,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -17953,8 +18019,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -18022,8 +18090,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -18114,8 +18184,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 
@@ -21338,8 +21410,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Releases failed" --body "See $RUN_URL"
   release_npm:
     name: Publish to npm
     needs: release
@@ -21399,8 +21473,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to npm failed" --body "See $RUN_URL"
   release_maven:
     name: Publish to Maven Central
     needs: release
@@ -21467,8 +21543,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to Maven Central failed" --body "See $RUN_URL"
   release_pypi:
     name: Publish to PyPI
     needs: release
@@ -21530,8 +21608,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to PyPI failed" --body "See $RUN_URL"
   release_nuget:
     name: Publish to NuGet Gallery
     needs: release
@@ -21599,8 +21679,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to NuGet Gallery failed" --body "See $RUN_URL"
   release_golang:
     name: Publish to GitHub Go Module Repository
     needs: release
@@ -21691,8 +21773,10 @@ jobs:
           RUN_URL: https://github.com/\${{ github.repository }}/actions/runs/\${{ github.run_id }}
           GH_REPO: \${{ github.repository }}
         run: |-
-          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force
-          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release"
+          gh label create "failed-release" --color B60205 --description "Publishing a release failed" --force \\
+            || echo "::warning::Could not create the failed-release label"
+          gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL" --label "failed-release" \\
+            || gh issue create --title "Publishing v$VERSION to GitHub Go Module Repository failed" --body "See $RUN_URL"
 ",
   ".github/workflows/stale.yml": "# ~~ Generated by projen. To modify, edit .projenrc.js and run "pnpm exec projen".
 

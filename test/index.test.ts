@@ -631,13 +631,13 @@ test("every publish job can open its failed-release issue", () => {
       name,
       "${{ github.repository }}",
     ]);
-    // The label has to exist before `gh issue create` will accept it.
-    const [labelCreate, issueCreate] = createIssue!.run!.split("\n");
-    expect([name, labelCreate]).toEqual([
+    // The label has to exist before `gh issue create` will accept it. How the
+    // step behaves when either call fails is in publish-failure-issue.test.ts.
+    expect([name, createIssue?.run]).toEqual([
       name,
-      expect.stringMatching(/^gh label create "failed-release" .*--force$/),
+      expect.stringMatching(/^gh label create "failed-release" .*--force \\\n/),
     ]);
-    expect([name, issueCreate]).toEqual([
+    expect([name, createIssue?.run]).toEqual([
       name,
       expect.stringContaining('gh issue create --title "Publishing v$VERSION'),
     ]);

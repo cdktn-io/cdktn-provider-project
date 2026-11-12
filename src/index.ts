@@ -967,6 +967,10 @@ export class CdktnProviderProject extends cdk.JsiiProject {
  * - `gh issue create` rejects a label the repository does not have, and repo
  *   labels are provisioned out-of-band by cdktn-repository-manager, which does
  *   not create this one. Create it first; `--force` makes that idempotent.
+ *   The step runs under `bash -e`, so neither half may abort the other: a
+ *   label failure (a transient API error, or concurrent publish jobs racing to
+ *   create the same label) only warns, and if the labelled issue is rejected
+ *   the issue is opened without the label rather than not at all.
  *
  * Runs in preSynthesize because the publish jobs are added by Release during
  * synthesis, so they do not exist yet at construction time.
@@ -998,15 +1002,19 @@ class PublishFailureIssuePatch extends Component {
       extractVersion!.run =
         'echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT';
 
-      const label = createIssue.run?.match(/--label "([^"]+)"/)?.[1];
+      const issueCreate = createIssue.run;
+      const labelFlag = issueCreate?.match(/ --label "([^"]+)"/);
       assert(
-        label && createIssue.env,
+        issueCreate && labelFlag && createIssue.env,
         `${name}: Create Issue step changed, please check if the failed-release issue workaround still works!`
       );
+      const label = labelFlag[1];
       createIssue.env.GH_REPO = "${{ github.repository }}";
       createIssue.run = [
-        `gh label create "${label}" --color B60205 --description "Publishing a release failed" --force`,
-        createIssue.run,
+        `gh label create "${label}" --color B60205 --description "Publishing a release failed" --force \\`,
+        `  || echo "::warning::Could not create the ${label} label"`,
+        `${issueCreate} \\`,
+        `  || ${issueCreate.replace(labelFlag[0], "")}`,
       ].join("\n");
       patched++;
     }
