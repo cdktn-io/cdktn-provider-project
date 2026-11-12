@@ -87,7 +87,13 @@ function runIn(dir: string, opts: FakeOpts) {
   const stdout = execFileSync(process.execPath, [SCRIPT], {
     cwd: dir,
     encoding: "utf8",
-    env: { ...process.env, PATH: `${bin}:${process.env.PATH}` },
+    env: {
+      ...process.env,
+      PATH: `${bin}:${process.env.PATH}`,
+      // The script resolves semver for version ordering; the temp dir has no
+      // node_modules of its own, so point at this repo's.
+      NODE_PATH: join(__dirname, "..", "node_modules"),
+    },
     stdio: ["ignore", "pipe", openSync(stderrFile, "w")],
   });
   const stderr = readFileSync(stderrFile, "utf8");
@@ -108,6 +114,10 @@ interface Adv {
   name: string;
   id?: string;
   version?: string;
+  /** Several installed copies of one advisory, to exercise version ordering. */
+  versions?: string[];
+  /** Emit the advisory with an empty findings array. */
+  noFindings?: boolean;
 }
 
 /** Build an audit document from explicit (package, advisory, version) rows. */
@@ -120,9 +130,12 @@ const audit = (rows: Adv[]) =>
           module_name: r.name,
           severity: "high",
           github_advisory_id: r.id ?? `GHSA-fake-${r.name}`,
-          findings: [
-            { version: r.version ?? "1.0.0", paths: [`.>parent>${r.name}`] },
-          ],
+          findings: r.noFindings
+            ? []
+            : (r.versions ?? [r.version ?? "1.0.0"]).map((v) => ({
+                version: v,
+                paths: [`.>parent>${r.name}`],
+              })),
         },
       ])
     ),
@@ -365,4 +378,45 @@ test("unmoved, moved and new advisories are all reported together", () => {
     "still flagged after moving from 1.0.0: shift@1.2.0"
   );
   expect(stderr).toContain("newly flagged after upgrading: extra@3.0.0");
+});
+
+test("multi-version origins are ordered by semver, not lexically", () => {
+  // Array.prototype.sort put 1.10.0 before 1.9.0, which reads as a downgrade.
+  const { stderr } = runScript({
+    auditOutput: audit([
+      { name: "pkg", id: "GHSA-multi", versions: ["1.9.0", "1.10.0"] },
+    ]),
+    auditOutputAfter: audit([
+      { name: "pkg", id: "GHSA-multi", version: "1.11.0" },
+    ]),
+  });
+
+  expect(stderr).toContain("still flagged after moving from 1.9.0, 1.10.0");
+});
+
+test("an advisory with no findings is not reported as moved or new", () => {
+  // No findings means no installed version. Comparing "" against a real version
+  // would invent movement; the advisory identity is unchanged either way.
+  const withVersion = audit([{ name: "pkg", id: "GHSA-x", version: "1.0.0" }]);
+  const withoutFindings = audit([
+    { name: "pkg", id: "GHSA-x", noFindings: true },
+  ]);
+
+  const gained = runScript({
+    auditOutput: withoutFindings,
+    auditOutputAfter: withVersion,
+  });
+  expect(gained.stderr).toContain(
+    "still flagged, no installed version reported"
+  );
+  expect(gained.stderr).not.toContain("moving from");
+  expect(gained.stderr).not.toContain("newly flagged");
+
+  const lost = runScript({
+    auditOutput: withVersion,
+    auditOutputAfter: withoutFindings,
+  });
+  expect(lost.stderr).toContain("still flagged, no installed version reported");
+  expect(lost.stderr).not.toContain("moving from");
+  expect(lost.stderr).not.toContain("newly flagged");
 });

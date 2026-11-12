@@ -111,6 +111,11 @@
       "type": "build"
     },
     {
+      "name": "semver",
+      "version": "^7.5.3",
+      "type": "build"
+    },
+    {
       "name": "ts-jest",
       "type": "build"
     },
