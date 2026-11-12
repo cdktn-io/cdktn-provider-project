@@ -313,10 +313,11 @@ test("every workflow that runs pnpm also installs pnpm", () => {
 test("provider-upgrade runs on workflowNodeVersion, not the engines floor", () => {
   // provider-upgrade.yml is hand-built and used to read minNodeVersion, so it
   // ran `cdktn get` on the consumer floor (22.11.0) while every projen-built
-  // workflow ran workflowNodeVersion. cdktn-cli 0.25.0 needs a newer Node
-  // (it calls zlib.createZstdDecompress, absent before 22.15) and crashed with
-  // "Cannot read properties of undefined (reading 'bind')" on the first
-  // provider that actually had an upgrade to fetch.
+  // workflow ran workflowNodeVersion. cdktn-cli 0.25.0 declares
+  // engines.node >=22.23.4. The specific API that broke on 22.11 is
+  // zlib.createZstdDecompress (added in 22.15), which `cdktn get` binds at
+  // load, so it crashed with "Cannot read properties of undefined (reading
+  // 'bind')" on the first provider that actually had an upgrade to fetch.
   const nodeVersionOf = (snapshot: Record<string, any>) => {
     const workflow = parseYaml(
       snapshot[".github/workflows/provider-upgrade.yml"]

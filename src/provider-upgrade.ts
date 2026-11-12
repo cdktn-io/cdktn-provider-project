@@ -16,8 +16,11 @@ interface ProviderUpgradeOptions {
    * NOT minNodeVersion. minNodeVersion is the engines floor published to
    * consumers; this job runs `cdktn get`, a toolchain step bound by the CLI's
    * own engines range.
+   *
+   * Required (but may be undefined) so the call site must hand it off
+   * explicitly; dropping it should fail to compile, not silently fall back.
    */
-  nodeVersion?: string;
+  nodeVersion: string | undefined;
 }
 /**
  * Checks for new versions of the given provider and creates a PR with an upgrade change if there are changes.
