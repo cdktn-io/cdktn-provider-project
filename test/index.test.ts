@@ -545,8 +545,12 @@ test("NuGet publish mints a short-lived key instead of reading a secret", () => 
   expect(login?.uses).toMatch(/^NuGet\/login@[0-9a-f]{40}$/);
 
   const publish = nuget.steps.find((s) => s.run?.includes("publib-nuget"));
+  // Asserted against the login step's own id, not a literal: a renamed or
+  // dropped id would otherwise leave the reference pointing at no step while
+  // this test still passed.
+  expect(login?.id).toBeDefined();
   expect(publish?.env?.NUGET_API_KEY).toEqual(
-    "${{ steps.nuget_login.outputs.NUGET_API_KEY }}"
+    `\${{ steps.${login!.id}.outputs.NUGET_API_KEY }}`
   );
   // The key has to be minted before the publish that spends it.
   expect(nuget.steps.indexOf(login!)).toBeLessThan(
