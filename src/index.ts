@@ -660,6 +660,9 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     // release: NuGet — publish with a short-lived OIDC key instead of a secret.
     new NugetTrustedPublishingPatch(this);
 
+    // release: every publish job -- make the failed-release issue actually open.
+    new PublishFailureIssuePatch(this);
+
     this.pinGithubActionVersions(githubActionPinnedVersions);
 
     new CdktfConfig(this, {
@@ -945,6 +948,81 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     Object.entries(pinnedVersions).forEach(([name, sha]) => {
       this.github?.actions.set(name, `${name}@${sha}`);
     });
+  }
+}
+
+/**
+ * Makes the "Create Issue" step of every publish job able to open its issue.
+ * As projen generates it, it fails in all of them (cdktn-provider-random's
+ * v16.0.0 Go publish failed and filed nothing):
+ *
+ * - `gh` infers the repository from a git remote, but the publish jobs check
+ *   out into `.repo`, so the workspace root has none ("not a git repository").
+ *   GH_REPO names it explicitly, as UpgradeFailureIssue does;
+ * - "Extract Version" reads `dist/version.txt`, but "Move build artifact out of
+ *   the way" has moved the downloaded artifact to `dist.old`, so the title
+ *   read "Publishing v to ...". Read `dist.old` first and fall back to `dist`,
+ *   which is where it still is if the job failed before the move, and in
+ *   release_github, which never moves it;
+ * - `gh issue create` rejects a label the repository does not have, and repo
+ *   labels are provisioned out-of-band by cdktn-repository-manager, which does
+ *   not create this one. Create it first; `--force` makes that idempotent.
+ *   The step runs under `bash -e`, so neither half may abort the other: a
+ *   label failure (a transient API error, or concurrent publish jobs racing to
+ *   create the same label) only warns, and if the labelled issue is rejected
+ *   the issue is opened without the label rather than not at all.
+ *
+ * Runs in preSynthesize because the publish jobs are added by Release during
+ * synthesis, so they do not exist yet at construction time.
+ */
+class PublishFailureIssuePatch extends Component {
+  public preSynthesize() {
+    const workflow = github.GitHub.of(this.project)?.tryFindWorkflow("release");
+    // JobStep is read-only; these are projen's in-memory steps, patched in place.
+    type MutableStep = { -readonly [K in keyof JobStep]: JobStep[K] };
+    const jobs: Record<string, { steps?: MutableStep[] }> | undefined = (
+      workflow as any
+    )?.jobs;
+    assert(
+      jobs,
+      "release workflow not found, please check if the failed-release issue workaround still works!"
+    );
+
+    let patched = 0;
+    for (const [name, job] of Object.entries(jobs)) {
+      const createIssue = job.steps?.find((s) => s.name === "Create Issue");
+      if (!createIssue) continue;
+
+      const extractVersion = job.steps?.find((s) => s.id === "extract-version");
+      prettyAssertEqual(
+        extractVersion?.run,
+        'echo "VERSION=$(cat dist/version.txt)" >> $GITHUB_OUTPUT',
+        `${name}: Extract Version step changed, please check if the failed-release issue workaround still works!`
+      );
+      extractVersion!.run =
+        'echo "VERSION=$(cat dist.old/version.txt 2>/dev/null || cat dist/version.txt)" >> $GITHUB_OUTPUT';
+
+      const issueCreate = createIssue.run;
+      const labelFlag = issueCreate?.match(/ --label "([^"]+)"/);
+      assert(
+        issueCreate && labelFlag && createIssue.env,
+        `${name}: Create Issue step changed, please check if the failed-release issue workaround still works!`
+      );
+      const label = labelFlag[1];
+      createIssue.env.GH_REPO = "${{ github.repository }}";
+      createIssue.run = [
+        `gh label create "${label}" --color B60205 --description "Publishing a release failed" --force \\`,
+        `  || echo "::warning::Could not create the ${label} label"`,
+        `${issueCreate} \\`,
+        `  || ${issueCreate.replace(labelFlag[0], "")}`,
+      ].join("\n");
+      patched++;
+    }
+    // Guard the guard: a renamed step would otherwise turn this into a no-op.
+    assert(
+      patched > 0,
+      "no Create Issue step in the release workflow, please check if the failed-release issue workaround still works!"
+    );
   }
 }
 
