@@ -176,7 +176,7 @@ This fork (cdktn.io) continues development after HashiCorp's sunset. With a Phas
 ## Common Gotchas
 
 - **Don't manually edit workflow YAML files** - Modify the Projen components in `src/` instead
-- **Provider repos need secrets** - MAVEN_*, NUGET_API_KEY, GH_TOKEN and the GitHub App credentials for publishing; npm and PyPI publish via OIDC trusted publishing, so NPM_TOKEN / TWINE_* exist only when `npmTrustedPublishing` / `pypiTrustedPublishing` are off (all managed by a separate project called the "cdktn-repository-manager")
+- **Provider repos need secrets** - MAVEN_*, NUGET_USERNAME, GH_TOKEN and the GitHub App credentials for publishing; npm, PyPI and NuGet publish via OIDC trusted publishing, so NPM_TOKEN / TWINE_* exist only when `npmTrustedPublishing` / `pypiTrustedPublishing` are off, and NUGET_API_KEY is gone -- NuGet.org expired those keys on 2026-11-01, so `release_nuget` mints a short-lived one per run via `NuGet/login` and NUGET_USERNAME carries the nuget.org username of whoever *created* the repo's trust policy (all managed by a separate project called the "cdktn-repository-manager")
 - **Fetch nukes src/ directory** - Copyright headers must be re-added after `cdktf get`
 - **version.json has exactly one entry** - Multi-provider projects are not supported
 - **Release task is conditional** - Controlled by `should-release.js`, use `unconditional-release` to force

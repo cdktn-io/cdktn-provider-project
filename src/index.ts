@@ -229,6 +229,7 @@ const githubActionPinnedVersions = {
   "hashicorp/setup-copywrite": "32638da2d4e81d56a0764aa1547882fc4d209636", // v1.1.3
   "hashicorp/setup-terraform": "5e8dbf3c6d9deaf4193ca7a8fb23f2ac83bb6c85", // v4.0.0
   "imjohnbo/issue-bot": "3188c6ce06249206709d3b1f274d0d4c5a521601", // v3.4.5
+  "NuGet/login": "8d196754b4036150537f80ac539e15c2f1028841", // v1.2.0
   "peter-evans/create-pull-request": "5f6978faf089d4d20b00c7766989d076bb2fc7f1", // v8.1.1
   "slackapi/slack-github-action": "45a88b9581bfab2566dc881e2cd66d334e621e2c", // v3.0.3
   "actions/create-github-app-token": "29824e69f54612133e76f7eaac726eef6c875baf", // v2.2.1
@@ -656,6 +657,9 @@ export class CdktnProviderProject extends cdk.JsiiProject {
     // what it runs, in preSynthesize, so neither problem can recur.
     new MavenOptsPatch(this);
 
+    // release: NuGet — publish with a short-lived OIDC key instead of a secret.
+    new NugetTrustedPublishingPatch(this);
+
     this.pinGithubActionVersions(githubActionPinnedVersions);
 
     new CdktfConfig(this, {
@@ -972,6 +976,76 @@ class MavenOptsPatch extends Component {
       "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED";
     // This is no longer used.
     delete step.env.MAVEN_STAGING_PROFILE_ID;
+  }
+}
+
+/**
+ * Switches the NuGet publish job from a long-lived API key to NuGet trusted
+ * publishing: the job mints an OIDC token, exchanges it for a key that expires
+ * in minutes, and hands that to publib.
+ *
+ * NuGet.org expired the long-lived API keys on 2026-11-01, so there is no
+ * token-based path left to keep and the switch is unconditional -- unlike
+ * `npmTrustedPublishing` / `pypiTrustedPublishing`, where both paths still work.
+ *
+ * publib's own trusted-publisher mode (`NUGET_TRUSTED_PUBLISHER=1` plus
+ * `NUGET_USERNAME`, which projen exposes as `publishToNuget.trustedPublishing`)
+ * is deliberately not used: it mints the token with
+ * `python3 -m pip install --user id`, which PEP 668 refuses on an
+ * externally-managed Python. `NuGet/login` does the same exchange in the action
+ * instead, which is what cdk-terrain's release-publish workflow settled on
+ * after that mode failed there.
+ *
+ * Each repo needs a trusted publishing policy on nuget.org, plus a
+ * NUGET_USERNAME secret holding the nuget.org username of the account that
+ * *created* that policy -- not the owning organization, and not `nugetOrg`.
+ * Only the creator's name satisfies the token exchange, which otherwise fails
+ * with "No matching trust policy owned by user ...".
+ *
+ * Runs in preSynthesize because Release adds the publish jobs during synthesis,
+ * so the job does not exist yet at construction time.
+ *
+ * @see https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing
+ */
+class NugetTrustedPublishingPatch extends Component {
+  /** Referenced by the publish step, so it has to match in both places. */
+  private static readonly LOGIN_STEP_ID = "nuget_login";
+
+  public preSynthesize() {
+    const workflow = github.GitHub.of(this.project)?.tryFindWorkflow("release");
+    const job = (workflow as any)?.jobs?.release_nuget;
+    const steps: JobStep[] | undefined = job?.steps;
+    assert(
+      steps,
+      "release_nuget job not found, please check if the NuGet trusted publishing setup still works!"
+    );
+
+    const index = steps.findIndex((s) => s.run?.includes("publib-nuget"));
+    const publishStep = steps[index];
+    assert(
+      publishStep?.env?.NUGET_API_KEY,
+      "no publib-nuget step reading NUGET_API_KEY in release_nuget, please check if the NuGet trusted publishing setup still works!"
+    );
+
+    // Without id-token: write the runner has no ACTIONS_ID_TOKEN_REQUEST_URL to
+    // mint from, and NuGet/login fails before it reaches nuget.org.
+    job.permissions = {
+      ...job.permissions,
+      idToken: github.workflows.JobPermission.WRITE,
+    };
+
+    // Spliced immediately before the step it feeds, resolved by what that step
+    // runs rather than by index: the key is short-lived, and release_nuget's
+    // indices shift whenever the job gains a step.
+    steps.splice(index, 0, {
+      name: "NuGet login",
+      id: NugetTrustedPublishingPatch.LOGIN_STEP_ID,
+      uses: "NuGet/login",
+      with: { user: "${{ secrets.NUGET_USERNAME }}" },
+    });
+
+    // Replaces the `secrets.NUGET_API_KEY` reference projen wrote here.
+    publishStep.env.NUGET_API_KEY = `\${{ steps.${NugetTrustedPublishingPatch.LOGIN_STEP_ID}.outputs.NUGET_API_KEY }}`;
   }
 }
 

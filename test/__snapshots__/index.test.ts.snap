@@ -888,6 +888,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
       issues: write
     if: needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha
     steps:
@@ -925,9 +926,14 @@ jobs:
         run: cd .repo && pnpm exec projen package:dotnet
       - name: Collect dotnet artifact
         run: mv .repo/dist dist
+      - name: NuGet login
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: \${{ secrets.NUGET_USERNAME }}
       - name: Release
         env:
-          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: \${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PUBLIB_DRYRUN: \${{ inputs.dry_run }}
         run: npx -p publib@latest publib-nuget
       - name: Extract Version
@@ -3660,6 +3666,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
       issues: write
     if: (github.event_name != 'workflow_dispatch' && needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha) || (github.event_name == 'workflow_dispatch' && inputs.publish_to_nuget)
     steps:
@@ -3697,9 +3704,14 @@ jobs:
         run: cd .repo && pnpm exec projen package:dotnet
       - name: Collect dotnet artifact
         run: mv .repo/dist dist
+      - name: NuGet login
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: \${{ secrets.NUGET_USERNAME }}
       - name: Release
         env:
-          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: \${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PUBLIB_DRYRUN: \${{ inputs.dry_run }}
         run: npx -p publib@latest publib-nuget
       - name: Extract Version
@@ -7078,6 +7090,7 @@ jobs:
     runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
+      id-token: write
       issues: write
     if: (github.event_name != 'workflow_dispatch' && needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha) || (github.event_name == 'workflow_dispatch' && inputs.publish_to_nuget)
     steps:
@@ -7115,9 +7128,14 @@ jobs:
         run: cd .repo && pnpm exec projen package:dotnet
       - name: Collect dotnet artifact
         run: mv .repo/dist dist
+      - name: NuGet login
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: \${{ secrets.NUGET_USERNAME }}
       - name: Release
         env:
-          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: \${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PUBLIB_DRYRUN: \${{ inputs.dry_run }}
         run: npx -p publib@latest publib-nuget
       - name: Extract Version
@@ -10496,6 +10514,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
       issues: write
     if: (github.event_name != 'workflow_dispatch' && needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha) || (github.event_name == 'workflow_dispatch' && inputs.publish_to_nuget)
     steps:
@@ -10533,9 +10552,14 @@ jobs:
         run: cd .repo && pnpm exec projen package:dotnet
       - name: Collect dotnet artifact
         run: mv .repo/dist dist
+      - name: NuGet login
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: \${{ secrets.NUGET_USERNAME }}
       - name: Release
         env:
-          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: \${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PUBLIB_DRYRUN: \${{ inputs.dry_run }}
         run: npx -p publib@latest publib-nuget
       - name: Extract Version
@@ -13915,6 +13939,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
       issues: write
     if: (github.event_name != 'workflow_dispatch' && needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha) || (github.event_name == 'workflow_dispatch' && inputs.publish_to_nuget)
     steps:
@@ -13952,9 +13977,14 @@ jobs:
         run: cd .repo && pnpm exec projen package:dotnet
       - name: Collect dotnet artifact
         run: mv .repo/dist dist
+      - name: NuGet login
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: \${{ secrets.NUGET_USERNAME }}
       - name: Release
         env:
-          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: \${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PUBLIB_DRYRUN: \${{ inputs.dry_run }}
         run: npx -p publib@latest publib-nuget
       - name: Extract Version
@@ -17333,6 +17363,7 @@ jobs:
     runs-on: depot-ubuntu-24.04-8
     permissions:
       contents: read
+      id-token: write
       issues: write
     if: (github.event_name != 'workflow_dispatch' && needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha) || (github.event_name == 'workflow_dispatch' && inputs.publish_to_nuget)
     steps:
@@ -17370,9 +17401,14 @@ jobs:
         run: cd .repo && pnpm exec projen package:dotnet
       - name: Collect dotnet artifact
         run: mv .repo/dist dist
+      - name: NuGet login
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: \${{ secrets.NUGET_USERNAME }}
       - name: Release
         env:
-          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: \${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PUBLIB_DRYRUN: \${{ inputs.dry_run }}
         run: npx -p publib@latest publib-nuget
       - name: Extract Version
@@ -20762,6 +20798,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
       issues: write
     if: (github.event_name != 'workflow_dispatch' && needs.release.outputs.tag_exists != 'true' && needs.release.outputs.latest_commit == github.sha) || (github.event_name == 'workflow_dispatch' && inputs.publish_to_nuget)
     steps:
@@ -20799,9 +20836,14 @@ jobs:
         run: cd .repo && pnpm exec projen package:dotnet
       - name: Collect dotnet artifact
         run: mv .repo/dist dist
+      - name: NuGet login
+        id: nuget_login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841
+        with:
+          user: \${{ secrets.NUGET_USERNAME }}
       - name: Release
         env:
-          NUGET_API_KEY: \${{ secrets.NUGET_API_KEY }}
+          NUGET_API_KEY: \${{ steps.nuget_login.outputs.NUGET_API_KEY }}
           PUBLIB_DRYRUN: \${{ inputs.dry_run }}
         run: npx -p publib@latest publib-nuget
       - name: Extract Version
