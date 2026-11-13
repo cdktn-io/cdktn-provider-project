@@ -383,6 +383,7 @@
             "jsii",
             "prettier",
             "projen",
+            "semver",
             "ts-jest",
             "ts-node",
             "typescript",
