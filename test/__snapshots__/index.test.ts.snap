@@ -2353,7 +2353,7 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
-  - "@cdktn/provider-project"
+  - "@cdktn/*"
   - cdktn
   - cdktn-cli
 ",
@@ -5459,7 +5459,7 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
-  - "@cdktn/provider-project"
+  - "@cdktn/*"
   - cdktn
   - cdktn-cli
 ",
@@ -9037,7 +9037,7 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
-  - "@cdktn/provider-project"
+  - "@cdktn/*"
   - cdktn
   - cdktn-cli
 ",
@@ -12615,7 +12615,7 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
-  - "@cdktn/provider-project"
+  - "@cdktn/*"
   - cdktn
   - cdktn-cli
 ",
@@ -16194,7 +16194,7 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
-  - "@cdktn/provider-project"
+  - "@cdktn/*"
   - cdktn
   - cdktn-cli
 ",
@@ -19772,7 +19772,7 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
-  - "@cdktn/provider-project"
+  - "@cdktn/*"
   - cdktn
   - cdktn-cli
 ",
@@ -23369,7 +23369,7 @@ auditConfig:
     - GHSA-vfj7-8cjw-p6xm
 nodeLinker: hoisted
 minimumReleaseAgeExclude:
-  - "@cdktn/provider-project"
+  - "@cdktn/*"
   - cdktn
   - cdktn-cli
 ",

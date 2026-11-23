@@ -697,15 +697,25 @@ test("first-party packages are exempt from the upgrade cooldown", () => {
       },
     ])
   );
+  // The whole scope, not the individual names: cdktn-cli pins its monorepo
+  // siblings exactly, so exempting the CLI while gating what it pins leaves no
+  // version satisfying both and the resolution fails outright. That broke the
+  // scheduled upgrade on 32 of 33 provider repos on 2026-11-23.
   expect(workspace.minimumReleaseAgeExclude).toEqual([
-    "@cdktn/provider-project",
+    "@cdktn/*",
     "cdktn",
     "cdktn-cli",
   ]);
 
-  // The waiver is first-party only -- everything else still waits out the cooldown.
+  // The waiver is first-party only -- everything else still waits out the cooldown,
+  // including third-party transitives of the exempt packages.
   expect(workspace.minimumReleaseAgeExclude).not.toContain("projen");
   expect(workspace.minimumReleaseAgeExclude).not.toContain("constructs");
+  expect(
+    workspace.minimumReleaseAgeExclude.some((p: string) =>
+      p.startsWith("@sentry")
+    )
+  ).toBe(false);
 });
 
 test("transitive packages with advisories get upgraded after a dep upgrade", () => {

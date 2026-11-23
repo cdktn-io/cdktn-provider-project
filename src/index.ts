@@ -58,15 +58,22 @@ const AUDIT_LEVEL = "high";
  * one. They are also version-pinned together by `CdktfConfig`, so excluding one
  * without the other would only half-apply.
  *
+ * `@cdktn/*` rather than the individual names, because naming only the top-level
+ * packages half-applied in the same way. cdktn-cli pins its monorepo siblings
+ * exactly -- 0.25.1 requires @cdktn/hcl2json@0.25.1 -- so exempting the CLI while
+ * gating what it pins leaves no version that satisfies both, and the resolution
+ * fails outright rather than falling back. That took out the scheduled upgrade on
+ * 32 of 33 provider repos on 2026-11-23, three days after the 0.25.1 release, with
+ * ERR_PNPM_NO_MATURE_MATCHING_VERSION on @cdktn/hcl2json. The pattern covers the
+ * six siblings involved: commons, hcl-tools, hcl2cdk, hcl2json, provider-generator
+ * and provider-schema, plus provider-project, which no longer needs its own entry.
+ *
  * pnpm honours this from `pnpm-workspace.yaml` even though `minimumReleaseAge`
- * itself arrives on the command line; it matches on package name and applies to
- * every version of that package. Everything not listed here stays gated.
+ * itself arrives on the command line; it matches names and scope patterns, and
+ * applies to every version matched. Everything not listed here stays gated --
+ * third-party transitives of first-party packages included.
  */
-const MINIMUM_RELEASE_AGE_EXCLUDE = [
-  "@cdktn/provider-project",
-  "cdktn",
-  "cdktn-cli",
-];
+const MINIMUM_RELEASE_AGE_EXCLUDE = ["@cdktn/*", "cdktn", "cdktn-cli"];
 
 /**
  * The `projen` range written into a generated provider's `package.json`.
